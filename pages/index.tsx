@@ -12,6 +12,36 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { UploadDropzone } from 'react-uploader';
+import { Uploader } from 'uploader';
+
+// Configuration for the uploader
+const uploader = Uploader({
+  apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+    ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+    : 'free',
+});
+
+const options = {
+  maxFileCount: 1,
+  mimeTypes: ['application/pdf'],
+  editor: { images: { crop: false } },
+  styles: {
+    colors: {
+      primary: '#2563EB', // Primary buttons & links
+      error: '#d23f4d', // Error messages
+      // shade100: '#fff', // Standard text
+      // shade200: '#fffe', // Secondary button text
+      // shade300: '#fffd', // Secondary button text (hover)
+      // shade400: '#fffc', // Welcome text
+      // shade500: '#fff9', // Modal close button
+      // shade600: '#fff7', // Border
+      // shade700: '#fff2', // Progress indicator background
+      // shade800: '#fff1', // File item background
+      // shade900: '#ffff', // Various (draggable crop buttons, etc.)
+    },
+  },
+};
 
 export default function Home() {
   const [query, setQuery] = useState<string>('');
@@ -40,6 +70,22 @@ export default function Home() {
   useEffect(() => {
     textAreaRef.current?.focus();
   }, []);
+
+  const UploadDropZone = () => (
+    <UploadDropzone
+      uploader={uploader}
+      options={options}
+      onUpdate={(file) => {
+        if (file.length !== 0) {
+          console.log(file[0].originalFile.originalFileName);
+          console.log(file[0].fileUrl);
+          // setOriginalPhoto(file[0].fileUrl.replace('raw', 'thumbnail'));
+        }
+      }}
+      width="670px"
+      height="250px"
+    />
+  );
 
   //handle form submission
   async function handleSubmit(e: any) {
@@ -127,6 +173,7 @@ export default function Home() {
           <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
             Chat With Your Docs
           </h1>
+          <UploadDropZone />
           <main className={styles.main}>
             <div className={styles.cloud}>
               <div ref={messageListRef} className={styles.messagelist}>
@@ -260,11 +307,6 @@ export default function Home() {
             )}
           </main>
         </div>
-        <footer className="m-auto p-4">
-          <a href="https://twitter.com/mayowaoshin">
-            Powered by LangChainAI. Demo built by Mayo (Twitter: @mayowaoshin).
-          </a>
-        </footer>
       </Layout>
     </>
   );

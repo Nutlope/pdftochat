@@ -1,9 +1,8 @@
 {
-  "name": "gpt4-langchain-pdf-chatbot",
-  "version": "0.1.0",
+  "name": "pdftochat",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "author": "Mayooear<twitter:@mayowaoshin>",
   "type": "module",
   "scripts": {
     "dev": "next dev",
@@ -27,6 +26,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-markdown": "^8.0.5",
+    "react-uploader": "^3.10.0",
+    "uploader": "^3.9.0",
     "tailwind-merge": "^1.10.0"
   },
   "devDependencies": {
@@ -42,17 +43,5 @@
     "tailwindcss": "^3.2.7",
     "tsx": "^3.12.3",
     "typescript": "^4.9.5"
-  },
-  "keywords": [
-    "starter",
-    "gpt4",
-    "pinecone",
-    "typescript",
-    "nextjs",
-    "langchain",
-    "law",
-    "legal",
-    "pdf",
-    "openai"
-  ]
+  }
 }
