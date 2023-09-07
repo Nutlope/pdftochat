@@ -5,19 +5,23 @@
 - [x] Base functionality working w/ pinecone and openai
 - [x] Add upload component for pdfs
 - [x] Figure out how to acccept remote pdfs
-- [ ] Move ingest-data file into an API route
-- [ ] Add logic to run the ingest-data file with the userID + timestamp after user has uploaded a file
-- [ ] Don't show the chat unless the ingesting was successful, add loading state for ingesting
-- [ ] Stream data back using the Vercel AI SDK
-- [ ] Add auth with Clerk (with more sign in)
+- [x] Move ingest-data file into an API route
+- [x] Add logic to run the ingest-data file with the userID + timestamp after user has uploaded a file
+- [x] Don't show the chat unless the ingesting was successful, add loading state for ingesting
+- [x] In the prompt, add giving back the answer as HTML or markdown to format it well
+- [x] Figure out how to use namespaces so folks can search their own PDFs
+- [ ] Add a PDF viewer
 - [ ] Migrate to the app router
+- [ ] Stream data back using the Vercel AI SDK
+- [ ] Add auth with Clerk (and reach out to them for free account)
 - [ ] Implement the landing page redesign
 - [ ] Implement the dashboard page
-- [ ] Figure out how to use namespaces so folks can search their own PDFs
 - [ ] Restrict users to 3 PDFs per account and a certain amount of uploads
 
 ## After
 
+- [ ] Add an option to get answers as lists or paragraphs
+- [ ] Add loading state for ingesting
 - [ ] Use Vercel KV for caching
 - [ ] Use Vercel Postgres w/ pgvector instead of Pinecone
 

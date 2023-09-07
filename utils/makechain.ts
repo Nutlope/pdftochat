@@ -16,12 +16,13 @@ If the question is not related to the context, politely respond that you are tun
 {context}
 
 Question: {question}
-Helpful answer in markdown:`;
+Please return an answer in markdown with clear headings and lists:`;
 
 export const makeChain = (vectorstore: PineconeStore) => {
   const model = new ChatOpenAI({
-    temperature: 0, // increase temepreature to get more creative answers
-    modelName: 'gpt-4', //change this to gpt-4 if you have access
+    temperature: 0,
+    modelName: 'gpt-4',
+    // streaming: true,
   });
 
   const chain = ConversationalRetrievalQAChain.fromLLM(
@@ -30,7 +31,7 @@ export const makeChain = (vectorstore: PineconeStore) => {
     {
       qaTemplate: QA_TEMPLATE,
       questionGeneratorTemplate: CONDENSE_TEMPLATE,
-      returnSourceDocuments: true, //The number of source documents returned is 4 by default
+      // returnSourceDocuments: true, //The number of source documents returned is 4 by default
     },
   );
   return chain;
