@@ -14,9 +14,9 @@
 ## Todos v1
 
 - [x] Add a PDF viewer
+- [ ] Migrate to the app router
 - [ ] Migrate CSS modules to tailwind
 - [ ] Have PDF viewer and chat side by side
-- [ ] Migrate to the app router
 - [ ] Stream data back using the Vercel AI SDK
 - [ ] Add auth with Clerk (and reach out to them for free account)
 - [ ] Implement the landing page redesign

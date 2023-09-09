@@ -3,7 +3,7 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { pinecone } from '@/utils/pinecone-client';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
-import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/config/pinecone';
+import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/utils/pinecone';
 // import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 
 /* Name of directory to retrieve your files from
@@ -47,7 +47,7 @@ export const run = async () => {
     //embed the PDF documents
     await PineconeStore.fromDocuments(docs, embeddings, {
       pineconeIndex: index,
-      namespace: PINECONE_NAME_SPACE, // TODO: Change this to be user id + timestamp
+      namespace: 'some_name_space',
       textKey: 'text',
     });
   } catch (error) {

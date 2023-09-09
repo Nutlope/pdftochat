@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import Layout from '@/components/layout';
 import styles from '@/styles/Home.module.css';
-import { Message } from '@/types/chat';
+import { Message } from '@/utils/chat';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import LoadingDots from '@/components/ui/LoadingDots';
