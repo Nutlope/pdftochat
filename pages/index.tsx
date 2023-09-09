@@ -1,7 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
 import Layout from '@/components/layout';
-import { Message } from '@/types/chat';
-import { Document } from 'langchain/document';
 import { UploadDropzone } from 'react-uploader';
 import { Uploader } from 'uploader';
 import { useRouter } from 'next/router';
