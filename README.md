@@ -1,6 +1,6 @@
 # PDFtoChat
 
-## Todos
+## Todos v0.5
 
 - [x] Base functionality working w/ pinecone and openai
 - [x] Add upload component for pdfs
@@ -10,7 +10,10 @@
 - [x] Don't show the chat unless the ingesting was successful, add loading state for ingesting
 - [x] In the prompt, add giving back the answer as HTML or markdown to format it well
 - [x] Figure out how to use namespaces so folks can search their own PDFs
-- [ ] Add a PDF viewer
+
+## Todos v1
+
+- [x] Add a PDF viewer
 - [ ] Migrate to the app router
 - [ ] Stream data back using the Vercel AI SDK
 - [ ] Add auth with Clerk (and reach out to them for free account)

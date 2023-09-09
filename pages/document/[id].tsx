@@ -13,8 +13,13 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { useRouter } from 'next/router';
+import { Viewer, Worker } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 export default function DocumentChat() {
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const router = useRouter();
 
   const { id } = router.query;
@@ -30,7 +35,7 @@ export default function DocumentChat() {
   }>({
     messages: [
       {
-        message: 'Hi, what would you like to learn about this document?',
+        message: 'Hi, what would you like to learn about this pdf?',
         type: 'apiMessage',
       },
     ],
@@ -129,24 +134,27 @@ export default function DocumentChat() {
   return (
     <>
       <Layout>
-        <div className="mx-auto flex flex-col gap-4">
-          <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
-            Chat With Your Docs
-          </h1>
-          {/* <div
-            style={{
-              display: 'flex',
-              height: '50rem',
-              margin: '5rem auto',
-              width: '64rem',
-            }}
-          >
-            <Viewer
-              fileUrl="https://upcdn.io/12a1xvS/raw/uploads/2023/09/05/4mBoPgzE9k-introduction.pdf"
-              plugins={[defaultLayoutPluginInstance]}
-              initialPage={20}
-            />
-          </div> */}
+        <div className="mx-auto flex gap-4 flex-col">
+          <div className="">
+            <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center mb-10">
+              Chat With Your Docs
+            </h1>
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
+              <div
+                style={{
+                  height: '750px',
+                  width: '700px',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                }}
+              >
+                <Viewer
+                  fileUrl="https://upcdn.io/12a1xvS/raw/uploads/2023/09/05/4mBoPgzE9k-introduction.pdf"
+                  plugins={[defaultLayoutPluginInstance]}
+                />
+              </div>
+            </Worker>
+          </div>
           <main className={styles.main}>
             <div className={styles.cloud}>
               <div ref={messageListRef} className={styles.messagelist}>
