@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  webpack(config) {
-    config.experiments = { ...config.experiments, topLevelAwait: true };
+  experimental: {
+    esmExternals: 'loose',
+  },
+  webpack: (config) => {
+    config.externals = [...config.externals, { canvas: 'canvas' }];
     return config;
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

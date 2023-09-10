@@ -3,13 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc --noEmit",
-    "lint": "eslint --ignore-path .gitignore \"**/*.+(ts|js|tsx)\"",
     "format": "prettier --ignore-path .gitignore \"**/*.+(ts|js|tsx)\" --write",
     "ingest": "tsx -r dotenv/config scripts/ingest-data.ts"
   },
@@ -30,6 +28,7 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
     "react-uploader": "^3.10.0",
+    "tailwindcss": "^3.3.3",
     "tailwind-merge": "^1.10.0",
     "uploader": "^3.9.0"
   },
@@ -44,7 +43,6 @@
     "eslint-config-next": "13.2.3",
     "postcss": "^8.4.21",
     "prettier": "^2.8.4",
-    "tailwindcss": "^3.2.7",
     "tsx": "^3.12.3",
     "typescript": "^4.9.5"
   }

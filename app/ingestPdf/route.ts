@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
@@ -6,12 +6,9 @@ import { pinecone } from '@/utils/pinecone-client';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { PINECONE_INDEX_NAME } from '@/utils/pinecone';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export async function POST(request: Request) {
   let namespace = (+new Date()).toString(36); // TODO: Change this to include user id as well
-  const fileUrl = req.body.fileUrl;
+  const { fileUrl } = await request.json();
 
   try {
     /* load from remote pdf URL */
@@ -42,8 +39,11 @@ export default async function handler(
     });
   } catch (error) {
     console.log('error', error);
-    res.status(500).json({ error: 'Failed to ingest your data' });
+    return NextResponse.json({ error: 'Failed to ingest your data' });
   }
 
-  res.status(200).json({ text: 'Successfully embedded pdf', id: namespace });
+  return NextResponse.json({
+    text: 'Successfully embedded pdf',
+    id: namespace,
+  });
 }

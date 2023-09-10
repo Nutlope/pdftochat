@@ -1,7 +1,8 @@
-import Layout from '@/components/layout';
+'use client';
+
 import { UploadDropzone } from 'react-uploader';
 import { Uploader } from 'uploader';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 // Configuration for the uploader
 const uploader = Uploader({
@@ -43,13 +44,13 @@ export default function Home() {
           ingestPdf(file[0].fileUrl);
         }
       }}
-      width="670px"
+      width="470px"
       height="250px"
     />
   );
 
   async function ingestPdf(fileUrl: string) {
-    let res = await fetch('/api/ingestPdf', {
+    let res = await fetch('/ingestPdf', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,20 +60,18 @@ export default function Home() {
       }),
     });
 
+    console.log({ res });
+
     let data = await res.json();
     router.push(`/document/${data.id}`);
   }
 
   return (
-    <>
-      <Layout>
-        <div className="mx-auto flex flex-col gap-4">
-          <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
-            Chat With Your Docs
-          </h1>
-          <UploadDropZone />
-        </div>
-      </Layout>
-    </>
+    <div className="mx-auto flex flex-col gap-4">
+      <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
+        Chat With Your Docs
+      </h1>
+      <UploadDropZone />
+    </div>
   );
 }

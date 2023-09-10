@@ -1,10 +1,4 @@
-import '@/styles/base.css';
-import { Inter } from 'next/font/google';
-
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-});
+import '../styles/globals.css';
 
 export default function RootLayout({
   children,
@@ -26,7 +20,7 @@ export default function RootLayout({
           </header>
           <div>
             <main className="flex w-full flex-1 flex-col overflow-hidden">
-              <div className={inter.variable}>{children}</div>
+              {children}
             </main>
           </div>
         </div>
