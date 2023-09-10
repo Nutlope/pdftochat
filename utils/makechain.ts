@@ -21,7 +21,7 @@ Please return an answer in markdown with clear headings and lists:`;
 export const makeChain = (vectorstore: PineconeStore) => {
   const model = new ChatOpenAI({
     temperature: 0,
-    modelName: 'gpt-3.5-turbo',
+    modelName: 'gpt-4', // 'gpt-3.5-turbo'
     // streaming: true,
   });
 

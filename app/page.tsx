@@ -61,6 +61,7 @@ export default function Home() {
     });
 
     let data = await res.json();
+    localStorage.setItem('pdfUrl', fileUrl);
     router.push(`/document/${data.id}`);
   }
 

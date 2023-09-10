@@ -16,12 +16,14 @@
 - [x] Add a PDF viewer
 - [x] Migrate to the app router
 - [x] Clean up files
-- [ ] Have PDF viewer and chat side by side
+- [x] Have PDF viewer and chat side by side
+- [ ] Make the correct pdf show up in the viewer
 - [ ] Stream data back using the Vercel AI SDK
 - [ ] Add auth with Clerk (and reach out to them for free account)
 - [ ] Implement the landing page redesign
 - [ ] Implement the dashboard page
 - [ ] Restrict users to 3 PDFs per account and a certain amount of uploads
+- [ ] Fix responsiveness 100%
 
 ## After
 
