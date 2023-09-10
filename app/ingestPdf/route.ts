@@ -4,7 +4,12 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { pinecone } from '@/utils/pinecone-client';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
-import { PINECONE_INDEX_NAME } from '@/utils/pinecone';
+
+const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
+
+if (!process.env.PINECONE_INDEX_NAME) {
+  throw new Error('Missing Pinecone index name in .env file');
+}
 
 export async function POST(request: Request) {
   let namespace = (+new Date()).toString(36); // TODO: Change this to include user id as well

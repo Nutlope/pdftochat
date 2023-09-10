@@ -1,31 +1,20 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import Layout from '@/components/layout';
 import styles from '@/styles/Home.module.css';
 import { Message } from '@/utils/chatType';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import LoadingDots from '@/components/ui/LoadingDots';
 import { Document as LangChainDocument } from 'langchain/document';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 export default function DocumentChat({ params }: { params: { id: string } }) {
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
-  // const searchParams = useSearchParams();
-  // const id = searchParams!.get('id');
-
+  const defaultLayoutPluginInstance = defaultLayoutPlugin(); // PDF viewer plugin
   const id = params.id;
-  console.log({ id });
 
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -54,14 +43,13 @@ export default function DocumentChat({ params }: { params: { id: string } }) {
     textAreaRef.current?.focus();
   }, []);
 
-  // handle form submission
+  // Handle chat submission
   async function handleSubmit(e: any) {
     e.preventDefault();
-
     setError(null);
 
     if (!query) {
-      alert('Please input a question');
+      alert('Please input a question'); // TODO: Move this to react hot toast
       return;
     }
 
@@ -94,7 +82,6 @@ export default function DocumentChat({ params }: { params: { id: string } }) {
         }),
       });
       const data = await response.json();
-      console.log('data', data);
 
       if (data.error) {
         setError(data.error);
@@ -112,11 +99,9 @@ export default function DocumentChat({ params }: { params: { id: string } }) {
           history: [...state.history, [question, data.text]],
         }));
       }
-      console.log('messageState', messageState);
-
       setLoading(false);
 
-      //scroll to bottom
+      // Scroll to the bottom of the chat
       messageListRef.current?.scrollTo(0, messageListRef.current.scrollHeight);
     } catch (error) {
       setLoading(false);
@@ -125,7 +110,7 @@ export default function DocumentChat({ params }: { params: { id: string } }) {
     }
   }
 
-  //prevent empty submissions
+  // Prevent empty chat submissions
   const handleEnter = (e: any) => {
     if (e.key === 'Enter' && query) {
       handleSubmit(e);
@@ -141,14 +126,7 @@ export default function DocumentChat({ params }: { params: { id: string } }) {
           Chat With Your Docs
         </h1>
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
-          <div
-            style={{
-              height: '750px',
-              width: '700px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-          >
+          <div className="mx-auto w-[700px] h-[750px]">
             <Viewer
               fileUrl="https://upcdn.io/12a1xvS/raw/uploads/2023/09/05/4mBoPgzE9k-introduction.pdf"
               plugins={[defaultLayoutPluginInstance]}
@@ -194,8 +172,8 @@ export default function DocumentChat({ params }: { params: { id: string } }) {
                     : styles.usermessage;
               }
               return (
-                <>
-                  <div key={`chatMessage-${index}`} className={className}>
+                <div key={`chatMessage-${index}`}>
+                  <div className={className}>
                     {icon}
                     <div className={styles.markdownanswer}>
                       <ReactMarkdown linkTarget="_blank" className="prose">
@@ -203,30 +181,7 @@ export default function DocumentChat({ params }: { params: { id: string } }) {
                       </ReactMarkdown>
                     </div>
                   </div>
-                  {message.sourceDocs && (
-                    <div className="p-5" key={`sourceDocsAccordion-${index}`}>
-                      <Accordion type="single" collapsible className="flex-col">
-                        {message.sourceDocs.map((doc, index) => (
-                          <div key={`messageSourceDocs-${index}`}>
-                            <AccordionItem value={`item-${index}`}>
-                              <AccordionTrigger>
-                                <h3>Source {index + 1}</h3>
-                              </AccordionTrigger>
-                              <AccordionContent>
-                                <ReactMarkdown linkTarget="_blank">
-                                  {doc.pageContent}
-                                </ReactMarkdown>
-                                <p className="mt-2">
-                                  <b>Source:</b> {doc.metadata.source}
-                                </p>
-                              </AccordionContent>
-                            </AccordionItem>
-                          </div>
-                        ))}
-                      </Accordion>
-                    </div>
-                  )}
-                </>
+                </div>
               );
             })}
           </div>

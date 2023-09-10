@@ -60,8 +60,6 @@ export default function Home() {
       }),
     });
 
-    console.log({ res });
-
     let data = await res.json();
     router.push(`/document/${data.id}`);
   }

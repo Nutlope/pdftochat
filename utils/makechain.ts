@@ -21,7 +21,7 @@ Please return an answer in markdown with clear headings and lists:`;
 export const makeChain = (vectorstore: PineconeStore) => {
   const model = new ChatOpenAI({
     temperature: 0,
-    modelName: 'gpt-4',
+    modelName: 'gpt-3.5-turbo',
     // streaming: true,
   });
 
@@ -31,7 +31,7 @@ export const makeChain = (vectorstore: PineconeStore) => {
     {
       qaTemplate: QA_TEMPLATE,
       questionGeneratorTemplate: CONDENSE_TEMPLATE,
-      // returnSourceDocuments: true, //The number of source documents returned is 4 by default
+      // returnSourceDocuments: true, // The number of source documents returned is 4 by default
     },
   );
   return chain;

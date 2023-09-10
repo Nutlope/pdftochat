@@ -4,7 +4,12 @@ import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { AIMessage, HumanMessage } from 'langchain/schema';
 import { makeChain } from '@/utils/makechain';
 import { pinecone } from '@/utils/pinecone-client';
-import { PINECONE_INDEX_NAME } from '@/utils/pinecone';
+
+const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
+
+if (!process.env.PINECONE_INDEX_NAME) {
+  throw new Error('Missing Pinecone index name in .env file');
+}
 
 export async function POST(request: Request) {
   const { question, history, chatId } = await request.json();
