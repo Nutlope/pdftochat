@@ -13,33 +13,38 @@ const uploader = Uploader({
     : 'free',
 });
 
-const options = {
-  maxFileCount: 1,
-  mimeTypes: ['application/pdf'],
-  editor: { images: { crop: false } },
-  styles: {
-    colors: {
-      primary: '#2563EB', // Primary buttons & links
-      error: '#d23f4d', // Error messages
-      // shade100: '#fff', // Standard text
-      // shade200: '#fffe', // Secondary button text
-      // shade300: '#fffd', // Secondary button text (hover)
-      // shade400: '#fffc', // Welcome text
-      // shade500: '#fff9', // Modal close button
-      // shade600: '#fff7', // Border
-      // shade700: '#fff2', // Progress indicator background
-      // shade800: '#fff1', // File item background
-      // shade900: '#ffff', // Various (draggable crop buttons, etc.)
-    },
-  },
-};
-
 export default function DashboardClient({
   docsList,
 }: {
   docsList: Document[];
 }) {
   const router = useRouter();
+
+  const options = {
+    maxFileCount: 1,
+    mimeTypes: ['application/pdf'],
+    editor: { images: { crop: false } },
+    styles: {
+      colors: {
+        primary: '#2563EB', // Primary buttons & links
+        error: '#d23f4d', // Error messages
+        // shade100: '#fff', // Standard text
+        // shade200: '#fffe', // Secondary button text
+        // shade300: '#fffd', // Secondary button text (hover)
+        // shade400: '#fffc', // Welcome text
+        // shade500: '#fff9', // Modal close button
+        // shade600: '#fff7', // Border
+        // shade700: '#fff2', // Progress indicator background
+        // shade800: '#fff1', // File item background
+        // shade900: '#ffff', // Various (draggable crop buttons, etc.)
+      },
+    },
+    onValidate: async (file: File): Promise<undefined | string> => {
+      return docsList.length > 3
+        ? `You've reached your limit for PDFs.`
+        : undefined;
+    },
+  };
 
   const UploadDropZone = () => (
     <UploadDropzone
@@ -71,7 +76,6 @@ export default function DashboardClient({
     });
 
     let data = await res.json();
-    localStorage.setItem('pdfUrl', fileUrl);
     router.push(`/document/${data.id}`);
   }
 

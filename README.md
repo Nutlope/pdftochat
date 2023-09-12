@@ -19,16 +19,19 @@
 - [x] Have PDF viewer and chat side by side
 - [x] Add auth with Clerk
 - [x] Make the correct pdf show up in the viewer by adding Postgres DB (docId, userId, pdfUrl, createdAt)
+- [x] Restrict users to 3 PDFs per account
 - [ ] Stream data back using the Vercel AI SDK
-- [ ] Implement the landing page redesign
+- [ ] Implement the new UI for the document page
+- [ ] Implement the landing page UI
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Implement the dashboard page
-- [ ] Restrict users to 3 PDFs per account and a certain amount of uploads
 - [ ] Fix responsiveness 100%
 
 ## After
 
-- [ ] Use LLM Report
+- [ ] Error handling
+- [ ] Add rate limiting for uploads
+- [ ] Use LLM Report for OpenAI observability
 - [ ] Replace images from chat with something better
 - [ ] Migrate all CSS modules to tailwind
 - [ ] Add an option to get answers as lists or paragraphs

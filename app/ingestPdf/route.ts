@@ -22,7 +22,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'You must be logged in to ingest data' });
   }
 
-  // Add the document to the DB and return namespace (ID)
+  const docAmount = await prisma.document.count({
+    where: {
+      userId,
+    },
+  });
+
+  if (docAmount > 3) {
+    return NextResponse.json({
+      error: 'You have reached the maximum number of documents',
+    });
+  }
 
   const doc = await prisma.document.create({
     data: {
