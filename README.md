@@ -18,7 +18,7 @@
 - [x] Clean up files
 - [x] Have PDF viewer and chat side by side
 - [x] Add auth with Clerk
-- [ ] Make the correct pdf show up in the viewer by adding Postgres DB (docID, pineconeUrl, pdfUrl)
+- [x] Make the correct pdf show up in the viewer by adding Postgres DB (docId, userId, pdfUrl, createdAt)
 - [ ] Stream data back using the Vercel AI SDK
 - [ ] Implement the landing page redesign
 - [ ] Add SEO metadata in layout.tsx
@@ -28,6 +28,7 @@
 
 ## After
 
+- [ ] Use LLM Report
 - [ ] Replace images from chat with something better
 - [ ] Migrate all CSS modules to tailwind
 - [ ] Add an option to get answers as lists or paragraphs

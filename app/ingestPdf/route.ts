@@ -4,6 +4,8 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { pinecone } from '@/utils/pinecone-client';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
+import prisma from '@/utils/prisma';
+import { getAuth } from '@clerk/nextjs/server';
 
 const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
 
@@ -12,8 +14,25 @@ if (!process.env.PINECONE_INDEX_NAME) {
 }
 
 export async function POST(request: Request) {
-  let namespace = (+new Date()).toString(36); // TODO: Change this to include user id as well
-  const { fileUrl } = await request.json();
+  const { fileUrl, fileName } = await request.json();
+
+  const { userId } = getAuth(request as any);
+
+  if (!userId) {
+    return NextResponse.json({ error: 'You must be logged in to ingest data' });
+  }
+
+  // Add the document to the DB and return namespace (ID)
+
+  const doc = await prisma.document.create({
+    data: {
+      fileName,
+      fileUrl,
+      userId,
+    },
+  });
+
+  const namespace = doc.id;
 
   try {
     /* load from remote pdf URL */
@@ -29,7 +48,6 @@ export async function POST(request: Request) {
     });
     const docs = await textSplitter.splitDocuments(rawDocs);
 
-    console.log('split docs', docs);
     console.log('creating vector store...');
 
     /* create and store the embeddings in the vectorStore */
