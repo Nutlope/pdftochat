@@ -17,10 +17,11 @@
 - [x] Migrate to the app router
 - [x] Clean up files
 - [x] Have PDF viewer and chat side by side
-- [ ] Make the correct pdf show up in the viewer
+- [x] Add auth with Clerk
+- [ ] Make the correct pdf show up in the viewer by adding Postgres DB (docID, pineconeUrl, pdfUrl)
 - [ ] Stream data back using the Vercel AI SDK
-- [ ] Add auth with Clerk (and reach out to them for free account)
 - [ ] Implement the landing page redesign
+- [ ] Add SEO metadata in layout.tsx
 - [ ] Implement the dashboard page
 - [ ] Restrict users to 3 PDFs per account and a certain amount of uploads
 - [ ] Fix responsiveness 100%

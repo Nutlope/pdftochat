@@ -12,6 +12,7 @@
     "ingest": "tsx -r dotenv/config scripts/ingest-data.ts"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.23.5",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@pinecone-database/pinecone": "0.0.14",
     "@radix-ui/react-accordion": "^1.1.1",
@@ -28,8 +29,8 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
     "react-uploader": "^3.10.0",
-    "tailwindcss": "^3.3.3",
     "tailwind-merge": "^1.10.0",
+    "tailwindcss": "^3.3.3",
     "uploader": "^3.9.0"
   },
   "devDependencies": {
