@@ -20,12 +20,17 @@
 - [x] Add auth with Clerk
 - [x] Make the correct pdf show up in the viewer by adding Postgres DB (docId, userId, pdfUrl, createdAt)
 - [x] Restrict users to 3 PDFs per account
+- [ ] Make UI better overall
 - [ ] Stream data back using the Vercel AI SDK
+- [ ] Add loading UI for ingesting data
 - [ ] Implement the new UI for the document page
+- [ ] Reach out to pinecone again about free acc?
 - [ ] Implement the landing page UI
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Implement the dashboard page
 - [ ] Fix responsiveness 100%
+- [ ] Add sources with a page number
+- [ ] Use the uploader from https://zoo.replicate.dev/
 
 ## After
 

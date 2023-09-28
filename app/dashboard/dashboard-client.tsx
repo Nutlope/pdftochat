@@ -3,7 +3,6 @@
 import { UploadDropzone } from 'react-uploader';
 import { Uploader } from 'uploader';
 import { useRouter } from 'next/navigation';
-import { UserButton } from '@clerk/nextjs';
 import { Document } from '@prisma/client';
 
 // Configuration for the uploader
@@ -81,9 +80,6 @@ export default function DashboardClient({
 
   return (
     <div className="mx-auto flex flex-col gap-4">
-      <div>
-        <UserButton afterSignOutUrl="/" />
-      </div>
       <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
         Chat With Your Docs
       </h1>
