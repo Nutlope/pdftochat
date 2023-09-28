@@ -9,8 +9,8 @@ export default async function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-white w-full border-b border-b-slate-200 shadow-sm">
-      <div className="h-16  py-4 container mx-auto">
-        <nav className="ml-4 pl-6 flex justify-between">
+      <div className="h-16 py-4 container mx-auto">
+        <nav className="flex justify-between mx-10">
           <Link
             href="/"
             className="hover:text-slate-600 cursor-pointer flex items-center"

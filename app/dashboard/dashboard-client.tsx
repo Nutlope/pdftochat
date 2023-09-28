@@ -4,6 +4,8 @@ import { UploadDropzone } from 'react-uploader';
 import { Uploader } from 'uploader';
 import { useRouter } from 'next/navigation';
 import { Document } from '@prisma/client';
+import DocIcon from '@/components/ui/DocIcon';
+import { formatDistanceToNow } from 'date-fns';
 
 // Configuration for the uploader
 const uploader = Uploader({
@@ -25,7 +27,7 @@ export default function DashboardClient({
     editor: { images: { crop: false } },
     styles: {
       colors: {
-        primary: '#2563EB', // Primary buttons & links
+        primary: '#000', // Primary buttons & links
         error: '#d23f4d', // Error messages
         // shade100: '#fff', // Standard text
         // shade200: '#fffe', // Secondary button text
@@ -79,30 +81,37 @@ export default function DashboardClient({
   }
 
   return (
-    <div className="mx-auto flex flex-col gap-4">
-      <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
+    <div className="mx-auto flex flex-col gap-4 container mt-10">
+      <h1 className="text-4xl leading-[1.1] tracking-tighter font-medium text-center">
         Chat With Your Docs
       </h1>
-      <UploadDropZone />
       {docsList.length > 0 && (
-        <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-bold leading-[1.1] tracking-tighter text-center">
-            Your Docs
-          </h2>
-          <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 mx-10 my-5">
+          <div className="flex flex-col shadow-sm border divide-y-2 sm:min-w-[650px] mx-auto">
             {docsList.map((doc) => (
-              <div key={doc.id} className="flex flex-col gap-4">
+              <div
+                key={doc.id}
+                className="flex justify-between p-3 hover:bg-gray-100 transition sm:flex-row flex-col sm:gap-0 gap-3"
+              >
                 <button
                   onClick={() => router.push(`/document/${doc.id}`)}
-                  className="flex flex-col gap-4"
+                  className="flex gap-4"
                 >
-                  {doc.fileName}
+                  <DocIcon />
+                  <span>{doc.fileName}</span>
                 </button>
+                <span>{formatDistanceToNow(doc.createdAt)} ago</span>
               </div>
             ))}
           </div>
         </div>
       )}
+      <h2 className="text-3xl leading-[1.1] tracking-tighter font-medium text-center">
+        Or upload a new PDF
+      </h2>
+      <div className="mx-auto min-w-[450px]">
+        <UploadDropZone />
+      </div>
     </div>
   );
 }

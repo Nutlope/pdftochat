@@ -10,6 +10,9 @@ export default async function Page() {
     where: {
       userId: user?.id,
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   });
 
   return (
