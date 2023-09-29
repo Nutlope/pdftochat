@@ -18,6 +18,7 @@ export default function RootLayout({
       <html lang="en" className={anek.className}>
         <body>
           <div className="mx-auto flex flex-col space-y-4">
+            {/* @ts-ignore */}
             <Header />
             <main className="flex w-full flex-1 flex-col overflow-hidden">
               {children}
