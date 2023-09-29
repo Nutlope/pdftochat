@@ -7,9 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc --noEmit",
-    "format": "prettier --ignore-path .gitignore \"**/*.+(ts|js|tsx)\" --write",
-    "ingest": "tsx -r dotenv/config scripts/ingest-data.ts"
+    "vercel-build": "prisma generate && next build",
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.23.5",
