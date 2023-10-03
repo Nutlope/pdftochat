@@ -25,9 +25,9 @@
 
 ## Todos v1
 
-- [ ] Stream data back using the Vercel AI SDK
-- [ ] Add loading UI for ingesting data
+- [ ] Stream data back using the Vercel AI SDK – look it over with Langchain guy
 - [ ] Move away from that APAC region on pinecone, upgrade acc
+- [ ] Add loading UI for ingesting data
 - [ ] Implement the landing page UI
 - [ ] Implement design changes on pdf page + fix responsiveness
 - [ ] Add SEO metadata in layout.tsx
