@@ -11,7 +11,7 @@
 - [x] In the prompt, add giving back the answer as HTML or markdown to format it well
 - [x] Figure out how to use namespaces so folks can search their own PDFs
 
-## Todos v1
+## Todos v0.5
 
 - [x] Add a PDF viewer
 - [x] Migrate to the app router
@@ -22,27 +22,33 @@
 - [x] Restrict users to 3 PDFs per account
 - [x] Make UI better overall
 - [x] Implement the new UI for the document page
+
+## Todos v1
+
 - [ ] Stream data back using the Vercel AI SDK
 - [ ] Add loading UI for ingesting data
-- [ ] Reach out to pinecone again about free acc?
+- [ ] Move away from that APAC region on pinecone, upgrade acc
 - [ ] Implement the landing page UI
+- [ ] Implement design changes on pdf page + fix responsiveness
 - [ ] Add SEO metadata in layout.tsx
-- [ ] Fix responsiveness 100%
+
+## Todos v1.5
+
+- [ ] Move to latest Upload library
+- [ ] Tell folks to compress PDFs if they're beyond 10MB or accept more
+- [ ] Add trash icon for folks to delete PDFs and implement delete functionality
 - [ ] Add sources with a page number
 - [ ] Use the uploader from https://zoo.replicate.dev/
-- [ ] Update uploader library
-- [ ] Tell folks to compress PDFs if they're beyond 10MB
-- [ ] Add trash icon for folks to delete PDFs
+- [ ] Use LLM Report for OpenAI observability
+- [ ] Migrate all CSS modules to tailwind
 
-## After
+## Todos v2
 
+- [ ] Add an option to get answers as lists or paragraphs
 - [ ] Error handling
 - [ ] Add rate limiting for uploads
-- [ ] Use LLM Report for OpenAI observability
 - [ ] Replace images from chat with something better
-- [ ] Migrate all CSS modules to tailwind
-- [ ] Add an option to get answers as lists or paragraphs
-- [ ] Add loading state for ingesting
+- [ ] Make it detect handdrawn images: https://replicate.com/meta/nougat
 - [ ] Use Vercel KV for caching
 - [ ] Use Vercel Postgres w/ pgvector instead of Pinecone
 
