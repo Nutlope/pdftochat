@@ -25,7 +25,8 @@
 
 ## Todos v1
 
-- [ ] Stream data back using the Vercel AI SDK – look it over with Langchain guy
+- [ ] Stream data back using the Vercel AI SDK on the backend – HOLD ON THIS until langchain updates
+- [ ] Support the frontend with the Vercel AI SDK
 - [ ] Move away from that APAC region on pinecone, upgrade acc
 - [ ] Add loading UI for ingesting data
 - [ ] Implement the landing page UI

@@ -1,35 +1,68 @@
-import { NextResponse } from 'next/server';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+import { NextRequest, NextResponse } from 'next/server';
+import { Message as VercelChatMessage, StreamingTextResponse } from 'ai';
+import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { PromptTemplate } from 'langchain/prompts';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
-import { AIMessage, HumanMessage } from 'langchain/schema';
+import { Document } from 'langchain/document';
+import { RunnableSequence } from 'langchain/schema/runnable';
+import {
+  BytesOutputParser,
+  StringOutputParser,
+} from 'langchain/schema/output_parser';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { CONDENSE_TEMPLATE, QA_TEMPLATE } from '@/utils/config';
 import { pinecone } from '@/utils/pinecone-client';
-import { StreamingTextResponse } from 'ai';
-import { BytesOutputParser } from 'langchain/schema/output_parser';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { ConversationalRetrievalQAChain } from 'langchain/chains';
 
-const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
+export const runtime = 'edge';
 
-if (!process.env.PINECONE_INDEX_NAME) {
-  throw new Error('Missing Pinecone index name in .env file');
-}
+const combineDocumentsFn = (docs: Document[], separator = '\n\n') => {
+  const serializedDocs = docs.map((doc) => doc.pageContent);
+  return serializedDocs.join(separator);
+};
 
-export async function POST(request: Request) {
-  const { question, history, chatId } = await request.json();
+const formatVercelMessages = (chatHistory: VercelChatMessage[]) => {
+  const formattedDialogueTurns = chatHistory.map((message) => {
+    if (message.role === 'user') {
+      return `Human: ${message.content}`;
+    } else if (message.role === 'assistant') {
+      return `Assistant: ${message.content}`;
+    } else {
+      return `${message.role}: ${message.content}`;
+    }
+  });
+  return formattedDialogueTurns.join('\n');
+};
 
-  if (!question) {
-    return NextResponse.json({ message: 'No question in the request' });
-  }
+const CONDENSE_QUESTION_TEMPLATE = CONDENSE_TEMPLATE;
+const condenseQuestionPrompt = PromptTemplate.fromTemplate(
+  CONDENSE_QUESTION_TEMPLATE,
+);
+const ANSWER_TEMPLATE = QA_TEMPLATE;
+const answerPrompt = PromptTemplate.fromTemplate(ANSWER_TEMPLATE);
 
-  // OpenAI recommends replacing newlines with spaces for best results
-  const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
-
+/**
+ * This handler initializes and calls a retrieval chain. It composes the chain using
+ * LangChain Expression Language. See the docs for more information:
+ *
+ * https://js.langchain.com/docs/guides/expression_language/cookbook#conversational-retrieval-chain
+ */
+export async function POST(req: NextRequest) {
   try {
-    const index = pinecone.Index(PINECONE_INDEX_NAME);
+    const { question, history, chatId } = await req.json();
+    const messages = history ?? [];
+    const previousMessages = messages;
+    const currentMessageContent = question;
 
-    const vectorStore = await PineconeStore.fromExistingIndex(
-      new OpenAIEmbeddings({}),
+    const model = new ChatOpenAI({
+      modelName: 'gpt-3.5-turbo',
+      temperature: 0,
+    });
+
+    const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
+    const index = pinecone.index(PINECONE_INDEX_NAME);
+
+    const vectorstore = await PineconeStore.fromExistingIndex(
+      new OpenAIEmbeddings(),
       {
         pineconeIndex: index,
         textKey: 'text',
@@ -37,57 +70,81 @@ export async function POST(request: Request) {
       },
     );
 
-    const model = new ChatOpenAI({
-      temperature: 0,
-      modelName: 'gpt-3.5-turbo',
-      streaming: true,
-    });
-
-    const outputParser = new BytesOutputParser();
-
-    // Create a chain
-    const chain = ConversationalRetrievalQAChain.fromLLM(
+    /**
+     * We use LangChain Expression Language to compose two chains.
+     * To learn more, see the guide here:
+     *
+     * https://js.langchain.com/docs/guides/expression_language/cookbook
+     */
+    const standaloneQuestionChain = RunnableSequence.from([
+      condenseQuestionPrompt,
       model,
-      vectorStore.asRetriever(),
-      {
-        qaTemplate: QA_TEMPLATE,
-        questionGeneratorTemplate: CONDENSE_TEMPLATE,
-        // returnSourceDocuments: true, // # of source documents, 4 by default
-      },
-    );
+      new StringOutputParser(),
+    ]);
 
-    const pastMessages = history.map((message: string, i: number) => {
-      if (i % 2 === 0) {
-        return new HumanMessage(message);
-      } else {
-        return new AIMessage(message);
-      }
+    let resolveWithDocuments: (value: Document[]) => void;
+    const documentPromise = new Promise<Document[]>((resolve) => {
+      resolveWithDocuments = resolve;
     });
 
-    // Ask a question using chat history
-    const response = await chain.stream(
-      {
-        question: sanitizedQuestion,
-        chat_history: pastMessages,
-      },
-      {
-        callbacks: [
-          {
-            handleLLMNewToken(token: string) {
-              console.log({ token });
-            },
+    const retriever = vectorstore.asRetriever({
+      callbacks: [
+        {
+          handleRetrieverEnd(documents) {
+            resolveWithDocuments(documents);
           },
-        ],
-      },
-    );
-
-    console.log('response', response);
-    // return NextResponse.json(response);
-    return new StreamingTextResponse(response);
-  } catch (error: any) {
-    console.log('error', error);
-    return NextResponse.json({
-      error: error.message || 'Something went wrong',
+        },
+      ],
     });
+
+    const retrievalChain = retriever.pipe(combineDocumentsFn);
+
+    const answerChain = RunnableSequence.from([
+      {
+        context: RunnableSequence.from([
+          (input) => input.question,
+          retrievalChain,
+        ]),
+        chat_history: (input) => input.chat_history,
+        question: (input) => input.question,
+      },
+      answerPrompt,
+      model,
+    ]);
+
+    const conversationalRetrievalQAChain = RunnableSequence.from([
+      {
+        question: standaloneQuestionChain,
+        chat_history: (input) => input.chat_history,
+      },
+      answerChain,
+      new BytesOutputParser(),
+    ]);
+
+    const stream = await conversationalRetrievalQAChain.stream({
+      question: currentMessageContent,
+      chat_history: formatVercelMessages(previousMessages),
+    });
+
+    const documents = await documentPromise;
+    const serializedSources = Buffer.from(
+      JSON.stringify(
+        documents.map((doc) => {
+          return {
+            pageContent: doc.pageContent.slice(0, 50) + '...',
+            metadata: doc.metadata,
+          };
+        }),
+      ),
+    ).toString('base64');
+
+    return new StreamingTextResponse(stream, {
+      headers: {
+        'x-message-index': (previousMessages.length + 1).toString(),
+        'x-sources': serializedSources,
+      },
+    });
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
