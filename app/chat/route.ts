@@ -10,9 +10,14 @@ import {
   StringOutputParser,
 } from 'langchain/schema/output_parser';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { pinecone } from '@/utils/pinecone-client';
+import { Pinecone } from '@pinecone-database/pinecone';
 
 // export const runtime = 'edge';
+
+const pinecone = new Pinecone({
+  apiKey: process.env.PINECONE_API_KEY ?? '',
+  environment: process.env.PINECONE_ENVIRONMENT ?? '', //this is in the dashboard
+});
 
 const combineDocumentsFn = (docs: Document[], separator = '\n\n') => {
   const serializedDocs = docs.map((doc) => doc.pageContent);
