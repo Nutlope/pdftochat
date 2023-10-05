@@ -12,7 +12,7 @@ import {
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { Pinecone } from '@pinecone-database/pinecone';
 
-// export const runtime = 'edge';
+export const runtime = 'edge';
 
 const pinecone = new Pinecone({
   apiKey: process.env.PINECONE_API_KEY ?? '',
@@ -92,7 +92,6 @@ export async function POST(req: NextRequest) {
       {
         pineconeIndex: index,
         namespace: chatId,
-        textKey: 'text',
       },
     );
 
@@ -117,6 +116,7 @@ export async function POST(req: NextRequest) {
       callbacks: [
         {
           handleRetrieverEnd(documents) {
+            console.log(documents);
             resolveWithDocuments(documents);
           },
         },
