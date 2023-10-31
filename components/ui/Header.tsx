@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Logo from './Logo';
 import { UserButton, currentUser } from '@clerk/nextjs';
-import { User } from '@clerk/nextjs/dist/types/server';
+import { User } from '@clerk/nextjs/server';
 
 export default async function Header() {
   const user: User | null = await currentUser();
