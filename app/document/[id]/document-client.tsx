@@ -61,7 +61,7 @@ export default function DocumentClient({
     });
 
   const messageListRef = useRef<HTMLDivElement>(null);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const textAreaRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     textAreaRef.current?.focus();
@@ -84,7 +84,7 @@ export default function DocumentClient({
         {/* Left hand side */}
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
           <div
-            className="w-full h-[600px] flex flex-col"
+            className="w-full h-[90vh] flex flex-col"
             style={{
               border: '1px solid rgba(0, 0, 0, 0.3)',
             }}
@@ -104,8 +104,8 @@ export default function DocumentClient({
           </div>
         </Worker>
         {/* Right hand side */}
-        <div className="flex flex-col w-full justify-between align-center h-full">
-          <div className="w-full min-h-min h-[550px] bg-white border flex justify-center items-center">
+        <div className="flex flex-col w-full justify-between align-center h-[90vh]">
+          <div className="w-full min-h-min h-[80vh] bg-white border flex justify-center items-center">
             <div
               ref={messageListRef}
               className="w-full h-full overflow-y-scroll rounded-md"
@@ -141,7 +141,7 @@ export default function DocumentClient({
                   // The latest message sent by the user will be animated while waiting for a response
                   className =
                     isLoading && index === messages.length - 1
-                      ? 'p-6 text-black bg-gradient-to-r from-gray-900 via-gray-900 to-gray-900 bg-opacity-25 animate-loading-gradient flex'
+                      ? 'p-6 text-black flex animate-pulse bg-gray-100'
                       : 'bg-white p-6 text-black flex';
                 }
                 return (
@@ -159,17 +159,17 @@ export default function DocumentClient({
               })}
             </div>
           </div>
-          <div className="flex justify-center items-center flex-1">
+          <div className="flex justify-center items-center">
             <form onSubmit={(e) => handleSubmit(e)}>
-              <textarea
-                className="w-full resize-none text-base py-4 px-8 rounded-md border border-gray-300 bg-white text-black focus:outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-400"
+              <input
+                className="resize-none py-4 px-8 rounded-md border border-gray-300 bg-white text-black focus:outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-400 w-[49vw]"
                 disabled={isLoading}
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleEnter}
                 ref={textAreaRef}
                 autoFocus={false}
-                rows={1}
+                // rows={1}
                 maxLength={512}
                 id="userInput"
                 name="userInput"

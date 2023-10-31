@@ -27,7 +27,9 @@
 - [x] Stream data back to the frontend somehow – Vercel AI SDK or my own streaming lib the Vercel AI SDK on the backend
 - [x] Add sources with a page number
 - [x] Migrate all CSS modules to tailwind
-- [ ] Implement design changes on pdf page + fix responsiveness
+- [x] Implement design changes on pdf page pt.1
+- [ ] Implement design changes on pdf page pt.2, like avatars + chatbox scroll
+- [ ] Implement design changes on pdf page pt.3, responsiveness on mobile
 - [ ] Add loading UI for ingesting data
 - [ ] Implement the landing page UI
 - [ ] Add SEO metadata in layout.tsx

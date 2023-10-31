@@ -17,12 +17,9 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className={anek.className}>
         <body>
-          <div className="mx-auto flex flex-col space-y-4">
-            {/* @ts-ignore */}
+          <div className="min-h-screen flex flex-col">
             <Header />
-            <main className="flex w-full flex-1 flex-col overflow-hidden">
-              {children}
-            </main>
+            {children}
           </div>
         </body>
       </html>
