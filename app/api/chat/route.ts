@@ -82,11 +82,6 @@ export async function POST(req: NextRequest) {
     const currentMessageContent = messages[messages.length - 1].content;
     const chatId = body.chatId;
 
-    // const { question, history, chatId } = await req.json();
-    // const messages = history ?? [];
-    // const previousMessages = messages;
-    // const currentMessageContent = question;
-
     const model = new ChatOpenAI({
       modelName: 'gpt-3.5-turbo',
       temperature: 0,
@@ -124,7 +119,6 @@ export async function POST(req: NextRequest) {
       callbacks: [
         {
           handleRetrieverEnd(documents) {
-            // console.log(documents);
             resolveWithDocuments(documents);
           },
         },
@@ -162,40 +156,24 @@ export async function POST(req: NextRequest) {
       question: currentMessageContent,
     });
 
-    // const documents = await documentPromise;
-    // const serializedSources = Buffer.from(
-    //   JSON.stringify(
-    //     documents.map((doc) => {
-    //       return {
-    //         pageContent: doc.pageContent.slice(0, 50) + '...',
-    //         metadata: doc.metadata,
-    //       };
-    //     }),
-    //   ),
-    // ).toString('base64');
+    const documents = await documentPromise;
+    const serializedSources = Buffer.from(
+      JSON.stringify(
+        documents.map((doc) => {
+          return {
+            pageContent: doc.pageContent.slice(0, 50) + '...',
+            metadata: doc.metadata,
+          };
+        }),
+      ),
+    ).toString('base64');
 
-    return new StreamingTextResponse(
-      stream,
-      //   {
-      //   headers: {
-      //     'x-message-index': (previousMessages.length + 1).toString(),
-      //     'x-sources': serializedSources,
-      //   },
-      // }
-    );
-
-    // return new Response(stream, {
-    //   headers: new Headers({
-    //     // 'x-message-index': (previousMessages.length + 1).toString(),
-    //     // 'x-sources': serializedSources,
-    //     // since we don't use browser's EventSource interface, specifying content-type is optional.
-    //     // the eventsource-parser library can handle the stream response as SSE, as long as the data format complies with SSE:
-    //     // https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#sending_events_from_the_server
-
-    //     // 'Content-Type': 'text/event-stream',
-    //     'Cache-Control': 'no-cache',
-    //   }),
-    // });
+    return new StreamingTextResponse(stream, {
+      headers: {
+        'x-message-index': (formattedPreviousMessages.length + 1).toString(),
+        'x-sources': serializedSources,
+      },
+    });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

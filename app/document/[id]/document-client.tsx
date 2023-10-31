@@ -2,11 +2,9 @@
 
 import { useRef, useState, useEffect } from 'react';
 import styles from '@/styles/Home.module.css';
-import { Message } from '@/utils/chatType';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import LoadingDots from '@/components/ui/LoadingDots';
-import { Document as LangChainDocument } from 'langchain/document';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
@@ -39,59 +37,32 @@ export default function DocumentClient({
   const [sourcesForMessages, setSourcesForMessages] = useState<
     Record<string, any>
   >({});
+  const [error, setError] = useState('');
 
-  const {
-    messages,
-    input,
-    setInput,
-    handleInputChange,
-    handleSubmit,
-    isLoading: chatEndpointIsLoading,
-    setMessages,
-  } = useChat({
-    api: '/api/chat',
-    body: {
-      chatId,
-    },
-    onResponse(response) {
-      const sourcesHeader = response.headers.get('x-sources');
-      const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
-      const messageIndexHeader = response.headers.get('x-message-index');
-      if (sources.length && messageIndexHeader !== null) {
-        setSourcesForMessages({
-          ...sourcesForMessages,
-          [messageIndexHeader]: sources,
-        });
-      }
-    },
-    // onError: (e) => {
-    //   toast(e.message, {
-    //     theme: 'dark',
-    //   });
-    // },
-  });
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useChat({
+      api: '/api/chat',
+      body: {
+        chatId,
+      },
+      onResponse(response) {
+        const sourcesHeader = response.headers.get('x-sources');
+        const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
+        const messageIndexHeader = response.headers.get('x-message-index');
+        if (sources.length && messageIndexHeader !== null) {
+          setSourcesForMessages({
+            ...sourcesForMessages,
+            [messageIndexHeader]: sources,
+          });
+        }
+      },
+      onError: (e) => {
+        setError(e.message);
+      },
+    });
 
   console.log({ messages });
-
-  const [query, setQuery] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  // const [messageState, setMessageState] = useState<{
-  //   messages: Message[];
-  //   pending?: string;
-  //   history: [string, string][];
-  //   pendingSourceDocs?: LangChainDocument[];
-  // }>({
-  //   messages: [
-  //     {
-  //       message: 'Hi, what would you like to learn about this pdf?',
-  //       type: 'apiMessage',
-  //     },
-  //   ],
-  //   history: [],
-  // });
-  // const [currentMessage, setCurrentMessage] = useState<string>('');
-  // const { messages, history } = messageState;
+  console.log({ sourcesForMessages });
 
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -100,112 +71,16 @@ export default function DocumentClient({
     textAreaRef.current?.focus();
   }, []);
 
-  // Handle chat submission
-  // async function handleSubmit(e: any) {
-  //   e.preventDefault();
-  //   setError(null);
-
-  //   if (!query) {
-  //     alert('Please input a question'); // TODO: Move this to react hot toast
-  //     return;
-  //   }
-
-  //   const question = query.trim();
-
-  //   setMessageState((state) => ({
-  //     ...state,
-  //     messages: [
-  //       ...state.messages,
-  //       {
-  //         type: 'userMessage',
-  //         message: question,
-  //       },
-  //     ],
-  //   }));
-
-  //   setLoading(true);
-  //   setQuery('');
-
-  //   try {
-  //     const response = await fetch('/api/chat', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         chatId: id,
-  //         question,
-  //         history,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       setError(response.statusText);
-  //     }
-
-  //     // This data is a ReadableStream
-  //     const data = response.body;
-  //     if (!data) {
-  //       return;
-  //     }
-
-  //     const onParse = (event: ParsedEvent | ReconnectInterval) => {
-  //       if (event.type === 'event') {
-  //         const data = event.data;
-  //         try {
-  //           const text = JSON.parse(data).text ?? '';
-  //           setCurrentMessage((prev) => prev + text);
-  //           // setMessageState((state) => ({
-  //           //   ...state,
-  //           //   messages: [
-  //           //     ...state.messages,
-  //           //     {
-  //           //       type: 'apiMessage',
-  //           //       message: data.text,
-  //           //       sourceDocs: data.sourceDocuments,
-  //           //     },
-  //           //   ],
-  //           //   history: [...state.history, [question, data.text]],
-  //           // }));
-  //         } catch (e) {
-  //           console.error(e);
-  //         }
-  //       }
-  //     };
-
-  //     // https://web.dev/streams/#the-getreader-and-read-methods
-  //     const reader = data.getReader();
-  //     const decoder = new TextDecoder();
-  //     const parser = createParser(onParse);
-  //     let done = false;
-  //     while (!done) {
-  //       const { value, done: doneReading } = await reader.read();
-  //       done = doneReading;
-  //       const chunkValue = decoder.decode(value);
-  //       parser.feed(chunkValue);
-  //     }
-
-  //     // const data = await response.json();
-
-  //     setLoading(false);
-
-  //     // Scroll to the bottom of the chat
-  //     messageListRef.current?.scrollTo(0, messageListRef.current.scrollHeight);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     setError('An error occurred while fetching the data. Please try again.');
-  //     console.log('error', error);
-  //   }
-  // }
+  // TODO: Maybe define custom handleSubmit to set loading state and erase the input?
 
   // // Prevent empty chat submissions
-  // const handleEnter = (e: any) => {
-  //   if (e.key === 'Enter' && query) {
-  //     handleSubmit(e);
-  //   } else if (e.key == 'Enter') {
-  //     e.preventDefault();
-  //   }
-  // };
+  const handleEnter = (e: any) => {
+    if (e.key === 'Enter' && messages) {
+      handleSubmit(e);
+    } else if (e.key == 'Enter') {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div className="mx-auto flex gap-4 flex-col">
@@ -268,7 +143,7 @@ export default function DocumentClient({
                     );
                     // The latest message sent by the user will be animated while waiting for a response
                     className =
-                      loading && index === messages.length - 1
+                      isLoading && index === messages.length - 1
                         ? styles.usermessagewaiting
                         : styles.usermessage;
                   }
@@ -292,10 +167,10 @@ export default function DocumentClient({
                 <form onSubmit={(e) => handleSubmit(e)}>
                   <textarea
                     className={styles.textarea}
-                    disabled={loading}
+                    disabled={isLoading}
                     value={input}
                     onChange={handleInputChange}
-                    // onKeyDown={handleEnter}
+                    onKeyDown={handleEnter}
                     ref={textAreaRef}
                     autoFocus={false}
                     rows={1}
@@ -303,24 +178,21 @@ export default function DocumentClient({
                     id="userInput"
                     name="userInput"
                     placeholder={
-                      loading
+                      isLoading
                         ? 'Waiting for response...'
                         : 'What is this pdf about?'
                     }
-                    // value={query}
-                    // onChange={(e) => setQuery(e.target.value)}
                   />
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={isLoading}
                     className={styles.generatebutton}
                   >
-                    {loading ? (
+                    {isLoading ? (
                       <div className={styles.loadingwheel}>
-                        <LoadingDots color="#000" />
+                        <LoadingDots color="#000" style="small" />
                       </div>
                     ) : (
-                      // Send icon SVG in input field
                       <svg
                         viewBox="0 0 20 20"
                         className={styles.svgicon}
