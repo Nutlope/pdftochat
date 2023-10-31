@@ -17,7 +17,3 @@ const LoadingDots = ({
 };
 
 export default LoadingDots;
-
-LoadingDots.defaultProps = {
-  style: 'small',
-};
