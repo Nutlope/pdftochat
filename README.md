@@ -28,6 +28,7 @@
 - [x] Add sources with a page number
 - [x] Migrate all CSS modules to tailwind
 - [x] Implement design changes on pdf page pt.1
+- [x] Fix the sign in and sign up pages to be outside of the layout
 - [ ] Implement design changes on pdf page pt.2, like avatars + chatbox scroll
 - [ ] Implement design changes on pdf page pt.3, responsiveness on mobile
 - [ ] Add loading UI for ingesting data
@@ -76,3 +77,4 @@
 ## Credit
 
 - Mako for the original repo
+- Joseph for help and for his langchain next.js repo as well
