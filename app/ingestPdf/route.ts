@@ -2,12 +2,17 @@ import { NextResponse } from 'next/server';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
-import { pinecone } from '@/utils/pinecone-client';
+import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import prisma from '@/utils/prisma';
 import { getAuth } from '@clerk/nextjs/server';
 
 const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
+
+const pinecone = new Pinecone({
+  apiKey: process.env.PINECONE_API_KEY ?? '',
+  environment: process.env.PINECONE_ENVIRONMENT ?? '', //this is in the dashboard
+});
 
 if (!process.env.PINECONE_INDEX_NAME) {
   throw new Error('Missing Pinecone index name in .env file');

@@ -74,10 +74,18 @@ const answerPrompt = PromptTemplate.fromTemplate(ANSWER_TEMPLATE);
  */
 export async function POST(req: NextRequest) {
   try {
-    const { question, history, chatId } = await req.json();
-    const messages = history ?? [];
-    const previousMessages = messages;
-    const currentMessageContent = question;
+    const body = await req.json();
+    const messages = body.messages ?? [];
+    const formattedPreviousMessages = messages
+      .slice(0, -1)
+      .map(formatVercelMessages);
+    const currentMessageContent = messages[messages.length - 1].content;
+    const chatId = body.chatId;
+
+    // const { question, history, chatId } = await req.json();
+    // const messages = history ?? [];
+    // const previousMessages = messages;
+    // const currentMessageContent = question;
 
     const model = new ChatOpenAI({
       modelName: 'gpt-3.5-turbo',
@@ -116,7 +124,7 @@ export async function POST(req: NextRequest) {
       callbacks: [
         {
           handleRetrieverEnd(documents) {
-            console.log(documents);
+            // console.log(documents);
             resolveWithDocuments(documents);
           },
         },
@@ -147,29 +155,47 @@ export async function POST(req: NextRequest) {
       new BytesOutputParser(),
     ]);
 
+    console.log({ conversationalRetrievalQAChain });
+
     const stream = await conversationalRetrievalQAChain.stream({
+      chat_history: formattedPreviousMessages.join('\n'),
       question: currentMessageContent,
-      chat_history: formatVercelMessages(previousMessages),
     });
 
-    const documents = await documentPromise;
-    const serializedSources = Buffer.from(
-      JSON.stringify(
-        documents.map((doc) => {
-          return {
-            pageContent: doc.pageContent.slice(0, 50) + '...',
-            metadata: doc.metadata,
-          };
-        }),
-      ),
-    ).toString('base64');
+    // const documents = await documentPromise;
+    // const serializedSources = Buffer.from(
+    //   JSON.stringify(
+    //     documents.map((doc) => {
+    //       return {
+    //         pageContent: doc.pageContent.slice(0, 50) + '...',
+    //         metadata: doc.metadata,
+    //       };
+    //     }),
+    //   ),
+    // ).toString('base64');
 
-    return new StreamingTextResponse(stream, {
-      headers: {
-        'x-message-index': (previousMessages.length + 1).toString(),
-        'x-sources': serializedSources,
-      },
-    });
+    return new StreamingTextResponse(
+      stream,
+      //   {
+      //   headers: {
+      //     'x-message-index': (previousMessages.length + 1).toString(),
+      //     'x-sources': serializedSources,
+      //   },
+      // }
+    );
+
+    // return new Response(stream, {
+    //   headers: new Headers({
+    //     // 'x-message-index': (previousMessages.length + 1).toString(),
+    //     // 'x-sources': serializedSources,
+    //     // since we don't use browser's EventSource interface, specifying content-type is optional.
+    //     // the eventsource-parser library can handle the stream response as SSE, as long as the data format complies with SSE:
+    //     // https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#sending_events_from_the_server
+
+    //     // 'Content-Type': 'text/event-stream',
+    //     'Cache-Control': 'no-cache',
+    //   }),
+    // });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
