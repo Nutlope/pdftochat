@@ -13,27 +13,29 @@
   "dependencies": {
     "@clerk/nextjs": "^4.23.5",
     "@microsoft/fetch-event-source": "^2.0.1",
-    "@pinecone-database/pinecone": "0.0.14",
+    "@pinecone-database/pinecone": "^1.1.0",
     "@prisma/client": "^5.2.0",
     "@radix-ui/react-accordion": "^1.1.1",
     "@react-pdf-viewer/core": "3.12.0",
     "@react-pdf-viewer/default-layout": "^3.12.0",
-    "@vercel/postgres": "^0.4.1",
+    "@vercel/postgres": "^0.5.0",
+    "ai": "^2.1.28",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
     "dotenv": "^16.0.3",
-    "langchain": "^0.0.125",
+    "eventsource-parser": "^1.1.1",
+    "langchain": "^0.0.160",
     "lucide-react": "^0.125.0",
-    "next": "^13.4.19",
+    "next": "^13.5.4",
     "pdf-parse": "1.1.1",
     "pdfjs-dist": "3.4.120",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
-    "react-uploader": "^3.10.0",
+    "react-uploader": "^3.43.0",
     "tailwind-merge": "^1.10.0",
     "tailwindcss": "^3.3.3",
-    "uploader": "^3.9.0"
+    "uploader": "^3.48.2"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",
@@ -49,6 +51,6 @@
     "prettier": "^2.8.4",
     "prisma": "^5.2.0",
     "tsx": "^3.12.3",
-    "typescript": "^4.9.5"
+    "typescript": "^5.2.2"
   }
 }

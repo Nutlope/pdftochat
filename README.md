@@ -10,9 +10,6 @@
 - [x] Don't show the chat unless the ingesting was successful, add loading state for ingesting
 - [x] In the prompt, add giving back the answer as HTML or markdown to format it well
 - [x] Figure out how to use namespaces so folks can search their own PDFs
-
-## Todos v1
-
 - [x] Add a PDF viewer
 - [x] Migrate to the app router
 - [x] Clean up files
@@ -22,29 +19,35 @@
 - [x] Restrict users to 3 PDFs per account
 - [x] Make UI better overall
 - [x] Implement the new UI for the document page
-- [ ] Stream data back using the Vercel AI SDK
+
+## Todos v1
+
+- [x] Add US region on pinecone by upgrading account
+- [x] Verify data is streaming back in general
+- [x] Stream data back to the frontend somehow – Vercel AI SDK or my own streaming lib the Vercel AI SDK on the backend
+- [x] Add sources with a page number
 - [ ] Add loading UI for ingesting data
-- [ ] Reach out to pinecone again about free acc?
 - [ ] Implement the landing page UI
+- [ ] Implement design changes on pdf page + fix responsiveness
 - [ ] Add SEO metadata in layout.tsx
-- [ ] Fix responsiveness 100%
-- [ ] Add sources with a page number
-- [ ] Use the uploader from https://zoo.replicate.dev/
-- [ ] Update uploader library
-- [ ] Tell folks to compress PDFs if they're beyond 10MB
-- [ ] Add trash icon for folks to delete PDFs
+- [ ] Add trash icon for folks to delete PDFs and implement delete functionality
+- [ ] Use LLM Report for OpenAI observability & limit the amount a user can spend
 
-## After
+## Todos v2 - Future
 
-- [ ] Error handling
-- [ ] Add rate limiting for uploads
-- [ ] Use LLM Report for OpenAI observability
-- [ ] Replace images from chat with something better
-- [ ] Migrate all CSS modules to tailwind
+- [ ] Maybe: Migrate Pinecone + Vercel postgres to Supabase, make sure I can still split by namespace
+- [ ] Do load testing and make sure connection pooler is added to supabase
+- [ ] Add an initial message with sample questions or just add them as bubbles
 - [ ] Add an option to get answers as lists or paragraphs
-- [ ] Add loading state for ingesting
-- [ ] Use Vercel KV for caching
-- [ ] Use Vercel Postgres w/ pgvector instead of Pinecone
+- [ ] Tell folks to compress PDFs if they're beyond 10MB or accept more
+- [ ] Move to latest Upload library
+- [ ] Use the uploader from https://zoo.replicate.dev/
+- [ ] Migrate all CSS modules to tailwind
+- [ ] Add better error handling
+- [ ] Add rate limiting for uploads
+- [ ] Replace images from chat with something better
+- [ ] Make it detect handdrawn images: https://replicate.com/meta/nougat
+- [ ] Use Upstash for caching
 
 **General errors**
 
