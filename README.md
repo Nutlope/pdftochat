@@ -33,10 +33,11 @@
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Add trash icon for folks to delete PDFs and implement delete functionality
 - [ ] Use LLM Report for OpenAI observability & limit the amount a user can spend
-- [ ] Upgrade to Next.js 14 and make sure it works
+- [ ] Clean up and customize how the PDF viewer looks
 
 ## Todos v2 - Future
 
+- [ ] Upgrade to Next.js 14 and make sure it works
 - [ ] Maybe: Migrate Pinecone + Vercel postgres to Supabase, make sure I can still split by namespace
 - [ ] Do load testing and make sure connection pooler is added to supabase
 - [ ] Add an initial message with sample questions or just add them as bubbles

@@ -60,9 +60,6 @@ export default function DocumentClient({
       },
     });
 
-  console.log({ messages });
-  console.log({ sourcesForMessages });
-
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -82,11 +79,12 @@ export default function DocumentClient({
   };
 
   return (
-    <div className="mx-auto flex gap-4 flex-col">
-      <div className="flex justify-between w-screen lg:flex-row flex-col lg:space-x-6 space-y-20 lg:space-y-0 p-2">
+    <div className="mx-auto flex gap-4 flex-col no-scrollbar">
+      <div className="flex justify-between w-full lg:flex-row flex-col lg:space-x-6 space-y-20 lg:space-y-0 p-2">
+        {/* Left hand side */}
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
           <div
-            className="w-full h-[750px] flex flex-col"
+            className="w-full h-[600px] flex flex-col"
             style={{
               border: '1px solid rgba(0, 0, 0, 0.3)',
             }}
@@ -105,8 +103,9 @@ export default function DocumentClient({
             />
           </div>
         </Worker>
-        <div className="flex flex-col w-full justify-between align-center">
-          <div className="w-full h-[65vh] bg-white border flex justify-center items-center">
+        {/* Right hand side */}
+        <div className="flex flex-col w-full justify-between align-center h-full">
+          <div className="w-full min-h-min h-[550px] bg-white border flex justify-center items-center">
             <div
               ref={messageListRef}
               className="w-full h-full overflow-y-scroll rounded-md"
@@ -160,48 +159,46 @@ export default function DocumentClient({
               })}
             </div>
           </div>
-          <div className="flex justify-center items-center">
-            <div className="relative">
-              <form onSubmit={(e) => handleSubmit(e)}>
-                <textarea
-                  className="relative resize-none text-base py-4 px-8 w-[600px] rounded-md border border-gray-300 bg-white text-black focus:outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-400"
-                  disabled={isLoading}
-                  value={input}
-                  onChange={handleInputChange}
-                  onKeyDown={handleEnter}
-                  ref={textAreaRef}
-                  autoFocus={false}
-                  rows={1}
-                  maxLength={512}
-                  id="userInput"
-                  name="userInput"
-                  placeholder={
-                    isLoading
-                      ? 'Waiting for response...'
-                      : 'What is this pdf about?'
-                  }
-                />
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="absolute top-2 right-4 text-gray-600 bg-transparent py-1 px-2 border-none flex transition duration-300 ease-in-out hover:bg-red-500 hover:bg-opacity-30 hover:border rounded-sm"
-                >
-                  {isLoading ? (
-                    <div className="absolute top-0.2 right-0.25">
-                      <LoadingDots color="#000" style="small" />
-                    </div>
-                  ) : (
-                    <svg
-                      viewBox="0 0 20 20"
-                      className="transform rotate-90 w-6 h-6 fill-current"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                    </svg>
-                  )}
-                </button>
-              </form>
-            </div>
+          <div className="flex justify-center items-center flex-1">
+            <form onSubmit={(e) => handleSubmit(e)}>
+              <textarea
+                className="w-full resize-none text-base py-4 px-8 rounded-md border border-gray-300 bg-white text-black focus:outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-400"
+                disabled={isLoading}
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleEnter}
+                ref={textAreaRef}
+                autoFocus={false}
+                rows={1}
+                maxLength={512}
+                id="userInput"
+                name="userInput"
+                placeholder={
+                  isLoading
+                    ? 'Waiting for response...'
+                    : 'What is this pdf about?'
+                }
+              />
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="absolute top-2 right-4 text-gray-600 bg-transparent py-1 px-2 border-none flex transition duration-300 ease-in-out hover:bg-red-500 hover:bg-opacity-30 hover:border rounded-sm"
+              >
+                {isLoading ? (
+                  <div className="absolute top-0.2 right-0.25">
+                    <LoadingDots color="#000" style="small" />
+                  </div>
+                ) : (
+                  <svg
+                    viewBox="0 0 20 20"
+                    className="transform rotate-90 w-6 h-6 fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                  </svg>
+                )}
+              </button>
+            </form>
           </div>
           {error && (
             <div className="border border-red-400 rounded-md p-4">
