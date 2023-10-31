@@ -35,10 +35,10 @@
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Add trash icon for folks to delete PDFs and implement delete functionality
 - [ ] Use LLM Report for OpenAI observability & limit the amount a user can spend
-- [ ] Clean up and customize how the PDF viewer looks
 
 ## Todos v2 - Future
 
+- [ ] Clean up and customize how the PDF viewer looks
 - [ ] Upgrade to Next.js 14 and make sure it works
 - [ ] Maybe: Migrate Pinecone + Vercel postgres to Supabase, make sure I can still split by namespace
 - [ ] Do load testing and make sure connection pooler is added to supabase
@@ -51,7 +51,7 @@
 - [ ] Add rate limiting for uploads
 - [ ] Replace images from chat with something better
 - [ ] Make it detect handdrawn images: https://replicate.com/meta/nougat
-- [ ] Use Upstash for caching
+- [ ] Use KV for caching
 
 **General errors**
 
