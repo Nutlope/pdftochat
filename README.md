@@ -22,9 +22,9 @@
 
 ## Todos v1
 
+- [x] Add US region on pinecone by upgrading account
 - [ ] Verify data is streaming back in general
 - [ ] Stream data back to the frontend somehow – Vercel AI SDK or my own streaming lib the Vercel AI SDK on the backend
-- [ ] Add US region on pinecone by upgrading account
 - [ ] Add loading UI for ingesting data
 - [ ] Implement the landing page UI
 - [ ] Implement design changes on pdf page + fix responsiveness
@@ -32,19 +32,19 @@
 ## Todos v2
 
 - [ ] Add SEO metadata in layout.tsx
-- [ ] Move to latest Upload library
 - [ ] Tell folks to compress PDFs if they're beyond 10MB or accept more
 - [ ] Add trash icon for folks to delete PDFs and implement delete functionality
 - [ ] Add sources with a page number
-- [ ] Use the uploader from https://zoo.replicate.dev/
 - [ ] Use LLM Report for OpenAI observability
-- [ ] Migrate Pinecone + Vercel postgres to Supabase
+- [ ] Migrate Pinecone + Vercel postgres to Supabase, make sure I can still split by namespace
+- [ ] Do load testing and make sure connection pooler is added to supabase
 - [ ] Add an initial message with sample questions or just add them as bubbles
 - [ ] Add an option to get answers as lists or paragraphs
 
-
 ## Todos - Future
 
+- [ ] Move to latest Upload library
+- [ ] Use the uploader from https://zoo.replicate.dev/
 - [ ] Migrate all CSS modules to tailwind
 - [ ] Add better error handling
 - [ ] Add rate limiting for uploads
