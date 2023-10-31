@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import styles from '@/styles/Home.module.css';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import LoadingDots from '@/components/ui/LoadingDots';
@@ -84,133 +83,131 @@ export default function DocumentClient({
 
   return (
     <div className="mx-auto flex gap-4 flex-col">
-      <div className="">
-        <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center mb-10">
-          Chat With Your PDFs
-        </h1>
-        <div className="flex justify-between w-screen lg:flex-row flex-col lg:space-x-6 space-y-20 lg:space-y-0 p-10">
-          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
+      <div className="flex justify-between w-screen lg:flex-row flex-col lg:space-x-6 space-y-20 lg:space-y-0 p-2">
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
+          <div
+            className="w-full h-[750px] flex flex-col"
+            style={{
+              border: '1px solid rgba(0, 0, 0, 0.3)',
+            }}
+          >
             <div
-              className="w-full h-[750px] flex flex-col"
+              className="align-center bg-[#eeeeee] flex p-1"
               style={{
-                border: '1px solid rgba(0, 0, 0, 0.3)',
+                borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
               }}
             >
-              <div
-                className="align-center bg-[#eeeeee] flex p-1"
-                style={{
-                  borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-                }}
-              >
-                <Toolbar>{renderDefaultToolbar(transform)}</Toolbar>
-              </div>
-              <Viewer
-                fileUrl={pdfUrl as string}
-                plugins={[toolbarPluginInstance]}
-              />
+              <Toolbar>{renderDefaultToolbar(transform)}</Toolbar>
             </div>
-          </Worker>
-          <div className="flex flex-col w-full justify-between align-center">
-            <div className={styles.cloud}>
-              <div ref={messageListRef} className={styles.messagelist}>
-                {messages.map((message, index) => {
-                  let icon;
-                  let className;
-                  if (message.role === 'assistant') {
-                    icon = (
-                      <Image
-                        key={index}
-                        src="/bot-image.png"
-                        alt="AI"
-                        width="40"
-                        height="40"
-                        className={styles.boticon}
-                        priority
-                      />
-                    );
-                    className = styles.apimessage;
-                  } else {
-                    icon = (
-                      <Image
-                        key={index}
-                        src="/usericon.png"
-                        alt="Me"
-                        width="30"
-                        height="30"
-                        className={styles.usericon}
-                        priority
-                      />
-                    );
-                    // The latest message sent by the user will be animated while waiting for a response
-                    className =
-                      isLoading && index === messages.length - 1
-                        ? styles.usermessagewaiting
-                        : styles.usermessage;
-                  }
-                  return (
-                    <div key={`chatMessage-${index}`}>
-                      <div className={className}>
-                        {icon}
-                        <div className={styles.markdownanswer}>
-                          <ReactMarkdown linkTarget="_blank" className="prose">
-                            {message.content}
-                          </ReactMarkdown>
-                        </div>
+            <Viewer
+              fileUrl={pdfUrl as string}
+              plugins={[toolbarPluginInstance]}
+            />
+          </div>
+        </Worker>
+        <div className="flex flex-col w-full justify-between align-center">
+          <div className="w-full h-[65vh] bg-white border flex justify-center items-center">
+            <div
+              ref={messageListRef}
+              className="w-full h-full overflow-y-scroll rounded-md"
+            >
+              {messages.map((message, index) => {
+                let icon;
+                let className;
+                if (message.role === 'assistant') {
+                  icon = (
+                    <Image
+                      key={index}
+                      src="/bot-image.png"
+                      alt="AI"
+                      width="40"
+                      height="40"
+                      className="mr-4 rounded-sm h-full"
+                      priority
+                    />
+                  );
+                  className = 'bg-gray-100 p-6 text-black animate';
+                } else {
+                  icon = (
+                    <Image
+                      key={index}
+                      src="/usericon.png"
+                      alt="Me"
+                      width="30"
+                      height="30"
+                      className="mr-4 rounded-sm h-full"
+                      priority
+                    />
+                  );
+                  // The latest message sent by the user will be animated while waiting for a response
+                  className =
+                    isLoading && index === messages.length - 1
+                      ? 'p-6 text-black bg-gradient-to-r from-gray-900 via-gray-900 to-gray-900 bg-opacity-25 animate-loading-gradient flex'
+                      : 'bg-white p-6 text-black flex';
+                }
+                return (
+                  <div key={`chatMessage-${index}`}>
+                    <div className={className}>
+                      {icon}
+                      <div>
+                        <ReactMarkdown linkTarget="_blank" className="prose">
+                          {message.content}
+                        </ReactMarkdown>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
-            <div className={styles.center}>
-              <div className={styles.cloudform}>
-                <form onSubmit={(e) => handleSubmit(e)}>
-                  <textarea
-                    className={styles.textarea}
-                    disabled={isLoading}
-                    value={input}
-                    onChange={handleInputChange}
-                    onKeyDown={handleEnter}
-                    ref={textAreaRef}
-                    autoFocus={false}
-                    rows={1}
-                    maxLength={512}
-                    id="userInput"
-                    name="userInput"
-                    placeholder={
-                      isLoading
-                        ? 'Waiting for response...'
-                        : 'What is this pdf about?'
-                    }
-                  />
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className={styles.generatebutton}
-                  >
-                    {isLoading ? (
-                      <div className={styles.loadingwheel}>
-                        <LoadingDots color="#000" style="small" />
-                      </div>
-                    ) : (
-                      <svg
-                        viewBox="0 0 20 20"
-                        className={styles.svgicon}
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                      </svg>
-                    )}
-                  </button>
-                </form>
-              </div>
-            </div>
-            {error && (
-              <div className="border border-red-400 rounded-md p-4">
-                <p className="text-red-500">{error}</p>
-              </div>
-            )}
           </div>
+          <div className="flex justify-center items-center">
+            <div className="relative">
+              <form onSubmit={(e) => handleSubmit(e)}>
+                <textarea
+                  className="relative resize-none text-base py-4 px-8 w-[600px] rounded-md border border-gray-300 bg-white text-black focus:outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-400"
+                  disabled={isLoading}
+                  value={input}
+                  onChange={handleInputChange}
+                  onKeyDown={handleEnter}
+                  ref={textAreaRef}
+                  autoFocus={false}
+                  rows={1}
+                  maxLength={512}
+                  id="userInput"
+                  name="userInput"
+                  placeholder={
+                    isLoading
+                      ? 'Waiting for response...'
+                      : 'What is this pdf about?'
+                  }
+                />
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="absolute top-2 right-4 text-gray-600 bg-transparent py-1 px-2 border-none flex transition duration-300 ease-in-out hover:bg-red-500 hover:bg-opacity-30 hover:border rounded-sm"
+                >
+                  {isLoading ? (
+                    <div className="absolute top-0.2 right-0.25">
+                      <LoadingDots color="#000" style="small" />
+                    </div>
+                  ) : (
+                    <svg
+                      viewBox="0 0 20 20"
+                      className="transform rotate-90 w-6 h-6 fill-current"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                    </svg>
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
+          {error && (
+            <div className="border border-red-400 rounded-md p-4">
+              <p className="text-red-500">{error}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

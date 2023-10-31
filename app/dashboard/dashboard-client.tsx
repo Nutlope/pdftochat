@@ -65,7 +65,7 @@ export default function DashboardClient({
   );
 
   async function ingestPdf(fileUrl: string, fileName: string) {
-    let res = await fetch('/ingestPdf', {
+    let res = await fetch('/api/ingestPdf', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

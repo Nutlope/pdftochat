@@ -26,12 +26,14 @@
 - [x] Verify data is streaming back in general
 - [x] Stream data back to the frontend somehow – Vercel AI SDK or my own streaming lib the Vercel AI SDK on the backend
 - [x] Add sources with a page number
+- [x] Migrate all CSS modules to tailwind
+- [ ] Implement design changes on pdf page + fix responsiveness
 - [ ] Add loading UI for ingesting data
 - [ ] Implement the landing page UI
-- [ ] Implement design changes on pdf page + fix responsiveness
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Add trash icon for folks to delete PDFs and implement delete functionality
 - [ ] Use LLM Report for OpenAI observability & limit the amount a user can spend
+- [ ] Upgrade to Next.js 14 and make sure it works
 
 ## Todos v2 - Future
 
@@ -42,7 +44,6 @@
 - [ ] Tell folks to compress PDFs if they're beyond 10MB or accept more
 - [ ] Move to latest Upload library
 - [ ] Use the uploader from https://zoo.replicate.dev/
-- [ ] Migrate all CSS modules to tailwind
 - [ ] Add better error handling
 - [ ] Add rate limiting for uploads
 - [ ] Replace images from chat with something better
