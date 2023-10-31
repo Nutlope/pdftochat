@@ -10,9 +10,6 @@
 - [x] Don't show the chat unless the ingesting was successful, add loading state for ingesting
 - [x] In the prompt, add giving back the answer as HTML or markdown to format it well
 - [x] Figure out how to use namespaces so folks can search their own PDFs
-
-## Todos v0.5
-
 - [x] Add a PDF viewer
 - [x] Migrate to the app router
 - [x] Clean up files
@@ -25,33 +22,35 @@
 
 ## Todos v1
 
-- [ ] Stream data back using the Vercel AI SDK on the backend – HOLD ON THIS until langchain updates
-- [ ] Support the frontend with the Vercel AI SDK
-- [ ] Move away from that APAC region on pinecone, upgrade acc
+- [ ] Verify data is streaming back in general
+- [ ] Stream data back to the frontend somehow – Vercel AI SDK or my own streaming lib the Vercel AI SDK on the backend
+- [ ] Add US region on pinecone by upgrading account
 - [ ] Add loading UI for ingesting data
 - [ ] Implement the landing page UI
 - [ ] Implement design changes on pdf page + fix responsiveness
+
+## Todos v2
+
 - [ ] Add SEO metadata in layout.tsx
-
-## Todos v1.5
-
 - [ ] Move to latest Upload library
 - [ ] Tell folks to compress PDFs if they're beyond 10MB or accept more
 - [ ] Add trash icon for folks to delete PDFs and implement delete functionality
 - [ ] Add sources with a page number
 - [ ] Use the uploader from https://zoo.replicate.dev/
 - [ ] Use LLM Report for OpenAI observability
-- [ ] Migrate all CSS modules to tailwind
-
-## Todos v2
-
+- [ ] Migrate Pinecone + Vercel postgres to Supabase
+- [ ] Add an initial message with sample questions or just add them as bubbles
 - [ ] Add an option to get answers as lists or paragraphs
-- [ ] Error handling
+
+
+## Todos - Future
+
+- [ ] Migrate all CSS modules to tailwind
+- [ ] Add better error handling
 - [ ] Add rate limiting for uploads
 - [ ] Replace images from chat with something better
 - [ ] Make it detect handdrawn images: https://replicate.com/meta/nougat
-- [ ] Use Vercel KV for caching
-- [ ] Use Vercel Postgres w/ pgvector instead of Pinecone
+- [ ] Use Upstash for caching
 
 **General errors**
 
