@@ -29,21 +29,21 @@
 - [x] Migrate all CSS modules to tailwind
 - [x] Implement design changes on pdf page pt.1
 - [x] Fix the sign in and sign up pages to be outside of the layout
-- [ ] Implement design changes on pdf page pt.2, like avatars + chatbox scroll
-- [ ] Implement design changes on pdf page pt.3, responsiveness on mobile
+- [ ] Implement design changes on pdf page
+  - [ ] avatars + chatbox scroll
+  - [ ] responsiveness on mobile
 - [ ] Add loading UI for ingesting data
 - [ ] Implement the landing page UI
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Add trash icon for folks to delete PDFs and implement delete functionality
-- [ ] Use LLM Report for OpenAI observability & limit the amount a user can spend
+- [ ] Add an initial message with sample questions or just add them as bubbles
 
 ## Todos v2 - Future
 
+- [ ] Use LLM Report for OpenAI observability & limit the amount a user can spend
 - [ ] Clean up and customize how the PDF viewer looks
-- [ ] Upgrade to Next.js 14 and make sure it works
-- [ ] Maybe: Migrate Pinecone + Vercel postgres to Supabase, make sure I can still split by namespace
-- [ ] Do load testing and make sure connection pooler is added to supabase
-- [ ] Add an initial message with sample questions or just add them as bubbles
+- [ ] Migrate Pinecone + Vercel postgres to Supabase, make sure I can still split by namespace
+  - [ ] Do load testing and make sure connection pooler is added to supabase
 - [ ] Add an option to get answers as lists or paragraphs
 - [ ] Tell folks to compress PDFs if they're beyond 10MB or accept more
 - [ ] Move to latest Upload library
