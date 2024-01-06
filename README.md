@@ -40,6 +40,7 @@
 
 ## Todos v2 - Future
 
+- [ ] Upgrade to Next.js 14
 - [ ] Use LLM Report for OpenAI observability & limit the amount a user can spend
 - [ ] Clean up and customize how the PDF viewer looks
 - [ ] Migrate Pinecone + Vercel postgres to Supabase, make sure I can still split by namespace

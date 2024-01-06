@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100;200;300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,4 +17,75 @@
       scrollbar-width: none; /* Firefox */
     }
   }
+}
+
+* {
+  font-family: 'Anek Bangla', sans-serif;
+  color: #101023;
+}
+
+.shadows {
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.bg_linear {
+  background: linear-gradient(
+    95deg,
+    #101023 5.97%,
+    rgba(15, 15, 33, 0.97) 52.2%,
+    #0e0e20 91.78%
+  );
+}
+.bg_linear_gpt {
+  background: linear-gradient(
+    85deg,
+    rgba(252, 252, 252, 0.44) 1.85%,
+    rgba(242, 243, 248, 0.53) 89.3%
+  );
+}
+.drop_shadow {
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.2));
+}
+
+.text_bg {
+  background: linear-gradient(
+    90deg,
+    #101023 10.71%,
+    rgba(15, 15, 30, 0.64) 50.71%,
+    rgba(13, 13, 25, 0.84) 88.54%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.custom_bg {
+  background: linear-gradient(
+      0deg,
+      #fcfcfc 0.27%,
+      rgba(242, 243, 248, 0.3) 99.75%
+    ),
+    url('/images/custom-chat-bg.png'), lightgray 0% 0% / 100px 100px repeat;
+}
+
+/* //scroll bar */
+/* width */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border: 1px solid #d9d9d9;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #d9d9d9;
 }
