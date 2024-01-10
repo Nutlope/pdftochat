@@ -29,14 +29,16 @@
 - [x] Migrate all CSS modules to tailwind
 - [x] Implement design changes on pdf page pt.1
 - [x] Fix the sign in and sign up pages to be outside of the layout
+- [x] Implement the landing page UI
 - [ ] Implement design changes on pdf page
   - [ ] avatars + chatbox scroll
   - [ ] responsiveness on mobile
 - [ ] Add loading UI for ingesting data
-- [ ] Implement the landing page UI
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Add trash icon for folks to delete PDFs and implement delete functionality
 - [ ] Add an initial message with sample questions or just add them as bubbles
+- [ ] Migrate to Together Inference (mixtral)
+- [ ] Migrate to Together Embeddings
 
 ## Todos v2 - Future
 
