@@ -6,35 +6,36 @@ import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { Document } from 'langchain/document';
 import { RunnableSequence } from 'langchain/schema/runnable';
 import {
-  BytesOutputParser,
-  StringOutputParser,
+    BytesOutputParser,
+    StringOutputParser,
 } from 'langchain/schema/output_parser';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+// import { TogetherAIEmbeddings } from "langchain/embeddings/togetherai";
 import { Pinecone } from '@pinecone-database/pinecone';
 
 export const runtime = 'edge';
 
 const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY ?? '',
-  environment: process.env.PINECONE_ENVIRONMENT ?? '', //this is in the dashboard
+    apiKey: process.env.PINECONE_API_KEY ?? '',
+    environment: process.env.PINECONE_ENVIRONMENT ?? '', //this is in the dashboard
 });
 
 const combineDocumentsFn = (docs: Document[], separator = '\n\n') => {
-  const serializedDocs = docs.map((doc) => doc.pageContent);
-  return serializedDocs.join(separator);
+    const serializedDocs = docs.map((doc) => doc.pageContent);
+    return serializedDocs.join(separator);
 };
 
 const formatVercelMessages = (chatHistory: VercelChatMessage[]) => {
-  const formattedDialogueTurns = chatHistory.map((message) => {
-    if (message.role === 'user') {
-      return `Human: ${message.content}`;
-    } else if (message.role === 'assistant') {
-      return `Assistant: ${message.content}`;
-    } else {
-      return `${message.role}: ${message.content}`;
-    }
-  });
-  return formattedDialogueTurns.join('\n');
+    const formattedDialogueTurns = chatHistory.map((message) => {
+        if (message.role === 'user') {
+            return `Human: ${message.content}`;
+        } else if (message.role === 'assistant') {
+            return `Assistant: ${message.content}`;
+        } else {
+            return `${message.role}: ${message.content}`;
+        }
+    });
+    return formattedDialogueTurns.join('\n');
 };
 
 const CONDENSE_QUESTION_TEMPLATE = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
@@ -47,7 +48,7 @@ Follow Up Input: {question}
 Standalone question:`;
 
 const condenseQuestionPrompt = PromptTemplate.fromTemplate(
-  CONDENSE_QUESTION_TEMPLATE,
+    CONDENSE_QUESTION_TEMPLATE,
 );
 const ANSWER_TEMPLATE = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end.
 If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
@@ -73,108 +74,112 @@ const answerPrompt = PromptTemplate.fromTemplate(ANSWER_TEMPLATE);
  * https://js.langchain.com/docs/guides/expression_language/cookbook#conversational-retrieval-chain
  */
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const messages = body.messages ?? [];
-    const formattedPreviousMessages = messages
-      .slice(0, -1)
-      .map(formatVercelMessages);
-    const currentMessageContent = messages[messages.length - 1].content;
-    const chatId = body.chatId;
+    try {
+        const body = await req.json();
+        const messages = body.messages ?? [];
+        const formattedPreviousMessages = messages
+            .slice(0, -1)
+            .map(formatVercelMessages);
+        const currentMessageContent = messages[messages.length - 1].content;
+        const chatId = body.chatId;
 
-    const model = new ChatOpenAI({
-      modelName: 'gpt-3.5-turbo',
-      temperature: 0,
-    });
+        const model = new ChatOpenAI({
+            modelName: 'gpt-3.5-turbo',
+            temperature: 0,
+        });
 
-    const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
-    const index = pinecone.index(PINECONE_INDEX_NAME);
+        const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
+        const index = pinecone.index(PINECONE_INDEX_NAME);
 
-    const vectorstore = await PineconeStore.fromExistingIndex(
-      new OpenAIEmbeddings(),
-      {
-        pineconeIndex: index,
-        namespace: chatId,
-      },
-    );
+        const vectorstore = await PineconeStore.fromExistingIndex(
+            //     new TogetherAIEmbeddings({
+            //     apiKey: process.env.TOGETHER_AI_API_KEY,
+            //     model: "togethercomputer/m2-bert-80M-8k-retrieval",
+            // }),
+            new OpenAIEmbeddings(),
+            {
+                pineconeIndex: index,
+                namespace: chatId,
+            },
+        );
 
-    /**
-     * We use LangChain Expression Language to compose two chains.
-     * To learn more, see the guide here:
-     *
-     * https://js.langchain.com/docs/guides/expression_language/cookbook
-     */
-    const standaloneQuestionChain = RunnableSequence.from([
-      condenseQuestionPrompt,
-      model,
-      new StringOutputParser(),
-    ]);
+        /**
+         * We use LangChain Expression Language to compose two chains.
+         * To learn more, see the guide here:
+         *
+         * https://js.langchain.com/docs/guides/expression_language/cookbook
+         */
+        const standaloneQuestionChain = RunnableSequence.from([
+            condenseQuestionPrompt,
+            model,
+            new StringOutputParser(),
+        ]);
 
-    let resolveWithDocuments: (value: Document[]) => void;
-    const documentPromise = new Promise<Document[]>((resolve) => {
-      resolveWithDocuments = resolve;
-    });
+        let resolveWithDocuments: (value: Document[]) => void;
+        const documentPromise = new Promise<Document[]>((resolve) => {
+            resolveWithDocuments = resolve;
+        });
 
-    const retriever = vectorstore.asRetriever({
-      callbacks: [
-        {
-          handleRetrieverEnd(documents) {
-            resolveWithDocuments(documents);
-          },
-        },
-      ],
-    });
+        const retriever = vectorstore.asRetriever({
+            callbacks: [
+                {
+                    handleRetrieverEnd(documents) {
+                        resolveWithDocuments(documents);
+                    },
+                },
+            ],
+        });
 
-    const retrievalChain = retriever.pipe(combineDocumentsFn);
+        const retrievalChain = retriever.pipe(combineDocumentsFn);
 
-    const answerChain = RunnableSequence.from([
-      {
-        context: RunnableSequence.from([
-          (input) => input.question,
-          retrievalChain,
-        ]),
-        chat_history: (input) => input.chat_history,
-        question: (input) => input.question,
-      },
-      answerPrompt,
-      model,
-    ]);
+        const answerChain = RunnableSequence.from([
+            {
+                context: RunnableSequence.from([
+                    (input) => input.question,
+                    retrievalChain,
+                ]),
+                chat_history: (input) => input.chat_history,
+                question: (input) => input.question,
+            },
+            answerPrompt,
+            model,
+        ]);
 
-    const conversationalRetrievalQAChain = RunnableSequence.from([
-      {
-        question: standaloneQuestionChain,
-        chat_history: (input) => input.chat_history,
-      },
-      answerChain,
-      new BytesOutputParser(),
-    ]);
+        const conversationalRetrievalQAChain = RunnableSequence.from([
+            {
+                question: standaloneQuestionChain,
+                chat_history: (input) => input.chat_history,
+            },
+            answerChain,
+            new BytesOutputParser(),
+        ]);
 
-    console.log({ conversationalRetrievalQAChain });
+        console.log({ conversationalRetrievalQAChain });
 
-    const stream = await conversationalRetrievalQAChain.stream({
-      chat_history: formattedPreviousMessages.join('\n'),
-      question: currentMessageContent,
-    });
+        const stream = await conversationalRetrievalQAChain.stream({
+            chat_history: formattedPreviousMessages.join('\n'),
+            question: currentMessageContent,
+        });
 
-    const documents = await documentPromise;
-    const serializedSources = Buffer.from(
-      JSON.stringify(
-        documents.map((doc) => {
-          return {
-            pageContent: doc.pageContent.slice(0, 50) + '...',
-            metadata: doc.metadata,
-          };
-        }),
-      ),
-    ).toString('base64');
+        const documents = await documentPromise;
+        const serializedSources = Buffer.from(
+            JSON.stringify(
+                documents.map((doc) => {
+                    return {
+                        pageContent: doc.pageContent.slice(0, 50) + '...',
+                        metadata: doc.metadata,
+                    };
+                }),
+            ),
+        ).toString('base64');
 
-    return new StreamingTextResponse(stream, {
-      headers: {
-        'x-message-index': (formattedPreviousMessages.length + 1).toString(),
-        'x-sources': serializedSources,
-      },
-    });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
-  }
+        return new StreamingTextResponse(stream, {
+            headers: {
+                'x-message-index': (formattedPreviousMessages.length + 1).toString(),
+                'x-sources': serializedSources,
+            },
+        });
+    } catch (e: any) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+    }
 }

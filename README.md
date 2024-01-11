@@ -31,7 +31,7 @@
 
 - Check that you've created an `.env` file that contains your valid (and working) API keys, environment and index name.
 - Make sure your pinecone dashboard `environment` and `index` matches the one in the `pinecone.ts` and `.env` files.
-- Check that you've set the vector dimensions to `1536`.
+- Check that you've set the vector dimensions to `768`.
 - Make sure your pinecone namespace is in lowercase.
 
 ## Credit
