@@ -30,14 +30,13 @@
 - [x] Implement design changes on pdf page pt.1
 - [x] Fix the sign in and sign up pages to be outside of the layout
 - [x] Implement the landing page UI
-- [ ] Implement design changes on pdf page
-  - [ ] avatars + chatbox scroll
-  - [ ] responsiveness on mobile
+- [ ] Implement design changes on pdf page: avatars + chatbox scroll
 - [ ] Add loading UI for ingesting data
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Add an initial message with sample questions or just add them as bubbles
 - [ ] Migrate to Together Inference (mixtral)
 - [ ] Migrate to Together Embeddings
+- [ ] Make sure it's fully responsive on mobile
 - [ ] Migrate to the latest version of Clerk and update Clerk env vars
 - [ ] Cite sources in the answers and automatically take the user to that page in the PDF
 
