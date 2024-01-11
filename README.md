@@ -30,7 +30,7 @@
 - [x] Implement design changes on pdf page pt.1
 - [x] Fix the sign in and sign up pages to be outside of the layout
 - [x] Implement the landing page UI
-- [ ] Implement design changes on pdf page: avatars + chatbox scroll
+- [ ] Implement design changes on the pdf page: avatars + chatbox scroll
 - [ ] Add loading UI for ingesting data
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Add an initial message with sample questions or just add them as bubbles
