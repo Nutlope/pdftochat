@@ -3,19 +3,20 @@
 ## Todos v1.5
 
 - [x] Updated langchain version
-- [ ] Migrate to Together Embeddings
+- [x] Migrate to Together Embeddings
+- [x] Migrate to Together Inference (mixtral)
+- [ ] Add Together.ai in the footer and maybe somewhere in the website
 - [ ] Implement design changes on the pdf page: avatars + chatbox scroll
 - [ ] Add loading UI for ingesting data
 - [ ] Add SEO metadata in layout.tsx
-- [ ] Add an initial message with sample questions or just add them as bubbles
-- [ ] Migrate to Together Inference (mixtral)
 - [ ] Make sure it's fully responsive on mobile
-- [ ] Migrate to the latest version of Clerk and update Clerk env vars
+- [ ] Migrate to the latest version of Clerk and update required Clerk env vars
 - [ ] Cite sources in the answers and automatically take the user to that page in the PDF
 - [ ] Spin up good README + tweet
 
 ## Future Todos
 
+- [ ] Add an initial message with sample questions or just add them as bubbles
 - [ ] Add a trash icon for folks to delete PDFs and implement delete functionality
 - [ ] Add an option to get answers as lists or paragraphs
 - [ ] Use an observability tool to better understand how people are using the site

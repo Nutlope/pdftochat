@@ -83,8 +83,12 @@ export async function POST(req: NextRequest) {
         const chatId = body.chatId;
 
         const model = new ChatOpenAI({
-            modelName: 'gpt-3.5-turbo',
+            modelName: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
             temperature: 0,
+            configuration: {
+                apiKey: process.env.TOGETHER_AI_API_KEY,
+                baseURL: "https://api.together.xyz/v1",
+            },
         });
 
         const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
