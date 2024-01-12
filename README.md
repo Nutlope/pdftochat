@@ -2,12 +2,13 @@
 
 ## Todos v1.5
 
+- [x] Updated langchain version
+- [ ] Migrate to Together Embeddings
 - [ ] Implement design changes on the pdf page: avatars + chatbox scroll
 - [ ] Add loading UI for ingesting data
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Add an initial message with sample questions or just add them as bubbles
 - [ ] Migrate to Together Inference (mixtral)
-- [ ] Migrate to Together Embeddings
 - [ ] Make sure it's fully responsive on mobile
 - [ ] Migrate to the latest version of Clerk and update Clerk env vars
 - [ ] Cite sources in the answers and automatically take the user to that page in the PDF

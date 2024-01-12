@@ -9,8 +9,7 @@ import {
     BytesOutputParser,
     StringOutputParser,
 } from 'langchain/schema/output_parser';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-// import { TogetherAIEmbeddings } from "langchain/embeddings/togetherai";
+import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai"
 import { Pinecone } from '@pinecone-database/pinecone';
 
 export const runtime = 'edge';
@@ -92,11 +91,10 @@ export async function POST(req: NextRequest) {
         const index = pinecone.index(PINECONE_INDEX_NAME);
 
         const vectorstore = await PineconeStore.fromExistingIndex(
-            //     new TogetherAIEmbeddings({
-            //     apiKey: process.env.TOGETHER_AI_API_KEY,
-            //     model: "togethercomputer/m2-bert-80M-8k-retrieval",
-            // }),
-            new OpenAIEmbeddings(),
+            new TogetherAIEmbeddings({
+                apiKey: process.env.TOGETHER_AI_API_KEY,
+                modelName: "togethercomputer/m2-bert-80M-8k-retrieval",
+            }),
             {
                 pineconeIndex: index,
                 namespace: chatId,

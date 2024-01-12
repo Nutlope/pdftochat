@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-// import { TogetherAIEmbeddings } from "langchain/embeddings/togetherai";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai"
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
@@ -67,11 +66,10 @@ export async function POST(request: Request) {
         console.log('creating vector store...');
 
         /* create and store the embeddings in the vectorStore */
-        const embeddings = new OpenAIEmbeddings();
-        // const embeddings = new TogetherAIEmbeddings({
-        //     apiKey: process.env.TOGETHER_AI_API_KEY,
-        //     model: "togethercomputer/m2-bert-80M-8k-retrieval",
-        // });
+        const embeddings = new TogetherAIEmbeddings({
+            apiKey: process.env.TOGETHER_AI_API_KEY,
+            modelName: "togethercomputer/m2-bert-80M-8k-retrieval",
+        });
         const index = pinecone.Index(PINECONE_INDEX_NAME); // change to your own index name
 
         // embed the PDF documents
