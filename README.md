@@ -5,6 +5,7 @@
 - [x] Updated langchain version
 - [x] Migrate to Together Embeddings
 - [x] Migrate to Together Inference (mixtral)
+- [x] Chat functionality is broken after first one
 - [ ] Add Together.ai in the footer and maybe somewhere in the website
 - [ ] Implement design changes on the pdf page: avatars + chatbox scroll
 - [ ] Add loading UI for ingesting data

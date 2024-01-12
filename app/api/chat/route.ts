@@ -24,17 +24,14 @@ const combineDocumentsFn = (docs: Document[], separator = '\n\n') => {
     return serializedDocs.join(separator);
 };
 
-const formatVercelMessages = (chatHistory: VercelChatMessage[]) => {
-    const formattedDialogueTurns = chatHistory.map((message) => {
-        if (message.role === 'user') {
-            return `Human: ${message.content}`;
-        } else if (message.role === 'assistant') {
-            return `Assistant: ${message.content}`;
-        } else {
-            return `${message.role}: ${message.content}`;
-        }
-    });
-    return formattedDialogueTurns.join('\n');
+const formatVercelMessages = (message: VercelChatMessage) => {
+    if (message.role === 'user') {
+        return `Human: ${message.content}`;
+    } else if (message.role === 'assistant') {
+        return `Assistant: ${message.content}`;
+    } else {
+        return `${message.role}: ${message.content}`;
+    }
 };
 
 const CONDENSE_QUESTION_TEMPLATE = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
@@ -78,7 +75,7 @@ export async function POST(req: NextRequest) {
         const messages = body.messages ?? [];
         const formattedPreviousMessages = messages
             .slice(0, -1)
-            .map(formatVercelMessages);
+            .map(formatVercelMessages)
         const currentMessageContent = messages[messages.length - 1].content;
         const chatId = body.chatId;
 
