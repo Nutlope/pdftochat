@@ -22,7 +22,7 @@ export default async function Header() {
             {isLoggedIn ? (
               <>
                 <Link href="/dashboard">Dashboard</Link>
-                <UserButton afterSignOutUrl="/dashboard" />
+                <UserButton afterSignOutUrl="/" />
               </>
             ) : (
               <Link href="/sign-in">Log in</Link>

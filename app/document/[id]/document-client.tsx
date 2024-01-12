@@ -160,7 +160,7 @@ export default function DocumentClient({
             </div>
           </div>
           <div className="flex justify-center items-center">
-            <form onSubmit={(e) => handleSubmit(e)}>
+            <form onSubmit={(e) => handleSubmit(e)} className="relative">
               <input
                 className="resize-none py-4 px-8 rounded-md border border-gray-300 bg-white text-black focus:outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-400 w-[49vw]"
                 disabled={isLoading}
@@ -182,10 +182,10 @@ export default function DocumentClient({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="absolute top-2 right-4 text-gray-600 bg-transparent py-1 px-2 border-none flex transition duration-300 ease-in-out hover:bg-red-500 hover:bg-opacity-30 hover:border rounded-sm"
+                className="absolute top-[12px] right-1 text-gray-600 bg-transparent py-1 px-2 border-none flex transition duration-300 ease-in-out rounded-sm"
               >
                 {isLoading ? (
-                  <div className="absolute top-0.2 right-0.25">
+                  <div className="">
                     <LoadingDots color="#000" style="small" />
                   </div>
                 ) : (
