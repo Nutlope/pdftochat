@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai"
-import { PineconeStore } from 'langchain/vectorstores/pinecone';
+import { PineconeStore } from '@langchain/community/vectorstores/pinecone';
 import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import prisma from '@/utils/prisma';

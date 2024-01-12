@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Message as VercelChatMessage, StreamingTextResponse } from 'ai';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { PromptTemplate } from 'langchain/prompts';
-import { PineconeStore } from 'langchain/vectorstores/pinecone';
+import { ChatOpenAI } from '@langchain/openai';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { PineconeStore } from '@langchain/community/vectorstores/pinecone';
 import { Document } from 'langchain/document';
-import { RunnableSequence } from 'langchain/schema/runnable';
+import { RunnableSequence } from '@langchain/core/runnables';
 import {
     BytesOutputParser,
     StringOutputParser,
-} from 'langchain/schema/output_parser';
+} from '@langchain/core/output_parsers';
 import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai"
 import { Pinecone } from '@pinecone-database/pinecone';
 
@@ -155,8 +155,6 @@ export async function POST(req: NextRequest) {
             answerChain,
             new BytesOutputParser(),
         ]);
-
-        console.log({ conversationalRetrievalQAChain });
 
         const stream = await conversationalRetrievalQAChain.stream({
             chat_history: formattedPreviousMessages.join('\n'),
