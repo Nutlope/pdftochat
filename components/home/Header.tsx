@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Logo from '../common/Logo';
 import Image from 'next/image';
 import Link from 'next/link';

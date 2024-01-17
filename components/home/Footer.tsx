@@ -1,27 +1,5 @@
-import React from 'react';
 import Logo from '../common/Logo';
 import Link from 'next/link';
-import Image from 'next/image';
-import Github from './GitHub';
-
-const menuItems = [
-  {
-    title: 'Privacy Policy',
-    link: '/privacy-policy',
-  },
-  {
-    title: 'Terms and Conditions',
-    link: '/terms-and-conditions',
-  },
-  {
-    title: 'More Info',
-    link: '/more-info',
-  },
-  {
-    title: 'How it works',
-    link: '#how-it-works',
-  },
-];
 
 const Footer = () => {
   return (

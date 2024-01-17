@@ -8,10 +8,12 @@ const anek = Anek_Bangla({
   display: 'swap',
 });
 
-let title = 'Dream Room Generator';
-let description = 'Generate your dream room in seconds.';
+let title = 'PDF to Chat';
+let description = 'Chat with your PDFs in seconds.';
+// TODO: Update OG Image
 let ogimage = 'https://roomgpt-demo.vercel.app/og-image.png';
-let sitename = 'roomGPT.io';
+let url = 'https://www.pdftochat.com';
+let sitename = 'pdftochat.com';
 
 export const metadata: Metadata = {
   title,
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     images: [ogimage],
     title,
     description,
-    url: 'https://roomgpt-demo.vercel.app',
+    url,
     siteName: sitename,
     locale: 'en_US',
     type: 'website',

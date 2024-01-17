@@ -1,6 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface LogoProps {
   isMobile?: boolean;
@@ -8,7 +7,7 @@ interface LogoProps {
 
 const Logo = ({ isMobile }: LogoProps) => {
   return (
-    <Link href={"/"}>
+    <Link href={'/'}>
       <div className="flex  items-center">
         <div className="flex justify-center items-center">
           <Image
