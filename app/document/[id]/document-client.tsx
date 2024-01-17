@@ -12,6 +12,7 @@ import type {
   TransformToolbarSlot,
 } from '@react-pdf-viewer/toolbar';
 import { toolbarPlugin } from '@react-pdf-viewer/toolbar';
+import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation';
 import { Document } from '@prisma/client';
 import { useChat } from 'ai/react';
 
@@ -21,6 +22,7 @@ export default function DocumentClient({
   currentDoc: Document;
 }) {
   const toolbarPluginInstance = toolbarPlugin();
+  const pageNavigationPluginInstance = pageNavigationPlugin();
   const { renderDefaultToolbar, Toolbar } = toolbarPluginInstance;
 
   const transform: TransformToolbarSlot = (slot: ToolbarSlot) => ({
@@ -47,6 +49,7 @@ export default function DocumentClient({
       onResponse(response) {
         const sourcesHeader = response.headers.get('x-sources');
         const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
+
         const messageIndexHeader = response.headers.get('x-message-index');
         if (sources.length && messageIndexHeader !== null) {
           setSourcesForMessages({
@@ -58,6 +61,7 @@ export default function DocumentClient({
       onError: (e) => {
         setError(e.message);
       },
+      onFinish() {},
     });
 
   const messageListRef = useRef<HTMLDivElement>(null);
@@ -99,7 +103,7 @@ export default function DocumentClient({
             </div>
             <Viewer
               fileUrl={pdfUrl as string}
-              plugins={[toolbarPluginInstance]}
+              plugins={[toolbarPluginInstance, pageNavigationPluginInstance]}
             />
           </div>
         </Worker>
@@ -111,6 +115,10 @@ export default function DocumentClient({
               className="w-full h-full overflow-y-scroll rounded-md"
             >
               {messages.map((message, index) => {
+                const sources = sourcesForMessages[index] || undefined;
+                const isLastMessage =
+                  !isLoading && index === messages.length - 1;
+                const previousMessages = index !== messages.length - 1;
                 let icon;
                 let className;
                 if (message.role === 'assistant') {
@@ -152,6 +160,39 @@ export default function DocumentClient({
                         <ReactMarkdown linkTarget="_blank" className="prose">
                           {message.content}
                         </ReactMarkdown>
+                        {/* Display the sources */}
+
+                        {(isLastMessage || previousMessages) && sources && (
+                          <div className="flex space-x-4 mt-4">
+                            {sources
+                              .filter(
+                                (source: any, index: number, self: any) => {
+                                  const pageNumber =
+                                    source.metadata['loc.pageNumber'];
+                                  // Check if the current pageNumber is the first occurrence in the array
+                                  return (
+                                    self.findIndex(
+                                      (s: any) =>
+                                        s.metadata['loc.pageNumber'] ===
+                                        pageNumber,
+                                    ) === index
+                                  );
+                                },
+                              )
+                              .map((source: any) => (
+                                <button
+                                  className="border bg-white px-3 py-1 hover:bg-gray-300 transition"
+                                  onClick={() =>
+                                    pageNavigationPluginInstance.jumpToPage(
+                                      Number(source.metadata['loc.pageNumber']),
+                                    )
+                                  }
+                                >
+                                  p. {source.metadata['loc.pageNumber']}
+                                </button>
+                              ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -169,7 +210,6 @@ export default function DocumentClient({
                 onKeyDown={handleEnter}
                 ref={textAreaRef}
                 autoFocus={false}
-                // rows={1}
                 maxLength={512}
                 id="userInput"
                 name="userInput"
