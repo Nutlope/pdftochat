@@ -2,15 +2,6 @@
 
 ## Todos v1.5
 
-- [x] Updated langchain version
-- [x] Migrate to Together Embeddings
-- [x] Migrate to Together Inference (mixtral)
-- [x] Chat functionality is broken after first one
-- [x] Add Together.ai in the footer
-- [x] Add loading UI for ingesting data
-- [x] Cite sources in the answers and automatically take the user to that page in the PDF
-- [x] Add SEO metadata in layout.tsx
-- [ ] Migrate to the latest version of Clerk and update required Clerk env vars
 - [ ] Implement design changes on the pdf page: avatars + chatbox scroll
 - [ ] Add header to the pdf page to be able to go back to the dashboard
 - [ ] Add my own google cloud project to Clerk and create a production instance
