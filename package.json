@@ -11,7 +11,7 @@
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.23.5",
+    "@clerk/nextjs": "^4.29.3",
     "@langchain/community": "^0.0.16",
     "@langchain/openai": "^0.0.11",
     "@microsoft/fetch-event-source": "^2.0.1",
