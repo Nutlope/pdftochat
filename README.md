@@ -7,9 +7,9 @@
 - [x] Migrate to Together Inference (mixtral)
 - [x] Chat functionality is broken after first one
 - [x] Add Together.ai in the footer
+- [x] Add loading UI for ingesting data
 - [ ] Implement design changes on the pdf page: avatars + chatbox scroll
 - [ ] Add header to the pdf page to be able to go back to the dashboard
-- [ ] Add loading UI for ingesting data
 - [ ] Add SEO metadata in layout.tsx
 - [ ] Make sure it's fully responsive on mobile
 - [ ] Migrate to the latest version of Clerk and update required Clerk env vars
