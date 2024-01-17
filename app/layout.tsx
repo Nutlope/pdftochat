@@ -15,6 +15,7 @@ let url = 'https://www.pdftochat.com';
 let sitename = 'pdftochat.com';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(url),
   title,
   description,
   icons: {

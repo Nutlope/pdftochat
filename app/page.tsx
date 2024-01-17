@@ -10,11 +10,11 @@ import { redirect } from 'next/navigation';
 
 export default async function Home() {
   const user: User | null = await currentUser();
-
   const isLoggedIn = !!user;
   if (isLoggedIn) {
     redirect('/dashboard');
   }
+
   return (
     <main className="sm:p-7">
       <Header />
