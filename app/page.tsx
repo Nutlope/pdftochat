@@ -8,12 +8,11 @@ import { currentUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
-
 export default async function Home() {
   const user: User | null = await currentUser();
   const isLoggedIn = !!user;
   if (isLoggedIn) {
-    redirect('/dashboard')
+    redirect('/dashboard');
   }
   return (
     <main className="sm:p-7">
