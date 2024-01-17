@@ -10,8 +10,7 @@ const anek = Anek_Bangla({
 
 let title = 'PDF to Chat';
 let description = 'Chat with your PDFs in seconds.';
-// TODO: Update OG Image
-let ogimage = 'https://roomgpt-demo.vercel.app/og-image.png';
+let ogimage = 'https://www.pdftochat.com/og-image.png';
 let url = 'https://www.pdftochat.com';
 let sitename = 'pdftochat.com';
 
