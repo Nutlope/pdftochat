@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <div>
-      <DocumentClient currentDoc={currentDoc} />
+      <DocumentClient currentDoc={currentDoc} userImage={user?.imageUrl} />
     </div>
   );
 }

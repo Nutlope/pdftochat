@@ -18,8 +18,10 @@ import { useChat } from 'ai/react';
 
 export default function DocumentClient({
   currentDoc,
+  userImage,
 }: {
   currentDoc: Document;
+  userImage?: string;
 }) {
   const toolbarPluginInstance = toolbarPlugin();
   const pageNavigationPluginInstance = pageNavigationPlugin();
@@ -82,6 +84,8 @@ export default function DocumentClient({
     }
   };
 
+  let userProfilePic = userImage ? userImage : '/profile-icon.png';
+
   return (
     <div className="mx-auto flex gap-4 flex-col no-scrollbar">
       <div className="flex justify-between w-full lg:flex-row flex-col lg:space-x-6 space-y-20 lg:space-y-0 p-2">
@@ -112,88 +116,76 @@ export default function DocumentClient({
           <div className="w-full min-h-min h-[80vh] bg-white border flex justify-center items-center">
             <div
               ref={messageListRef}
-              className="w-full h-full overflow-y-scroll rounded-md"
+              className="w-full h-full overflow-y-scroll rounded-md mt-4"
             >
+              {messages.length === 0 && (
+                <div className="flex justify-center h-full items-center text-xl">
+                  Ask your first question below!
+                </div>
+              )}
               {messages.map((message, index) => {
                 const sources = sourcesForMessages[index] || undefined;
                 const isLastMessage =
                   !isLoading && index === messages.length - 1;
                 const previousMessages = index !== messages.length - 1;
-                let icon;
-                let className;
-                if (message.role === 'assistant') {
-                  icon = (
-                    <Image
-                      key={index}
-                      src="/bot-image.png"
-                      alt="AI"
-                      width="40"
-                      height="40"
-                      className="mr-4 rounded-sm h-full"
-                      priority
-                    />
-                  );
-                  className = 'bg-gray-100 p-6 text-black animate';
-                } else {
-                  icon = (
-                    <Image
-                      key={index}
-                      src="/usericon.png"
-                      alt="Me"
-                      width="30"
-                      height="30"
-                      className="mr-4 rounded-sm h-full"
-                      priority
-                    />
-                  );
-                  // The latest message sent by the user will be animated while waiting for a response
-                  className =
-                    isLoading && index === messages.length - 1
-                      ? 'p-6 text-black flex animate-pulse bg-gray-100'
-                      : 'bg-white p-6 text-black flex';
-                }
                 return (
                   <div key={`chatMessage-${index}`}>
-                    <div className={className}>
-                      {icon}
-                      <div>
+                    <div
+                      className={`p-4 text-black animate ${
+                        message.role === 'assistant'
+                          ? 'bg-gray-100'
+                          : isLoading && index === messages.length - 1
+                          ? 'animate-pulse bg-gray-100'
+                          : 'bg-white'
+                      }`}
+                    >
+                      <div className="flex">
+                        <Image
+                          key={index}
+                          src={
+                            message.role === 'assistant'
+                              ? '/bot-icon.png'
+                              : userProfilePic
+                          }
+                          alt="profile image"
+                          width={message.role === 'assistant' ? '35' : '33'}
+                          height="30"
+                          className="mr-4 rounded-sm h-full"
+                          priority
+                        />
                         <ReactMarkdown linkTarget="_blank" className="prose">
                           {message.content}
                         </ReactMarkdown>
-                        {/* Display the sources */}
-
-                        {(isLastMessage || previousMessages) && sources && (
-                          <div className="flex space-x-4 mt-4">
-                            {sources
-                              .filter(
-                                (source: any, index: number, self: any) => {
-                                  const pageNumber =
-                                    source.metadata['loc.pageNumber'];
-                                  // Check if the current pageNumber is the first occurrence in the array
-                                  return (
-                                    self.findIndex(
-                                      (s: any) =>
-                                        s.metadata['loc.pageNumber'] ===
-                                        pageNumber,
-                                    ) === index
-                                  );
-                                },
-                              )
-                              .map((source: any) => (
-                                <button
-                                  className="border bg-white px-3 py-1 hover:bg-gray-300 transition"
-                                  onClick={() =>
-                                    pageNavigationPluginInstance.jumpToPage(
-                                      Number(source.metadata['loc.pageNumber']),
-                                    )
-                                  }
-                                >
-                                  p. {source.metadata['loc.pageNumber']}
-                                </button>
-                              ))}
-                          </div>
-                        )}
                       </div>
+                      {/* Display the sources */}
+                      {(isLastMessage || previousMessages) && sources && (
+                        <div className="flex space-x-4 ml-14 mt-3">
+                          {sources
+                            .filter((source: any, index: number, self: any) => {
+                              const pageNumber =
+                                source.metadata['loc.pageNumber'];
+                              // Check if the current pageNumber is the first occurrence in the array
+                              return (
+                                self.findIndex(
+                                  (s: any) =>
+                                    s.metadata['loc.pageNumber'] === pageNumber,
+                                ) === index
+                              );
+                            })
+                            .map((source: any) => (
+                              <button
+                                className="border bg-gray-200 px-3 py-1 hover:bg-gray-100 transition rounded-lg"
+                                onClick={() =>
+                                  pageNavigationPluginInstance.jumpToPage(
+                                    Number(source.metadata['loc.pageNumber']),
+                                  )
+                                }
+                              >
+                                p. {source.metadata['loc.pageNumber']}
+                              </button>
+                            ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
