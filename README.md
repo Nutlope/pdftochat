@@ -4,13 +4,13 @@
 
 - [ ] Implement design changes on the pdf page: chatbot scroll
 - [ ] Make sure it's fully responsive on mobile
-- [ ] Implement sources like perplexity with more info
-- [ ] Make some changes to the default tailwind `prose`
 - [ ] Add my own google cloud project to Clerk and create a production instance
 - [ ] Spin up good README + tweet
 
 ## Future Todos
 
+- [ ] Implement sources like perplexity with more info
+- [ ] Make some changes to the default tailwind `prose`
 - [ ] Add an initial message with sample questions or just add them as bubbles
 - [ ] Add a trash icon for folks to delete PDFs and implement delete functionality
 - [ ] Add an option to get answers as lists or paragraphs

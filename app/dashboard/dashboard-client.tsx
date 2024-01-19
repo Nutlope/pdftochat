@@ -76,6 +76,7 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
     });
 
     let data = await res.json();
+    console.log({ data });
     router.push(`/document/${data.id}`);
   }
 
