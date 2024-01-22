@@ -21,9 +21,11 @@
 
 ## Future Todos
 
+- [ ] Do some prompt engineering for Mixtral to make it as good as possible
 - [ ] Add my own google cloud project to Clerk for it to show 'PDFToChat'
+- [ ] Change the header at the top with something more similar to roomGPT to make it cleaner
+- [ ] Add video to homepage to demonstrate functionality
 - [ ] Implement sources like perplexity to be clickable with more info
-- [ ] Change the header at the top with something more similar to roomGPT
 - [ ] Make some changes to the default tailwind `prose` to decrease padding
 - [ ] Add an initial message with sample questions or just add them as bubbles
 - [ ] Add a trash icon for folks to delete PDFs and implement delete functionality

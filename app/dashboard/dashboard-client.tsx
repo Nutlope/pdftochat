@@ -17,7 +17,7 @@ const uploader = Uploader({
 export default function DashboardClient({ docsList }: { docsList: any }) {
   const router = useRouter();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const options = {
     maxFileCount: 1,

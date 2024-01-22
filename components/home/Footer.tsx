@@ -17,7 +17,7 @@ const Footer = () => {
           </a>
           ,{' '}
           <a
-            href="https://www.together.ai"
+            href="https://mistral.ai/"
             target="_blank"
             className=" font-semibold transition hover:text-black/50"
           >
@@ -25,19 +25,19 @@ const Footer = () => {
           </a>
           ,{' '}
           <a
-            href="https://www.together.ai"
-            target="_blank"
-            className="font-semibold transition hover:text-black/50"
-          >
-            Langchain
-          </a>
-          , and{' '}
-          <a
-            href="https://www.together.ai"
+            href="https://www.pinecone.io/"
             target="_blank"
             className="font-semibold transition hover:text-black/50"
           >
             Pinecone
+          </a>
+          , and{' '}
+          <a
+            href="https://www.langchain.com/"
+            target="_blank"
+            className="font-semibold transition hover:text-black/50"
+          >
+            Langchain
           </a>
           .
         </span>
@@ -57,7 +57,7 @@ const Footer = () => {
               </svg>
             </Link>
             <Link
-              href="https://github.com/Nutlope/chat"
+              href="https://github.com/nutlope/pdftochat"
               className="group"
               aria-label="GitHub"
             >
