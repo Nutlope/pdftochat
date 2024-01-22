@@ -17,7 +17,7 @@ const uploader = Uploader({
 export default function DashboardClient({ docsList }: { docsList: any }) {
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const options = {
     maxFileCount: 1,
@@ -116,7 +116,7 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
             className="inline-flex items-center mt-4 px-4 py-2 font-semibold leading-6 text-lg shadow rounded-md text-black transition ease-in-out duration-150 cursor-not-allowed"
           >
             <svg
-              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+              className="animate-spin -ml-1 mr-3 h-5 w-5 text-black"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"

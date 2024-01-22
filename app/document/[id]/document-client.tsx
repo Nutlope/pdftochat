@@ -91,16 +91,13 @@ export default function DocumentClient({
   return (
     <div className="mx-auto flex flex-col no-scrollbar -mt-2">
       <Toggle chatOnlyView={chatOnlyView} setChatOnlyView={setChatOnlyView} />
-      <div className="flex justify-between w-full lg:flex-row flex-col sm:space-y-20 lg:space-y-0 p-2 text-white">
+      <div className="flex justify-between w-full lg:flex-row flex-col sm:space-y-20 lg:space-y-0 p-2">
         {/* Left hand side */}
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
           <div
-            className={`w-full h-[90vh] flex-col ${
+            className={`w-full h-[90vh] flex-col text-white !important ${
               chatOnlyView ? 'hidden' : 'flex'
             }`}
-            style={{
-              color: 'white',
-            }}
           >
             <div
               className="align-center bg-[#eeeeee] flex p-1"
