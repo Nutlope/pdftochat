@@ -15,6 +15,7 @@ import { toolbarPlugin } from '@react-pdf-viewer/toolbar';
 import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation';
 import { Document } from '@prisma/client';
 import { useChat } from 'ai/react';
+import Toggle from '@/components/common/Toggle';
 
 export default function DocumentClient({
   currentDoc,
@@ -41,6 +42,7 @@ export default function DocumentClient({
     Record<string, any>
   >({});
   const [error, setError] = useState('');
+  const [chatOnlyView, setChatOnlyView] = useState(false);
 
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
@@ -87,12 +89,15 @@ export default function DocumentClient({
   let userProfilePic = userImage ? userImage : '/profile-icon.png';
 
   return (
-    <div className="mx-auto flex gap-4 flex-col no-scrollbar -mt-2">
-      <div className="flex justify-between w-full lg:flex-row flex-col space-y-20 lg:space-y-0 p-2 text-white">
+    <div className="mx-auto flex flex-col no-scrollbar -mt-2">
+      <Toggle chatOnlyView={chatOnlyView} setChatOnlyView={setChatOnlyView} />
+      <div className="flex justify-between w-full lg:flex-row flex-col sm:space-y-20 lg:space-y-0 p-2 text-white">
         {/* Left hand side */}
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
           <div
-            className="w-full h-[90vh] flex flex-col"
+            className={`w-full h-[90vh] flex-col ${
+              chatOnlyView ? 'hidden' : 'flex'
+            }`}
             style={{
               color: 'white',
             }}

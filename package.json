@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.3",
+    "@headlessui/react": "^1.7.18",
     "@langchain/community": "^0.0.16",
     "@langchain/openai": "^0.0.11",
     "@microsoft/fetch-event-source": "^2.0.1",

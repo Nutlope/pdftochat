@@ -2,12 +2,12 @@
 
 ## Todos v1.5
 
-- [ ] Implement design changes on the pdf page and make sure it's fully responsive
+- [x] Implement design changes on the pdf page and make sure it's fully responsive
   - [x] no padding between the two sides
   - [x] make input box not have a lot of left padding and be bigger like perplexity and say "Ask me anything..."
   - [x] make the chatbot on mobile be full width as well
-  - [ ] fix the PDF icons showing grayed out text
-  - [ ] fix the view on mobile to have a toggle at the top to switch between pdf view and chat view
+  - [x] fix the view on mobile to have a toggle at the top to switch between pdf view and chat view
+- [ ] fix the PDF icons showing grayed out text
 - [ ] Change Clerk to be production mode
 - [ ] Send it to the team for feedback
 - [ ] Spin up good README + tweet
