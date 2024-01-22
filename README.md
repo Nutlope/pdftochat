@@ -3,7 +3,6 @@
 ## Todos v1.5
 
 - [ ] Change Clerk to be production mode
-- [ ] Send it to the team for feedback
 - [ ] Spin up good README + tweet
 
 ## Common errors
