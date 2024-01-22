@@ -67,7 +67,7 @@ export default function DocumentClient({
     });
 
   const messageListRef = useRef<HTMLDivElement>(null);
-  const textAreaRef = useRef<HTMLInputElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     textAreaRef.current?.focus();
@@ -87,14 +87,14 @@ export default function DocumentClient({
   let userProfilePic = userImage ? userImage : '/profile-icon.png';
 
   return (
-    <div className="mx-auto flex gap-4 flex-col no-scrollbar">
-      <div className="flex justify-between w-full lg:flex-row flex-col lg:space-x-6 space-y-20 lg:space-y-0 p-2">
+    <div className="mx-auto flex gap-4 flex-col no-scrollbar -mt-2">
+      <div className="flex justify-between w-full lg:flex-row flex-col space-y-20 lg:space-y-0 p-2 text-white">
         {/* Left hand side */}
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
           <div
             className="w-full h-[90vh] flex flex-col"
             style={{
-              border: '1px solid rgba(0, 0, 0, 0.3)',
+              color: 'white',
             }}
           >
             <div
@@ -112,11 +112,11 @@ export default function DocumentClient({
           </div>
         </Worker>
         {/* Right hand side */}
-        <div className="flex flex-col w-full justify-between align-center h-[90vh]">
-          <div className="w-full min-h-min h-[80vh] bg-white border flex justify-center items-center">
+        <div className="flex flex-col w-full justify-between align-center h-[90vh] no-scrollbar">
+          <div className="w-full min-h-min h-[85vh] bg-white border flex justify-center items-center no-scrollbar">
             <div
               ref={messageListRef}
-              className="w-full h-full overflow-y-scroll rounded-md mt-4"
+              className="w-full h-full overflow-y-scroll no-scrollbar rounded-md mt-4"
             >
               {messages.length === 0 && (
                 <div className="flex justify-center h-full items-center text-xl">
@@ -135,7 +135,7 @@ export default function DocumentClient({
                         message.role === 'assistant'
                           ? 'bg-gray-100'
                           : isLoading && index === messages.length - 1
-                          ? 'animate-pulse bg-gray-100'
+                          ? 'animate-pulse bg-white'
                           : 'bg-white'
                       }`}
                     >
@@ -177,7 +177,8 @@ export default function DocumentClient({
                                 className="border bg-gray-200 px-3 py-1 hover:bg-gray-100 transition rounded-lg"
                                 onClick={() =>
                                   pageNavigationPluginInstance.jumpToPage(
-                                    Number(source.metadata['loc.pageNumber']),
+                                    Number(source.metadata['loc.pageNumber']) -
+                                      1,
                                   )
                                 }
                               >
@@ -192,29 +193,31 @@ export default function DocumentClient({
               })}
             </div>
           </div>
-          <div className="flex justify-center items-center">
-            <form onSubmit={(e) => handleSubmit(e)} className="relative">
-              <input
-                className="resize-none py-4 px-8 rounded-md border border-gray-300 bg-white text-black focus:outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-400 w-[49vw]"
+          <div className="flex justify-center items-center h-[10vh]">
+            <form
+              onSubmit={(e) => handleSubmit(e)}
+              className="relative w-full px-4 pt-10"
+            >
+              <textarea
+                className="resize-none p-3 pr-10 rounded-md border border-gray-300 bg-white text-black focus:outline-gray-400 w-full"
                 disabled={isLoading}
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleEnter}
                 ref={textAreaRef}
+                rows={3}
                 autoFocus={false}
                 maxLength={512}
                 id="userInput"
                 name="userInput"
                 placeholder={
-                  isLoading
-                    ? 'Waiting for response...'
-                    : 'What is this pdf about?'
+                  isLoading ? 'Waiting for response...' : 'Ask me anything...'
                 }
               />
               <button
                 type="submit"
                 disabled={isLoading}
-                className="absolute top-[12px] right-1 text-gray-600 bg-transparent py-1 px-2 border-none flex transition duration-300 ease-in-out rounded-sm"
+                className="absolute top-[71px] right-6 text-gray-600 bg-transparent py-1 px-2 border-none flex transition duration-300 ease-in-out rounded-sm"
               >
                 {isLoading ? (
                   <div className="">
