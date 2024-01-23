@@ -1,7 +1,7 @@
 import { authMiddleware } from '@clerk/nextjs';
 
 export default authMiddleware({
-  publicRoutes: ['/', '/og-image.png'],
+  publicRoutes: ['/'],
 });
 
 export const config = {
