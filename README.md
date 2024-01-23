@@ -50,8 +50,9 @@ See the .example.env for a list of all the required environment variables.
 
 ## Credits
 
-- Mako for the original RAG repo
-- Joseph for help and for his langchain next.js repo
+- [Youssef](https://twitter.com/YoussefUiUx) for the design of the app
+- [Mako](https://twitter.com/mayowaoshin) for the original RAG repo and inspiration
+- [Joseph](https://twitter.com/Hacubu) for the langchain help
 - Together AI, Bytescale, Pinecone, and Clerk for sponsoring
 
 ## Future tasks
