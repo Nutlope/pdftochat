@@ -2,7 +2,7 @@
 
 ## Todos v1.5
 
-- [ ] Try the full flow on mobile, see if it works
+- [ ] On mobile, make sure chat shows up when you hit the toggle (make chatbot slower)
 - [ ] Change Clerk to be production mode
 - [ ] Spin up good README + tweet
 - [ ] Fix OG image not showing up
@@ -22,6 +22,7 @@
 
 ## Future Todos
 
+- [ ] Explore best practices for scrolling based on other chat apps like chatGPT and implement auto scrolling
 - [ ] Do some prompt engineering for Mixtral to make it as good as possible
 - [ ] Add my own google cloud project to Clerk for it to show 'PDFToChat'
 - [ ] Change the header at the top with something more similar to roomGPT to make it cleaner

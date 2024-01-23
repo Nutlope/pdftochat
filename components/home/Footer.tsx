@@ -1,4 +1,4 @@
-import Logo from '../common/Logo';
+import Logo from '../ui/Logo';
 import Link from 'next/link';
 
 const Footer = () => {

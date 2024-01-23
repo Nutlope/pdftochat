@@ -15,7 +15,7 @@ import { toolbarPlugin } from '@react-pdf-viewer/toolbar';
 import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation';
 import { Document } from '@prisma/client';
 import { useChat } from 'ai/react';
-import Toggle from '@/components/common/Toggle';
+import Toggle from '@/components/ui/Toggle';
 
 export default function DocumentClient({
   currentDoc,
