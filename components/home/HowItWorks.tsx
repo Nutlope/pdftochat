@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 const data = [
   {
@@ -46,7 +47,10 @@ const HowItWorks = () => {
               <p className="text-primary text-center text-[17px] sm:text-3xl leading-[20px] sm:leading-[34.5px] tracking-[-0.34px] sm:tracking-[-0.6px] pb-5 sm:pb-0">
                 {item.description}
               </p>
-              <button className="flex gap-3 sm:gap-[33px] px-6 sm:px-[37px] py-[1px] sm:py-[14px] items-center border rounded-[29px] border-solid border-primary">
+              <Link
+                href="/dashboard"
+                className="flex gap-3 sm:gap-[33px] px-6 sm:px-[37px] py-[1px] sm:py-[14px] items-center border rounded-[29px] border-solid border-primary"
+              >
                 <span className="text-[17px] sm:text-[30px] leading-[34.5px] tracking-[-0.34px] sm:tracking-[-0.6px]">
                   Get started for free
                 </span>
@@ -57,7 +61,7 @@ const HowItWorks = () => {
                   height={24}
                   className="w-4 sm:w-[31px] h-auto"
                 />
-              </button>
+              </Link>
             </div>
           </div>
         ))}
