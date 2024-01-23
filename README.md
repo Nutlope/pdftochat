@@ -60,6 +60,8 @@ See the .example.env for a list of all the required environment variables.
 These are some future tasks that I have planned. Contributions are welcome!
 
 - [ ] Add a trash icon for folks to delete PDFs from the dashboard and implement delete functionality
+- [ ] Add footer to the dashboard page with a support email so folks can contact me with questions
+- [ ] Research best practices for chunking and retrieval and play around with them – ideally run benchmarks
 - [ ] Explore best practices for auto scrolling based on other chat apps like chatGPT
 - [ ] Do some prompt engineering for Mixtral to make replies as good as possible
 - [ ] Change the header at the top with something more similar to roomGPT to make it cleaner
@@ -70,6 +72,7 @@ These are some future tasks that I have planned. Contributions are welcome!
 - [ ] Add analytics to track the number of chats & errors with Vercel Analytics events
 - [ ] Make some changes to the default tailwind `prose` to decrease padding
 - [ ] Add an initial message with sample questions or just add them as bubbles on the page
+- [ ] Protect API routes by making sure users are signed in before executing chats
 - [ ] Add an option to get answers as markdown or in regular paragraphs
 - [ ] Implement something like SWR to automatically revalidate data
 - [ ] Save chats for each user to get back to later in the postgres DB
