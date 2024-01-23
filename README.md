@@ -56,23 +56,25 @@ See the .example.env for a list of all the required environment variables.
 
 ## Future tasks
 
-- [ ] Change Clerk to be production mode
-- [ ] Upgrade to Next.js 14 and fix any issues with that
-- [ ] Explore best practices for scrolling based on other chat apps like chatGPT and implement auto scrolling
-- [ ] Do some prompt engineering for Mixtral to make it as good as possible
-- [ ] Add my own google cloud project to Clerk for it to show 'PDFToChat'
+These are some future tasks that I have planned. Contributions are welcome!
+
+- [ ] Add analytics to track the number of chats & errors with Vercel Analytics events
+- [ ] Add a trash icon for folks to delete PDFs from the dashboard and implement delete functionality
+- [ ] Explore best practices for auto scrolling based on other chat apps like chatGPT
+- [ ] Do some prompt engineering for Mixtral to make replies as good as possible
 - [ ] Change the header at the top with something more similar to roomGPT to make it cleaner
-- [ ] Add video to homepage to demonstrate functionality
+- [ ] Configure emails on Clerk if I want to eventually add this
+- [ ] Add demo video to the homepage to demonstrate functionality more easily
+- [ ] Upgrade to Next.js 14 and fix any issues with that
 - [ ] Implement sources like perplexity to be clickable with more info
 - [ ] Make some changes to the default tailwind `prose` to decrease padding
-- [ ] Add an initial message with sample questions or just add them as bubbles
-- [ ] Add a trash icon for folks to delete PDFs and implement delete functionality
-- [ ] Add an option to get answers as markdown or paragraphs
-- [ ] Save chats for each user to get back to later
-- [ ] Use a session tracking tool to better understand how folks are using the site
+- [ ] Add an initial message with sample questions or just add them as bubbles on the page
+- [ ] Add an option to get answers as markdown or in regular paragraphs
+- [ ] Save chats for each user to get back to later in the postgres DB
 - [ ] Clean up and customize how the PDF viewer looks to be very minimal
 - [ ] Bring up a message to direct folks to compress PDFs if they're beyond 10MB
 - [ ] Migrate to the latest bytescale library and use a self-designed custom uploader
+- [ ] Use a session tracking tool to better understand how folks are using the site
 - [ ] Add better error handling overall with appropriate toasts when actions fail
 - [ ] Add support for images in PDFs with something like [Nougat](https://replicate.com/meta/nougat)
 - [ ] Add rate limiting for uploads to only allow up to 5-10 uploads a day using upstash redis
