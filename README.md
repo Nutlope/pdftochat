@@ -58,7 +58,6 @@ See the .example.env for a list of all the required environment variables.
 
 These are some future tasks that I have planned. Contributions are welcome!
 
-- [ ] Add analytics to track the number of chats & errors with Vercel Analytics events
 - [ ] Add a trash icon for folks to delete PDFs from the dashboard and implement delete functionality
 - [ ] Explore best practices for auto scrolling based on other chat apps like chatGPT
 - [ ] Do some prompt engineering for Mixtral to make replies as good as possible
@@ -67,6 +66,7 @@ These are some future tasks that I have planned. Contributions are welcome!
 - [ ] Add demo video to the homepage to demonstrate functionality more easily
 - [ ] Upgrade to Next.js 14 and fix any issues with that
 - [ ] Implement sources like perplexity to be clickable with more info
+- [ ] Add analytics to track the number of chats & errors with Vercel Analytics events
 - [ ] Make some changes to the default tailwind `prose` to decrease padding
 - [ ] Add an initial message with sample questions or just add them as bubbles on the page
 - [ ] Add an option to get answers as markdown or in regular paragraphs
