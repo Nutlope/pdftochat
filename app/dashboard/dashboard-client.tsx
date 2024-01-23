@@ -76,14 +76,13 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
     });
 
     let data = await res.json();
-    console.log({ data });
     router.push(`/document/${data.id}`);
   }
 
   return (
     <div className="mx-auto flex flex-col gap-4 container mt-10">
       <h1 className="text-4xl leading-[1.1] tracking-tighter font-medium text-center">
-        Chat With Your Docs
+        Chat With Your PDFs
       </h1>
       {docsList.length > 0 && (
         <div className="flex flex-col gap-4 mx-10 my-5">

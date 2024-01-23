@@ -1,6 +1,6 @@
 import '../styles/globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { Anek_Bangla } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     images: [ogimage],
     title,
     description,
-    url,
+    url: url,
     siteName: sitename,
     locale: 'en_US',
     type: 'website',

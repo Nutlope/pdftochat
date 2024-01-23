@@ -115,7 +115,10 @@ export default function DocumentClient({
         </Worker>
         {/* Right hand side */}
         <div className="flex flex-col w-full justify-between align-center h-[90vh] no-scrollbar">
-          <div className="w-full min-h-min h-[85vh] bg-white border flex justify-center items-center no-scrollbar">
+          <div
+            className={`w-full min-h-min bg-white border flex justify-center items-center no-scrollbar sm:h-[85vh] h-[80vh]
+            `}
+          >
             <div
               ref={messageListRef}
               className="w-full h-full overflow-y-scroll no-scrollbar rounded-md mt-4"
@@ -195,10 +198,10 @@ export default function DocumentClient({
               })}
             </div>
           </div>
-          <div className="flex justify-center items-center h-[10vh]">
+          <div className="flex justify-center items-center sm:h-[15vh] h-[20vh]">
             <form
               onSubmit={(e) => handleSubmit(e)}
-              className="relative w-full px-4 pt-10"
+              className="relative w-full px-4 sm:pt-10 pt-2"
             >
               <textarea
                 className="resize-none p-3 pr-10 rounded-md border border-gray-300 bg-white text-black focus:outline-gray-400 w-full"
@@ -219,7 +222,7 @@ export default function DocumentClient({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="absolute top-[71px] right-6 text-gray-600 bg-transparent py-1 px-2 border-none flex transition duration-300 ease-in-out rounded-sm"
+                className="absolute top-[40px] sm:top-[71px] right-6 text-gray-600 bg-transparent py-1 px-2 border-none flex transition duration-300 ease-in-out rounded-sm"
               >
                 {isLoading ? (
                   <div className="">

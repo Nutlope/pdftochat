@@ -2,7 +2,6 @@
 
 ## Todos v1.5
 
-- [ ] On mobile, make sure chat shows up when you hit the toggle (make chatbot slower)
 - [ ] Change Clerk to be production mode
 - [ ] Spin up good README + tweet
 - [ ] Fix OG image not showing up
