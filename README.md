@@ -2,11 +2,10 @@
 
 ## Todos v1.5
 
-- [ ] Fix OG image not showing up
-- [ ] Make any updates to landing page to look nicer
 - [ ] Try the full flow on mobile, see if it works
 - [ ] Change Clerk to be production mode
 - [ ] Spin up good README + tweet
+- [ ] Fix OG image not showing up
 
 ## Common errors
 

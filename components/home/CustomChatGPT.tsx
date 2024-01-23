@@ -5,11 +5,8 @@ const CustomChatGPT = () => {
     <div className="grid grid-cols-1 sm:grid-cols-2 sm:h-[855px] bg_linear_gpt">
       <div className="custom_bg flex-col items-end pr-64 h-full justify-center hidden sm:flex">
         <h3 className="text_bg text-center text-[60px] leading-[72px] tracking-[-1.2px]">
-          Your Custom ChatGPT
+          Your Custom ChatGPT used by
         </h3>
-        <p className="text_bg opacity-60  text-center text-[60px] leading-[72px] tracking-[-1.2px]">
-          Used By:
-        </p>
       </div>
       <h3 className="text_bg text-center text-[30px] pb-[86px] pt-[29px] sm:hidden leading-[72px] tracking-[-0.6px]">
         Your Custom ChatGPT

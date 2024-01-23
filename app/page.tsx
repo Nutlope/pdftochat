@@ -16,11 +16,10 @@ export default async function Home() {
   }
 
   return (
-    <main className="sm:p-7">
+    <main className="sm:p-7 sm:pb-0">
       <Header />
       <Hero />
       <HowItWorks />
-      <CustomChatGPT />
       <ProudlyOpenSource />
       <Footer />
     </main>

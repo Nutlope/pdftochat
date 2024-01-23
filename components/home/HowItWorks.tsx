@@ -8,8 +8,7 @@ const data = [
   },
   {
     title: 'Upload a PDF',
-    description:
-      'After signing up or logging in, upload your PDF and let the AI tool analyze it',
+    description: 'After login, upload your PDF and let the AI tool analyze it',
     image: '/images/upload.png',
   },
   {
@@ -41,10 +40,10 @@ const HowItWorks = () => {
               />
             </div>
             <div className="flex flex-col items-center gap-2 sm:gap-9">
-              <h3 className="text-center text-primary text-2xl sm:text-[60px] leading-[34.5px] tracking-[-1.2px]">
+              <h3 className="text-center text-primary text-2xl sm:text-5xl leading-[34.5px] tracking-[-1.2px]">
                 {item.title}
               </h3>
-              <p className="text-primary text-center text-[17px] sm:text-[30px] leading-[20px] sm:leading-[34.5px] tracking-[-0.34px] sm:tracking-[-0.6px] pb-5 sm:pb-0">
+              <p className="text-primary text-center text-[17px] sm:text-3xl leading-[20px] sm:leading-[34.5px] tracking-[-0.34px] sm:tracking-[-0.6px] pb-5 sm:pb-0">
                 {item.description}
               </p>
               <button className="flex gap-3 sm:gap-[33px] px-6 sm:px-[37px] py-[1px] sm:py-[14px] items-center border rounded-[29px] border-solid border-primary">
