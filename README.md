@@ -57,7 +57,7 @@ See the .example.env for a list of all the required environment variables.
 ## Future tasks
 
 - [ ] Change Clerk to be production mode
-- [ ] Clean up all unused dependencies + images + weird Next.js config stuff + try upgrading to Next.js 14
+- [ ] Upgrade to Next.js 14 and fix any issues with that
 - [ ] Explore best practices for scrolling based on other chat apps like chatGPT and implement auto scrolling
 - [ ] Do some prompt engineering for Mixtral to make it as good as possible
 - [ ] Add my own google cloud project to Clerk for it to show 'PDFToChat'
@@ -74,6 +74,5 @@ See the .example.env for a list of all the required environment variables.
 - [ ] Bring up a message to direct folks to compress PDFs if they're beyond 10MB
 - [ ] Migrate to the latest bytescale library and use a self-designed custom uploader
 - [ ] Add better error handling overall with appropriate toasts when actions fail
-- [ ] Upgrade to Next.js 14 and fix any issues with that
 - [ ] Add support for images in PDFs with something like [Nougat](https://replicate.com/meta/nougat)
 - [ ] Add rate limiting for uploads to only allow up to 5-10 uploads a day using upstash redis

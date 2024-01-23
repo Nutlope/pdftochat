@@ -30,7 +30,7 @@ const Header = () => {
         <Logo isMobile={true} />
         <div className="flex justify-center items-baseline">
           <Image
-            src="/images/align-justify.svg"
+            src="/align-justify.svg"
             onClick={() => setOpen((i) => !i)}
             alt="Menu"
             width={20}

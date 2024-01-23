@@ -11,7 +11,7 @@ const Logo = ({ isMobile }: LogoProps) => {
       <div className="flex  items-center">
         <div className="flex justify-center items-center">
           <Image
-            src="/images/logo.png"
+            src="/logo.png"
             alt="Logo"
             width={30}
             height={34}

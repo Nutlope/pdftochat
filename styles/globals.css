@@ -61,7 +61,7 @@
       #fcfcfc 0.27%,
       rgba(242, 243, 248, 0.3) 99.75%
     ),
-    url('/images/custom-chat-bg.png'), lightgray 0% 0% / 100px 100px repeat;
+    url('/custom-chat-bg.png'), lightgray 0% 0% / 100px 100px repeat;
 }
 
 /* //scroll bar */

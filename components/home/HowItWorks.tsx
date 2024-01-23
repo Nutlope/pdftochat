@@ -4,17 +4,17 @@ const data = [
   {
     title: 'Sign up',
     description: 'Start by signing up for a free PDFtoChat account',
-    image: '/images/pen.png',
+    image: '/pen.png',
   },
   {
     title: 'Upload a PDF',
     description: 'After login, upload your PDF and let the AI tool analyze it',
-    image: '/images/upload.png',
+    image: '/upload.png',
   },
   {
     title: 'Begin Chating',
     description: 'Simply start asking the AI any question about the PDF!',
-    image: '/images/chat.png',
+    image: '/chat.png',
   },
 ];
 
@@ -51,7 +51,7 @@ const HowItWorks = () => {
                   Get started for free
                 </span>
                 <Image
-                  src="/images/right-arrow.svg"
+                  src="/right-arrow.svg"
                   alt="Arrow"
                   width={31}
                   height={24}

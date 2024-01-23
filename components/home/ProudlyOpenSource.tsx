@@ -16,7 +16,7 @@ const ProudlyOpenSource = () => {
           href="https://github.com/Nutlope/pdftochat"
         >
           <Image
-            src="/images/github.png"
+            src="/github.png"
             alt="Github"
             width={37}
             height={37}
