@@ -96,9 +96,15 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
           </div>
         </div>
       )}
-      <h2 className="text-3xl leading-[1.1] tracking-tighter font-medium text-center">
-        Or upload a new PDF
-      </h2>
+      {docsList.length > 0 ? (
+        <h2 className="text-3xl leading-[1.1] tracking-tighter font-medium text-center">
+          Or upload a new PDF
+        </h2>
+      ) : (
+        <h2 className="text-3xl leading-[1.1] tracking-tighter font-medium text-center mt-5">
+          No PDFs found. Upload a new PDF below!
+        </h2>
+      )}
       <div className="mx-auto min-w-[450px] flex justify-center">
         {loading ? (
           <button
