@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Metadata } from 'next';
 import { Anek_Bangla } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
 
 const anek = Anek_Bangla({
   subsets: ['latin'],
@@ -46,7 +47,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className={anek.className}>
-        <body>{children}</body>
+        <body>
+          <Analytics />
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   );
