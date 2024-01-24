@@ -62,6 +62,7 @@ These are some future tasks that I have planned. Contributions are welcome!
 - [ ] Add a trash icon for folks to delete PDFs from the dashboard and implement delete functionality
 - [ ] Add footer to the dashboard page with a support email so folks can contact me with questions
 - [ ] Research best practices for chunking and retrieval and play around with them – ideally run benchmarks
+- [ ] Try out Langsmith for more observability into how the RAG app runs
 - [ ] Explore best practices for auto scrolling based on other chat apps like chatGPT
 - [ ] Do some prompt engineering for Mixtral to make replies as good as possible
 - [ ] Change the header at the top with something more similar to roomGPT to make it cleaner

@@ -11,7 +11,7 @@ import { useState } from 'react';
 const uploader = Uploader({
   apiKey: !!process.env.NEXT_PUBLIC_BYTESCALE_API_KEY
     ? process.env.NEXT_PUBLIC_BYTESCALE_API_KEY
-    : 'free',
+    : 'no api key found',
 });
 
 export default function DashboardClient({ docsList }: { docsList: any }) {
