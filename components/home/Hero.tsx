@@ -7,10 +7,10 @@ const Hero = () => {
         href="https://dub.sh/together-ai"
         target="_blank"
         rel="noreferrer"
-        className="border rounded-2xl py-1 px-4 text-slate-500 text-md transition duration-300 ease-in-out cursor-pointer hover:text-slate-700"
+        className="border rounded-2xl py-1 px-4 text-slate-600 transition duration-300 ease-in-out sm:text-base text-sm cursor-pointer hover:text-slate-700"
       >
-        Powered by <span className="font-semibold">Together.ai </span>and{' '}
-        <span className="font-semibold">Mixtral</span>
+        Powered by <span className="font-bold">Together.ai </span>and{' '}
+        <span className="font-bold">Mixtral</span>
       </a>
       <h2 className="text-center max-w-[867px] pb-5 sm:pb-7 text-[52px] sm:text-[100px] leading-[39.5px] tracking-[-1.04px] sm:leading-[75px] sm:tracking-[-2.74px] mx-auto sm:mt-12 mt-10">
         Chat with your PDFs in seconds

@@ -13,7 +13,7 @@ const Header = () => {
         <div className="sm:flex gap-4 items-center">
           <Link
             href="/dashboard"
-            className="text-primary py-1.5 px-[22px] text-center text-xl font-normal  border rounded-[18px] border-solid border-primary "
+            className="text-primary py-1.5 px-[22px] text-center text-xl font-normal border rounded-[18px] border-solid border-primary "
           >
             Log in
           </Link>
