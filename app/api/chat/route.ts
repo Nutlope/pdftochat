@@ -170,6 +170,8 @@ export async function POST(req: NextRequest) {
       ),
     ).toString('base64');
 
+    // add a chat thing to prisma
+
     return new StreamingTextResponse(stream, {
       headers: {
         'x-message-index': (formattedPreviousMessages.length + 1).toString(),

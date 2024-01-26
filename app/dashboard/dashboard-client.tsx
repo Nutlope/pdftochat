@@ -6,6 +6,14 @@ import { useRouter } from 'next/navigation';
 import DocIcon from '@/components/ui/DocIcon';
 import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
+import TrashIcon from '@/components/ui/Trash';
+
+interface Document {
+  id: string;
+  fileName: string;
+  fileUrl: string;
+  createdAt: Date;
+}
 
 // Configuration for the uploader
 const uploader = Uploader({
@@ -14,10 +22,19 @@ const uploader = Uploader({
     : 'no api key found',
 });
 
-export default function DashboardClient({ docsList }: { docsList: any }) {
+export default function DashboardClient({
+  initialDocsList,
+}: {
+  initialDocsList: Document[];
+}) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [docsList, setDocsList] = useState(initialDocsList);
+
+  const updateDocsList = (newDocsList: any[]) => {
+    setDocsList(newDocsList);
+  };
 
   const options = {
     maxFileCount: 1,
@@ -70,6 +87,35 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
     router.push(`/document/${data.id}`);
   }
 
+  async function deleteDocument(id: string, fileUrl: string) {
+    try {
+      const res = await fetch('/api/deleteDocument', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+          fileUrl,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to delete document');
+      }
+
+      const data = await res.json();
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        console.log('Document deleted successfully');
+        updateDocsList(docsList.filter((doc) => doc.id !== id));
+      }
+    } catch (error) {
+      console.log('Error deleting document', error);
+    }
+  }
+
   return (
     <div className="mx-auto flex flex-col gap-4 container mt-10">
       <h1 className="text-4xl leading-[1.1] tracking-tighter font-medium text-center">
@@ -81,7 +127,7 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
             {docsList.map((doc: any) => (
               <div
                 key={doc.id}
-                className="flex justify-between p-3 hover:bg-gray-100 transition sm:flex-row flex-col sm:gap-0 gap-3"
+                className="flex justify-between p-3 items-center hover:bg-gray-100 transition sm:flex-row flex-col sm:gap-0 gap-3"
               >
                 <button
                   onClick={() => router.push(`/document/${doc.id}`)}
@@ -90,7 +136,12 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
                   <DocIcon />
                   <span>{doc.fileName}</span>
                 </button>
-                <span>{formatDistanceToNow(doc.createdAt)} ago</span>
+                <span className="flex items-center gap-3">
+                  {formatDistanceToNow(doc.createdAt)} ago
+                  <TrashIcon
+                    onClick={() => deleteDocument(doc.id, doc.fileUrl)}
+                  />
+                </span>
               </div>
             ))}
           </div>
