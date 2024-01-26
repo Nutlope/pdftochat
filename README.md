@@ -21,8 +21,8 @@
 ## Tech Stack
 
 - Next.js [App Router](https://nextjs.org/docs/app) for the framework
-- Mixtral through [Together AI](https://www.together.ai/) inference for the LLM
-- M2 Bert 80M through [Together AI](https://www.together.ai/) for embeddings
+- Mixtral through [Together AI](https://dub.sh/together-ai) inference for the LLM
+- M2 Bert 80M through [Together AI](https://dub.sh/together-ai) for embeddings
 - [Langchain.js](https://js.langchain.com/docs/get_started/introduction/) for the RAG code
 - [Pinecone](https://www.pinecone.io/) for the vector database
 - [Bytescale](https://www.bytescale.com/) for the PDF storage
@@ -34,7 +34,7 @@
 
 You can deploy this template to Vercel or any other host. Note that you'll need to:
 
-- Set up [Together.ai](https://www.together.ai/)
+- Set up [Together.ai](https://dub.sh/together-ai/)
 - Set up [Pinecone](https://www.pinecone.io/)
 - Set up [Bytescale](https://www.bytescale.com/)
 - Set up [Clerk](https://clerk.dev/)
