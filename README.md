@@ -60,27 +60,24 @@ See the .example.env for a list of all the required environment variables.
 These are some future tasks that I have planned. Contributions are welcome!
 
 - [ ] Add a trash icon for folks to delete PDFs from the dashboard and implement delete functionality
-- [ ] Add footer to the dashboard page with a support email so folks can contact me with questions
-- [ ] Research best practices for chunking and retrieval and play around with them – ideally run benchmarks
-- [ ] Try out Langsmith for more observability into how the RAG app runs
+- [ ] Try to optimize the langchain code I have to be as clear as possible
 - [ ] Explore best practices for auto scrolling based on other chat apps like chatGPT
 - [ ] Do some prompt engineering for Mixtral to make replies as good as possible
-- [ ] Change the header at the top with something more similar to roomGPT to make it cleaner
-- [ ] Configure emails on Clerk if I want to eventually add this
+- [ ] Protect API routes by making sure users are signed in before executing chats
+- [ ] Run an initial benchmark on how accurate chunking / retrieval are
+- [ ] Research best practices for chunking and retrieval and play around with them – ideally run benchmarks
+- [ ] Try out Langsmith for more observability into how the RAG app runs
 - [ ] Add demo video to the homepage to demonstrate functionality more easily
 - [ ] Upgrade to Next.js 14 and fix any issues with that
 - [ ] Implement sources like perplexity to be clickable with more info
-- [ ] Add analytics to track the number of chats & errors with Vercel Analytics events
+- [ ] Add analytics to track the number of chats & errors
 - [ ] Make some changes to the default tailwind `prose` to decrease padding
 - [ ] Add an initial message with sample questions or just add them as bubbles on the page
-- [ ] Protect API routes by making sure users are signed in before executing chats
 - [ ] Add an option to get answers as markdown or in regular paragraphs
 - [ ] Implement something like SWR to automatically revalidate data
 - [ ] Save chats for each user to get back to later in the postgres DB
-- [ ] Clean up and customize how the PDF viewer looks to be very minimal
 - [ ] Bring up a message to direct folks to compress PDFs if they're beyond 10MB
-- [ ] Migrate to the latest bytescale library and use a self-designed custom uploader
+- [ ] Use a self-designed custom uploader
 - [ ] Use a session tracking tool to better understand how folks are using the site
 - [ ] Add better error handling overall with appropriate toasts when actions fail
 - [ ] Add support for images in PDFs with something like [Nougat](https://replicate.com/meta/nougat)
-- [ ] Add rate limiting for uploads to only allow up to 5-10 uploads a day using upstash redis
