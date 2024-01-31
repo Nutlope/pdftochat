@@ -108,6 +108,8 @@ export async function POST(req: NextRequest) {
       callbacks: [
         {
           handleRetrieverEnd(documents) {
+            // Extract retrieved source documents so that they can be displayed as sources
+            // on the frontend.
             resolveWithDocuments(documents);
           },
         },
@@ -115,26 +117,26 @@ export async function POST(req: NextRequest) {
     });
 
     // Create a chain that can rephrase incoming questions for the retriever,
-    // taking previous chat history into account.
+    // taking previous chat history into account. Returns relevant documents.
     const historyAwareRetrieverChain = await createHistoryAwareRetriever({
       llm: model,
       retriever,
       rephrasePrompt: historyAwarePrompt,
     });
 
-    // Create a chain that answers questions using retrieved documents as context.
+    // Create a chain that answers questions using retrieved relevant documents as context.
     const documentChain = await createStuffDocumentsChain({
       llm: model,
       prompt: answerPrompt,
     });
 
-    // Create a chain that combines the above retreiver and question answering chain.
+    // Create a chain that combines the above retriever and question answering chains.
     const conversationalRetrievalChain = await createRetrievalChain({
       retriever: historyAwareRetrieverChain,
       combineDocsChain: documentChain,
     });
 
-    // "Pick" the answer from the chain output object and stream it as bytes.
+    // "Pick" the answer from the retrieval chain output object and stream it as bytes.
     const outputChain = RunnableSequence.from([
       conversationalRetrievalChain,
       new RunnablePick({ keys: "answer" }),
