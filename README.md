@@ -23,7 +23,7 @@
 - Next.js [App Router](https://nextjs.org/docs/app) for the framework
 - Mixtral through [Together AI](https://dub.sh/together-ai) inference for the LLM
 - M2 Bert 80M through [Together AI](https://dub.sh/together-ai) for embeddings
-- [Langchain.js](https://js.langchain.com/docs/get_started/introduction/) for the RAG code
+- [LangChain.js](https://js.langchain.com/docs/get_started/introduction/) for the RAG code
 - [Pinecone](https://www.pinecone.io/) for the vector database
 - [Bytescale](https://www.bytescale.com/) for the PDF storage
 - [Vercel](https://vercel.com/) for hosting and for the postgres DB
@@ -36,11 +36,15 @@ You can deploy this template to Vercel or any other host. Note that you'll need 
 
 - Set up [Together.ai](https://dub.sh/together-ai/)
 - Set up [Pinecone](https://www.pinecone.io/)
+  - When creating your Pinecone index, note that the default embeddings for this project use 768 dimensions.
 - Set up [Bytescale](https://www.bytescale.com/)
 - Set up [Clerk](https://clerk.dev/)
 - Set up [Vercel](https://vercel.com/)
+- (Optional) Set up [LangSmith](https://smith.langchain.com/) for tracing.
 
 See the .example.env for a list of all the required environment variables.
+
+You will also need to prepare your database schema by running `npx prisma db push`.
 
 ## Common errors
 
@@ -51,8 +55,8 @@ See the .example.env for a list of all the required environment variables.
 ## Credits
 
 - [Youssef](https://twitter.com/YoussefUiUx) for the design of the app
-- [Mako](https://twitter.com/mayowaoshin) for the original RAG repo and inspiration
-- [Joseph](https://twitter.com/Hacubu) for the langchain help
+- [Mayo](https://twitter.com/mayowaoshin) for the original RAG repo and inspiration
+- [Jacob](https://twitter.com/Hacubu) for the LangChain help
 - Together AI, Bytescale, Pinecone, and Clerk for sponsoring
 
 ## Future tasks
@@ -60,7 +64,6 @@ See the .example.env for a list of all the required environment variables.
 These are some future tasks that I have planned. Contributions are welcome!
 
 - [ ] Add a trash icon for folks to delete PDFs from the dashboard and implement delete functionality
-- [ ] Try to optimize the langchain code I have to be as clear as possible
 - [ ] Explore best practices for auto scrolling based on other chat apps like chatGPT
 - [ ] Do some prompt engineering for Mixtral to make replies as good as possible
 - [ ] Protect API routes by making sure users are signed in before executing chats
