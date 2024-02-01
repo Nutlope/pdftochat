@@ -32,10 +32,6 @@ export default function DashboardClient({
   const [loading, setLoading] = useState(false);
   const [docsList, setDocsList] = useState(initialDocsList);
 
-  const updateDocsList = (newDocsList: any[]) => {
-    setDocsList(newDocsList);
-  };
-
   const options = {
     maxFileCount: 1,
     mimeTypes: ['application/pdf'],
@@ -109,7 +105,7 @@ export default function DashboardClient({
         console.log(data.error);
       } else {
         console.log('Document deleted successfully');
-        updateDocsList(docsList.filter((doc) => doc.id !== id));
+        setDocsList(docsList.filter((doc) => doc.id !== id));
       }
     } catch (error) {
       console.log('Error deleting document', error);
