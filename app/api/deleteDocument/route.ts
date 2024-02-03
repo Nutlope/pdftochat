@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma';
 import { getAuth } from '@clerk/nextjs/server';
+import { Pinecone } from '@pinecone-database/pinecone';
 
 interface DeleteFileParams {
   accountId: string;
@@ -8,6 +9,17 @@ interface DeleteFileParams {
   querystring: {
     filePath: string;
   };
+}
+
+const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
+
+const pinecone = new Pinecone({
+  apiKey: process.env.PINECONE_API_KEY ?? '',
+  environment: process.env.PINECONE_ENVIRONMENT ?? '', //this is in the dashboard
+});
+
+if (!process.env.PINECONE_INDEX_NAME) {
+  throw new Error('Missing Pinecone index name in .env file');
 }
 
 async function deleteFile(params: DeleteFileParams) {
@@ -81,6 +93,14 @@ export async function DELETE(request: Request) {
         });
       },
     );
+
+    const index = pinecone.Index(PINECONE_INDEX_NAME);
+
+    try {
+      await index.namespace(id).deleteAll();
+    } catch (error) {
+      console.log(error);
+    }
 
     await prisma.document.delete({
       where: {
