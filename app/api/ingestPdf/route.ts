@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { TogetherAIEmbeddings } from '@langchain/community/embeddings/togetherai';
-import { PineconeStore } from '@langchain/community/vectorstores/pinecone';
+import { PineconeStore } from '@langchain/pinecone';
 import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import prisma from '@/utils/prisma';
@@ -11,7 +11,6 @@ const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
 
 const pinecone = new Pinecone({
   apiKey: process.env.PINECONE_API_KEY ?? '',
-  environment: process.env.PINECONE_ENVIRONMENT ?? '', //this is in the dashboard
 });
 
 if (!process.env.PINECONE_INDEX_NAME) {
