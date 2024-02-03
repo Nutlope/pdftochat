@@ -13,7 +13,7 @@ const data = [
     image: '/upload.png',
   },
   {
-    title: 'Begin Chating',
+    title: 'Begin Chatting',
     description: 'Simply start asking the AI any question about the PDF!',
     image: '/chat.png',
   },
@@ -28,7 +28,7 @@ const HowItWorks = () => {
       <h3 className="pb-[66px] sm:pb-[174px] text-center text-3xl sm:text-[60px] text_bg leading-[72px] tracking-[-0.6px] sm:tracking-[-1.2px]">
         How it Works
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-[64px] sm:gap-[112px]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-[64px] sm:gap-[112px] md:mx-20">
         {data.map((item, index) => (
           <div key={index} className="">
             <div className="flex justify-center items-center pb-2 sm:pb-[50px]">
@@ -44,7 +44,7 @@ const HowItWorks = () => {
               <h3 className="text-center text-primary text-2xl sm:text-5xl leading-[34.5px] tracking-[-1.2px]">
                 {item.title}
               </h3>
-              <p className="text-primary text-center text-[17px] sm:text-3xl leading-[20px] sm:leading-[34.5px] tracking-[-0.34px] sm:tracking-[-0.6px] pb-5 sm:pb-0">
+              <p className="text-primary text-center text-[17px] sm:text-2xl leading-[20px] sm:leading-[34.5px] tracking-[-0.34px] sm:tracking-[-0.6px] pb-5 sm:pb-0 max-w-sm">
                 {item.description}
               </p>
               <Link
@@ -52,7 +52,7 @@ const HowItWorks = () => {
                 className="flex gap-3 sm:gap-[33px] px-6 sm:px-[37px] py-[1px] sm:py-[14px] items-center border rounded-[29px] border-solid border-primary"
               >
                 <span className="text-[17px] sm:text-[30px] leading-[34.5px] tracking-[-0.34px] sm:tracking-[-0.6px]">
-                  Get started for free
+                  Get started
                 </span>
                 <Image
                   src="/right-arrow.svg"
