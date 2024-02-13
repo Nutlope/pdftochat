@@ -75,9 +75,7 @@ export default function DocumentClient({
     textAreaRef.current?.focus();
   }, []);
 
-  // TODO: Maybe define custom handleSubmit to set loading state and erase the input?
-
-  // // Prevent empty chat submissions
+  // Prevent empty chat submissions
   const handleEnter = (e: any) => {
     if (e.key === 'Enter' && messages) {
       handleSubmit(e);

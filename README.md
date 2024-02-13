@@ -63,6 +63,7 @@ You will also need to prepare your database schema by running `npx prisma db pus
 These are some future tasks that I have planned. Contributions are welcome!
 
 - [ ] Add a trash icon for folks to delete PDFs from the dashboard and implement delete functionality
+- [ ] Try different embedding models like UAE-large-v1 to see if it improves accuracy
 - [ ] Explore best practices for auto scrolling based on other chat apps like chatGPT
 - [ ] Do some prompt engineering for Mixtral to make replies as good as possible
 - [ ] Protect API routes by making sure users are signed in before executing chats
