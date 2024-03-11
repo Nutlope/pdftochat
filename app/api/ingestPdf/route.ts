@@ -1,24 +1,16 @@
 import { NextResponse } from 'next/server';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { TogetherAIEmbeddings } from '@langchain/community/embeddings/togetherai';
-import { PineconeStore } from '@langchain/pinecone';
-import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import prisma from '@/utils/prisma';
 import { getAuth } from '@clerk/nextjs/server';
-
-const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
-
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY ?? '',
-});
-
-if (!process.env.PINECONE_INDEX_NAME) {
-  throw new Error('Missing Pinecone index name in .env file');
-}
+import { loadEmbeddingsModel } from '../utils/embeddings';
+import { loadVectorStore } from '../utils/vector_store';
+import { MongoClient } from "mongodb";
 
 export async function POST(request: Request) {
-  const { fileUrl, fileName } = await request.json();
+  let mongoDbClient: MongoClient | null = null;
+
+  const { fileUrl, fileName, vectorStoreId } = await request.json();
 
   const { userId } = getAuth(request as any);
 
@@ -65,21 +57,27 @@ export async function POST(request: Request) {
     console.log('creating vector store...');
 
     /* create and store the embeddings in the vectorStore */
-    const embeddings = new TogetherAIEmbeddings({
-      apiKey: process.env.TOGETHER_AI_API_KEY,
-      modelName: 'togethercomputer/m2-bert-80M-8k-retrieval',
+    const embeddings = loadEmbeddingsModel();
+
+    const store = await loadVectorStore({
+      namespace: doc.id,
+      embeddings,
+      vectorStoreId,
     });
-    const index = pinecone.Index(PINECONE_INDEX_NAME);
+    const vectorstore = store.vectorstore;
+    if ("mongoDbClient" in store) {
+      mongoDbClient = store.mongoDbClient;
+    }
 
     // embed the PDF documents
-    await PineconeStore.fromDocuments(docs, embeddings, {
-      pineconeIndex: index,
-      namespace,
-      textKey: 'text',
-    });
+    await vectorstore.addDocuments(docs);
   } catch (error) {
     console.log('error', error);
     return NextResponse.json({ error: 'Failed to ingest your data' });
+  } finally {
+    if (mongoDbClient) {
+      await mongoDbClient.close();
+    }
   }
 
   return NextResponse.json({
