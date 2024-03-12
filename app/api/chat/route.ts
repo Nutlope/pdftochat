@@ -1,19 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Message as VercelChatMessage, StreamingTextResponse } from 'ai';
 
-import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-import { createRetrievalChain } from "langchain/chains/retrieval";
-import { createHistoryAwareRetriever } from "langchain/chains/history_aware_retriever";
+import { createStuffDocumentsChain } from 'langchain/chains/combine_documents';
+import { createRetrievalChain } from 'langchain/chains/retrieval';
+import { createHistoryAwareRetriever } from 'langchain/chains/history_aware_retriever';
 
-import { HumanMessage, AIMessage, ChatMessage } from "@langchain/core/messages";
+import { HumanMessage, AIMessage, ChatMessage } from '@langchain/core/messages';
 import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai';
-import { ChatPromptTemplate, MessagesPlaceholder } from '@langchain/core/prompts';
+import {
+  ChatPromptTemplate,
+  MessagesPlaceholder,
+} from '@langchain/core/prompts';
 import { Document } from '@langchain/core/documents';
 import { RunnableSequence, RunnablePick } from '@langchain/core/runnables';
-import {
-  HttpResponseOutputParser,
-} from 'langchain/output_parsers';
-import { MongoClient } from "mongodb";
+import { HttpResponseOutputParser } from 'langchain/output_parsers';
+import { MongoClient } from 'mongodb';
 import { loadVectorStore } from '../utils/vector_store';
 import { loadEmbeddingsModel } from '../utils/embeddings';
 
@@ -25,17 +26,19 @@ const formatVercelMessages = (message: VercelChatMessage) => {
   } else if (message.role === 'assistant') {
     return new AIMessage(message.content);
   } else {
-    console.warn(`Unknown message type passed: "${message.role}". Falling back to generic message type.`);
+    console.warn(
+      `Unknown message type passed: "${message.role}". Falling back to generic message type.`,
+    );
     return new ChatMessage({ content: message.content, role: message.role });
   }
 };
 
 const historyAwarePrompt = ChatPromptTemplate.fromMessages([
-  new MessagesPlaceholder("chat_history"),
-  ["user", "{input}"],
+  new MessagesPlaceholder('chat_history'),
+  ['user', '{input}'],
   [
-    "user",
-    "Given the above conversation, generate a concise vector store search query to look up in order to get information relevant to the conversation.",
+    'user',
+    'Given the above conversation, generate a concise vector store search query to look up in order to get information relevant to the conversation.',
   ],
 ]);
 
@@ -50,9 +53,9 @@ If the question is not related to the context, politely respond that you are tun
 Please return your answer in markdown with clear headings and lists.`;
 
 const answerPrompt = ChatPromptTemplate.fromMessages([
-  ["system", ANSWER_SYSTEM_TEMPLATE],
-  new MessagesPlaceholder("chat_history"),
-  ["user", "{input}"],
+  ['system', ANSWER_SYSTEM_TEMPLATE],
+  new MessagesPlaceholder('chat_history'),
+  ['user', '{input}'],
 ]);
 
 /**
@@ -69,7 +72,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const messages = body.messages ?? [];
     if (!messages.length) {
-      throw new Error("No messages provided.");
+      throw new Error('No messages provided.');
     }
     const formattedPreviousMessages = messages
       .slice(0, -1)
@@ -90,7 +93,7 @@ export async function POST(req: NextRequest) {
       embeddings,
     });
     const vectorstore = store.vectorstore;
-    if ("mongoDbClient" in store) {
+    if ('mongoDbClient' in store) {
       mongoDbClient = store.mongoDbClient;
     }
 
@@ -134,8 +137,8 @@ export async function POST(req: NextRequest) {
     // "Pick" the answer from the retrieval chain output object and stream it as bytes.
     const outputChain = RunnableSequence.from([
       conversationalRetrievalChain,
-      new RunnablePick({ keys: "answer" }),
-      new HttpResponseOutputParser({ contentType: "text/plain" }),
+      new RunnablePick({ keys: 'answer' }),
+      new HttpResponseOutputParser({ contentType: 'text/plain' }),
     ]);
 
     const stream = await outputChain.stream({

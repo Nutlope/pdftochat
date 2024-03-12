@@ -5,7 +5,7 @@ import prisma from '@/utils/prisma';
 import { getAuth } from '@clerk/nextjs/server';
 import { loadEmbeddingsModel } from '../utils/embeddings';
 import { loadVectorStore } from '../utils/vector_store';
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 
 export async function POST(request: Request) {
   let mongoDbClient: MongoClient | null = null;
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       embeddings,
     });
     const vectorstore = store.vectorstore;
-    if ("mongoDbClient" in store) {
+    if ('mongoDbClient' in store) {
       mongoDbClient = store.mongoDbClient;
     }
 

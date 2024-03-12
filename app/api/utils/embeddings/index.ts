@@ -1,4 +1,4 @@
-import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
+import { TogetherAIEmbeddings } from '@langchain/community/embeddings/togetherai';
 
 export function loadEmbeddingsModel() {
   return new TogetherAIEmbeddings({

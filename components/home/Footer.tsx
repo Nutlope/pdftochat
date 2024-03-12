@@ -2,39 +2,41 @@ import Logo from '../ui/Logo';
 import Link from 'next/link';
 
 const VectorStoreFooter = () => {
-  const vectorStoreEnv = process.env.NEXT_PUBLIC_VECTORSTORE ?? "pinecone";
+  const vectorStoreEnv = process.env.NEXT_PUBLIC_VECTORSTORE ?? 'pinecone';
 
-  if (vectorStoreEnv === "pinecone") {
+  if (vectorStoreEnv === 'pinecone') {
     return (
       <>
-      ,{' '}
-      <a
-      href="https://www.pinecone.io/"
-      target="_blank"
-      className="font-semibold transition hover:text-black/50"
-    >
-      MongoDB
-    </a>
-      , and{' '}
-      </>)
-  } else if (vectorStoreEnv === "mongodb") {
+        ,{' '}
+        <a
+          href="https://www.pinecone.io/"
+          target="_blank"
+          className="font-semibold transition hover:text-black/50"
+        >
+          MongoDB
+        </a>
+        , and{' '}
+      </>
+    );
+  } else if (vectorStoreEnv === 'mongodb') {
     return (
-    <>
-    ,{' '}
-    <a
-    href="https://www.pinecone.io/"
-    target="_blank"
-    className="font-semibold transition hover:text-black/50"
-  >
-    MongoDB
-  </a>
-    , and{' '}
-    </>)
+      <>
+        ,{' '}
+        <a
+          href="https://www.pinecone.io/"
+          target="_blank"
+          className="font-semibold transition hover:text-black/50"
+        >
+          MongoDB
+        </a>
+        , and{' '}
+      </>
+    );
   } else {
     console.error(`Invalid vector store id provided: ${vectorStoreEnv}`);
-    return <>, and{' '}</>
+    return <>, and </>;
   }
-}
+};
 
 const Footer = () => {
   return (

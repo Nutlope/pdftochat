@@ -9,7 +9,7 @@
     "start": "next start",
     "vercel-build": "prisma generate && next build",
     "prisma:generate": "prisma generate",
-    "format": "prettier --write \"src\""
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.3",

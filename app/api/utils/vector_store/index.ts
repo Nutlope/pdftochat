@@ -1,6 +1,6 @@
-import { Embeddings } from "@langchain/core/embeddings";
-import { loadPineconeStore } from "./pinecone";
-import { loadMongoDBStore } from "./mongo";
+import { Embeddings } from '@langchain/core/embeddings';
+import { loadPineconeStore } from './pinecone';
+import { loadMongoDBStore } from './mongo';
 
 export async function loadVectorStore({
   namespace,
@@ -9,19 +9,19 @@ export async function loadVectorStore({
   namespace: string;
   embeddings: Embeddings;
 }) {
-  const vectorStoreEnv = process.env.NEXT_PUBLIC_VECTORSTORE ?? "pinecone"
+  const vectorStoreEnv = process.env.NEXT_PUBLIC_VECTORSTORE ?? 'pinecone';
 
-  if (vectorStoreEnv === "pinecone") {
+  if (vectorStoreEnv === 'pinecone') {
     return await loadPineconeStore({
       namespace,
       embeddings,
-    })
-  } else if (vectorStoreEnv === "mongodb") {
+    });
+  } else if (vectorStoreEnv === 'mongodb') {
     return await loadMongoDBStore({
       collectionName: namespace,
       embeddings,
-    })
+    });
   } else {
-    throw new Error(`Invalid vector store id provided: ${vectorStoreEnv}`)
+    throw new Error(`Invalid vector store id provided: ${vectorStoreEnv}`);
   }
 }

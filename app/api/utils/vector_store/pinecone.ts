@@ -1,4 +1,4 @@
-import { Embeddings } from "@langchain/core/embeddings";
+import { Embeddings } from '@langchain/core/embeddings';
 import { Pinecone } from '@pinecone-database/pinecone';
 import { PineconeStore } from '@langchain/pinecone';
 
@@ -16,16 +16,13 @@ export async function loadPineconeStore({
   const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
   const index = pinecone.index(PINECONE_INDEX_NAME);
 
-  const vectorstore = await PineconeStore.fromExistingIndex(
-    embeddings,
-    {
-      pineconeIndex: index,
-      namespace,
-      textKey: 'text',
-    },
-  );
+  const vectorstore = await PineconeStore.fromExistingIndex(embeddings, {
+    pineconeIndex: index,
+    namespace,
+    textKey: 'text',
+  });
 
   return {
-    vectorstore
-  }
+    vectorstore,
+  };
 }
