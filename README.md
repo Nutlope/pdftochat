@@ -38,7 +38,7 @@ You can deploy this template to Vercel or any other host. Note that you'll need 
 
 - Set up [Together.ai](https://dub.sh/together-ai/)
 - Set up [Pinecone](https://www.pinecone.io/) with 768 dimensions
-- Or
+- or
 - Set up [MongoDB](https://www.mongodb.com/) Atlas database
 - Set up [Bytescale](https://www.bytescale.com/)
 - Set up [Clerk](https://clerk.dev/)
