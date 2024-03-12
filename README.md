@@ -25,6 +25,8 @@
 - M2 Bert 80M through [Together AI](https://dub.sh/together-ai) for embeddings
 - [LangChain.js](https://js.langchain.com/docs/get_started/introduction/) for the RAG code
 - [Pinecone](https://www.pinecone.io/) for the vector database
+- or
+- [MongoDB](https://www.mongodb.com/) for the vector database
 - [Bytescale](https://www.bytescale.com/) for the PDF storage
 - [Vercel](https://vercel.com/) for hosting and for the postgres DB
 - [Clerk](https://clerk.dev/) for user authentication
@@ -36,6 +38,8 @@ You can deploy this template to Vercel or any other host. Note that you'll need 
 
 - Set up [Together.ai](https://dub.sh/together-ai/)
 - Set up [Pinecone](https://www.pinecone.io/) with 768 dimensions
+- Or
+- Set up [MongoDB](https://www.mongodb.com/) Atlas database
 - Set up [Bytescale](https://www.bytescale.com/)
 - Set up [Clerk](https://clerk.dev/)
 - Set up [Vercel](https://vercel.com/)
