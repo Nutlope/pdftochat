@@ -13,7 +13,7 @@ const VectorStoreFooter = () => {
           target="_blank"
           className="font-semibold transition hover:text-black/50"
         >
-          MongoDB
+          Pinecone
         </a>
         , and{' '}
       </>
@@ -23,7 +23,7 @@ const VectorStoreFooter = () => {
       <>
         ,{' '}
         <a
-          href="https://www.pinecone.io/"
+          href="https://www.mongodb.com/"
           target="_blank"
           className="font-semibold transition hover:text-black/50"
         >
