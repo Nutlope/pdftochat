@@ -62,7 +62,6 @@ export async function POST(request: Request) {
     const store = await loadVectorStore({
       namespace: doc.id,
       embeddings,
-      vectorStoreId,
     });
     const vectorstore = store.vectorstore;
     if ("mongoDbClient" in store) {

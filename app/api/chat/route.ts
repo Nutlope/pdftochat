@@ -88,7 +88,6 @@ export async function POST(req: NextRequest) {
     const store = await loadVectorStore({
       namespace: chatId,
       embeddings,
-      vectorStoreId,
     });
     const vectorstore = store.vectorstore;
     if ("mongoDbClient" in store) {

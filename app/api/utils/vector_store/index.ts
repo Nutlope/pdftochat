@@ -5,23 +5,23 @@ import { loadMongoDBStore } from "./mongo";
 export async function loadVectorStore({
   namespace,
   embeddings,
-  vectorStoreId
 }: {
   namespace: string;
   embeddings: Embeddings;
-  vectorStoreId: string;
 }) {
-  if (vectorStoreId === "pinecone") {
+  const vectorStoreEnv = process.env.NEXT_PUBLIC_VECTORSTORE ?? "pinecone"
+
+  if (vectorStoreEnv === "pinecone") {
     return await loadPineconeStore({
       namespace,
       embeddings,
     })
-  } else if (vectorStoreId === "mongodb") {
+  } else if (vectorStoreEnv === "mongodb") {
     return await loadMongoDBStore({
       collectionName: namespace,
       embeddings,
     })
   } else {
-    throw new Error(`Invalid vector store id provided: ${vectorStoreId}`)
+    throw new Error(`Invalid vector store id provided: ${vectorStoreEnv}`)
   }
 }
