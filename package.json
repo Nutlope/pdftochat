@@ -58,8 +58,5 @@
     "prisma": "^5.2.0",
     "tsx": "^3.12.3",
     "typescript": "^5.2.2"
-  },
-  "overrides": {
-    "mongodb": "^6.3.0"
   }
 }

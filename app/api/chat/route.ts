@@ -14,7 +14,7 @@ import {
 import { Document } from '@langchain/core/documents';
 import { RunnableSequence, RunnablePick } from '@langchain/core/runnables';
 import { HttpResponseOutputParser } from 'langchain/output_parsers';
-import { MongoClient } from 'mongodb';
+import { type MongoClient } from 'mongodb';
 import { loadVectorStore } from '../utils/vector_store';
 import { loadEmbeddingsModel } from '../utils/embeddings';
 
@@ -136,8 +136,7 @@ export async function POST(req: NextRequest) {
 
     // "Pick" the answer from the retrieval chain output object and stream it as bytes.
     const outputChain = RunnableSequence.from([
-      conversationalRetrievalChain,
-      new RunnablePick({ keys: 'answer' }),
+      conversationalRetrievalChain.pick("answer"),
       new HttpResponseOutputParser({ contentType: 'text/plain' }),
     ]);
 

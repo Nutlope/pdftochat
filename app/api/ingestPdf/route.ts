@@ -5,7 +5,7 @@ import prisma from '@/utils/prisma';
 import { getAuth } from '@clerk/nextjs/server';
 import { loadEmbeddingsModel } from '../utils/embeddings';
 import { loadVectorStore } from '../utils/vector_store';
-import { MongoClient } from 'mongodb';
+import { type MongoClient } from 'mongodb';
 
 export async function POST(request: Request) {
   let mongoDbClient: MongoClient | null = null;
