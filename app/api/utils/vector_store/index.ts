@@ -18,7 +18,6 @@ export async function loadVectorStore({
     });
   } else if (vectorStoreEnv === 'mongodb') {
     return await loadMongoDBStore({
-      collectionName: namespace,
       embeddings,
     });
   } else {

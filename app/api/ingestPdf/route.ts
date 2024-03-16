@@ -52,7 +52,11 @@ export async function POST(request: Request) {
       chunkSize: 1000,
       chunkOverlap: 200,
     });
-    const docs = await textSplitter.splitDocuments(rawDocs);
+    const splitDocs = await textSplitter.splitDocuments(rawDocs);
+    // Necessary for Mongo - we'll query on this later.
+    for (const splitDoc of splitDocs) {
+      splitDoc.metadata.docstore_document_id = namespace;
+    }
 
     console.log('creating vector store...');
 
@@ -69,7 +73,7 @@ export async function POST(request: Request) {
     }
 
     // embed the PDF documents
-    await vectorstore.addDocuments(docs);
+    await vectorstore.addDocuments(splitDocs);
   } catch (error) {
     console.log('error', error);
     return NextResponse.json({ error: 'Failed to ingest your data' });

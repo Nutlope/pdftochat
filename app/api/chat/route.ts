@@ -12,13 +12,14 @@ import {
   MessagesPlaceholder,
 } from '@langchain/core/prompts';
 import { Document } from '@langchain/core/documents';
-import { RunnableSequence, RunnablePick } from '@langchain/core/runnables';
+import { RunnableSequence } from '@langchain/core/runnables';
 import { HttpResponseOutputParser } from 'langchain/output_parsers';
 import { type MongoClient } from 'mongodb';
 import { loadVectorStore } from '../utils/vector_store';
 import { loadEmbeddingsModel } from '../utils/embeddings';
 
-export const runtime = 'edge';
+export const runtime =
+  process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb' ? 'nodejs' : 'edge';
 
 const formatVercelMessages = (message: VercelChatMessage) => {
   if (message.role === 'user') {
@@ -102,7 +103,21 @@ export async function POST(req: NextRequest) {
       resolveWithDocuments = resolve;
     });
 
+    // For Mongo, we will use metadata filtering to separate documents.
+    // For Pinecone, we will use namespaces, so no filter is necessary.
+    const filter =
+      process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb'
+        ? {
+            preFilter: {
+              docstore_document_id: {
+                $eq: chatId,
+              },
+            },
+          }
+        : undefined;
+
     const retriever = vectorstore.asRetriever({
+      filter,
       callbacks: [
         {
           handleRetrieverEnd(documents) {
@@ -136,7 +151,7 @@ export async function POST(req: NextRequest) {
 
     // "Pick" the answer from the retrieval chain output object and stream it as bytes.
     const outputChain = RunnableSequence.from([
-      conversationalRetrievalChain.pick("answer"),
+      conversationalRetrievalChain.pick('answer'),
       new HttpResponseOutputParser({ contentType: 'text/plain' }),
     ]);
 
