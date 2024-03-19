@@ -86,6 +86,11 @@ export default function DocumentClient({
 
   let userProfilePic = userImage ? userImage : '/profile-icon.png';
 
+  const extractSourcePageNumber = (source: {
+    metadata: Record<string, any>;
+  }) => {
+    return source.metadata['loc.pageNumber'] ?? source.metadata.loc?.pageNumber;
+  };
   return (
     <div className="mx-auto flex flex-col no-scrollbar -mt-2">
       <Toggle chatOnlyView={chatOnlyView} setChatOnlyView={setChatOnlyView} />
@@ -166,12 +171,12 @@ export default function DocumentClient({
                           {sources
                             .filter((source: any, index: number, self: any) => {
                               const pageNumber =
-                                source.metadata['loc.pageNumber'];
+                                extractSourcePageNumber(source);
                               // Check if the current pageNumber is the first occurrence in the array
                               return (
                                 self.findIndex(
                                   (s: any) =>
-                                    s.metadata['loc.pageNumber'] === pageNumber,
+                                    extractSourcePageNumber(s) === pageNumber,
                                 ) === index
                               );
                             })
@@ -180,12 +185,11 @@ export default function DocumentClient({
                                 className="border bg-gray-200 px-3 py-1 hover:bg-gray-100 transition rounded-lg"
                                 onClick={() =>
                                   pageNavigationPluginInstance.jumpToPage(
-                                    Number(source.metadata['loc.pageNumber']) -
-                                      1,
+                                    Number(extractSourcePageNumber(source)) - 1,
                                   )
                                 }
                               >
-                                p. {source.metadata['loc.pageNumber']}
+                                p. {extractSourcePageNumber(source)}
                               </button>
                             ))}
                         </div>
