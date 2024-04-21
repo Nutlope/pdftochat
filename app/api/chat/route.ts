@@ -1,21 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Message as VercelChatMessage, StreamingTextResponse } from 'ai';
+import type { Message as VercelChatMessage } from 'ai';
+import { createRAGChain } from '@/utils/ragChain';
 
-import { createStuffDocumentsChain } from 'langchain/chains/combine_documents';
-import { createRetrievalChain } from 'langchain/chains/retrieval';
-import { createHistoryAwareRetriever } from 'langchain/chains/history_aware_retriever';
-
+import type { Document } from '@langchain/core/documents';
 import { HumanMessage, AIMessage, ChatMessage } from '@langchain/core/messages';
 import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai';
-import {
-  ChatPromptTemplate,
-  MessagesPlaceholder,
-} from '@langchain/core/prompts';
-import { Document } from '@langchain/core/documents';
-import { RunnableSequence } from '@langchain/core/runnables';
-import { HttpResponseOutputParser } from 'langchain/output_parsers';
 import { type MongoClient } from 'mongodb';
-import { loadVectorStore } from '../utils/vector_store';
+import { loadRetriever } from '../utils/vector_store';
 import { loadEmbeddingsModel } from '../utils/embeddings';
 
 export const runtime =
@@ -34,31 +25,6 @@ const formatVercelMessages = (message: VercelChatMessage) => {
   }
 };
 
-const historyAwarePrompt = ChatPromptTemplate.fromMessages([
-  new MessagesPlaceholder('chat_history'),
-  ['user', '{input}'],
-  [
-    'user',
-    'Given the above conversation, generate a concise vector store search query to look up in order to get information relevant to the conversation.',
-  ],
-]);
-
-const ANSWER_SYSTEM_TEMPLATE = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end.
-If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
-If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.
-
-<context>
-{context}
-</context>
-
-Please return your answer in markdown with clear headings and lists.`;
-
-const answerPrompt = ChatPromptTemplate.fromMessages([
-  ['system', ANSWER_SYSTEM_TEMPLATE],
-  new MessagesPlaceholder('chat_history'),
-  ['user', '{input}'],
-]);
-
 /**
  * This handler initializes and calls a retrieval chain. It composes the chain using
  * LangChain Expression Language. See the docs for more information:
@@ -67,7 +33,7 @@ const answerPrompt = ChatPromptTemplate.fromMessages([
  * https://js.langchain.com/docs/guides/expression_language/cookbook#conversational-retrieval-chain
  */
 export async function POST(req: NextRequest) {
-  let mongoDbClient: MongoClient | null = null;
+  let mongoDbClient: MongoClient | undefined;
 
   try {
     const body = await req.json();
@@ -88,36 +54,14 @@ export async function POST(req: NextRequest) {
 
     const embeddings = loadEmbeddingsModel();
 
-    const vectorStoreId = body.vectorStoreId;
-    const store = await loadVectorStore({
-      namespace: chatId,
-      embeddings,
-    });
-    const vectorstore = store.vectorstore;
-    if ('mongoDbClient' in store) {
-      mongoDbClient = store.mongoDbClient;
-    }
-
     let resolveWithDocuments: (value: Document[]) => void;
     const documentPromise = new Promise<Document[]>((resolve) => {
       resolveWithDocuments = resolve;
     });
 
-    // For Mongo, we will use metadata filtering to separate documents.
-    // For Pinecone, we will use namespaces, so no filter is necessary.
-    const filter =
-      process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb'
-        ? {
-            preFilter: {
-              docstore_document_id: {
-                $eq: chatId,
-              },
-            },
-          }
-        : undefined;
-
-    const retriever = vectorstore.asRetriever({
-      filter,
+    const retrieverInfo = await loadRetriever({
+      chatId,
+      embeddings,
       callbacks: [
         {
           handleRetrieverEnd(documents) {
@@ -129,35 +73,14 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    // Create a chain that can rephrase incoming questions for the retriever,
-    // taking previous chat history into account. Returns relevant documents.
-    const historyAwareRetrieverChain = await createHistoryAwareRetriever({
-      llm: model,
-      retriever,
-      rephrasePrompt: historyAwarePrompt,
-    });
+    const retriever = retrieverInfo.retriever;
+    mongoDbClient = retrieverInfo.mongoDbClient;
 
-    // Create a chain that answers questions using retrieved relevant documents as context.
-    const documentChain = await createStuffDocumentsChain({
-      llm: model,
-      prompt: answerPrompt,
-    });
+    const ragChain = await createRAGChain(model, retriever);
 
-    // Create a chain that combines the above retriever and question answering chains.
-    const conversationalRetrievalChain = await createRetrievalChain({
-      retriever: historyAwareRetrieverChain,
-      combineDocsChain: documentChain,
-    });
-
-    // "Pick" the answer from the retrieval chain output object and stream it as bytes.
-    const outputChain = RunnableSequence.from([
-      conversationalRetrievalChain.pick('answer'),
-      new HttpResponseOutputParser({ contentType: 'text/plain' }),
-    ]);
-
-    const stream = await outputChain.stream({
-      chat_history: formattedPreviousMessages,
+    const stream = await ragChain.stream({
       input: currentMessageContent,
+      chat_history: formattedPreviousMessages,
     });
 
     const documents = await documentPromise;
@@ -172,7 +95,10 @@ export async function POST(req: NextRequest) {
       ),
     ).toString('base64');
 
-    return new StreamingTextResponse(stream, {
+    // Convert to bytes so that we can pass into the HTTP response
+    const byteStream = stream.pipeThrough(new TextEncoderStream());
+
+    return new Response(byteStream, {
       headers: {
         'x-message-index': (formattedPreviousMessages.length + 1).toString(),
         'x-sources': serializedSources,
