@@ -1,28 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Message as VercelChatMessage, StreamingTextResponse } from 'ai';
 
-import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-import { createRetrievalChain } from "langchain/chains/retrieval";
-import { createHistoryAwareRetriever } from "langchain/chains/history_aware_retriever";
+import { createStuffDocumentsChain } from 'langchain/chains/combine_documents';
+import { createRetrievalChain } from 'langchain/chains/retrieval';
+import { createHistoryAwareRetriever } from 'langchain/chains/history_aware_retriever';
 
-import { HumanMessage, AIMessage, ChatMessage } from "@langchain/core/messages";
+import { HumanMessage, AIMessage, ChatMessage } from '@langchain/core/messages';
 import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai';
-import { ChatPromptTemplate, MessagesPlaceholder } from '@langchain/core/prompts';
-import { PineconeStore } from '@langchain/pinecone';
-import { Document } from '@langchain/core/documents';
-import { RunnableSequence, RunnablePick } from '@langchain/core/runnables';
-import { TogetherAIEmbeddings } from '@langchain/community/embeddings/togetherai';
 import {
-  HttpResponseOutputParser,
-} from 'langchain/output_parsers';
+  ChatPromptTemplate,
+  MessagesPlaceholder,
+} from '@langchain/core/prompts';
+import { Document } from '@langchain/core/documents';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { HttpResponseOutputParser } from 'langchain/output_parsers';
+import { type MongoClient } from 'mongodb';
+import { loadVectorStore } from '../utils/vector_store';
+import { loadEmbeddingsModel } from '../utils/embeddings';
 
-import { Pinecone } from '@pinecone-database/pinecone';
-
-export const runtime = 'edge';
-
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY ?? '',
-});
+export const runtime =
+  process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb' ? 'nodejs' : 'edge';
 
 const formatVercelMessages = (message: VercelChatMessage) => {
   if (message.role === 'user') {
@@ -30,17 +27,19 @@ const formatVercelMessages = (message: VercelChatMessage) => {
   } else if (message.role === 'assistant') {
     return new AIMessage(message.content);
   } else {
-    console.warn(`Unknown message type passed: "${message.role}". Falling back to generic message type.`);
+    console.warn(
+      `Unknown message type passed: "${message.role}". Falling back to generic message type.`,
+    );
     return new ChatMessage({ content: message.content, role: message.role });
   }
 };
 
 const historyAwarePrompt = ChatPromptTemplate.fromMessages([
-  new MessagesPlaceholder("chat_history"),
-  ["user", "{input}"],
+  new MessagesPlaceholder('chat_history'),
+  ['user', '{input}'],
   [
-    "user",
-    "Given the above conversation, generate a concise vector store search query to look up in order to get information relevant to the conversation.",
+    'user',
+    'Given the above conversation, generate a concise vector store search query to look up in order to get information relevant to the conversation.',
   ],
 ]);
 
@@ -55,9 +54,9 @@ If the question is not related to the context, politely respond that you are tun
 Please return your answer in markdown with clear headings and lists.`;
 
 const answerPrompt = ChatPromptTemplate.fromMessages([
-  ["system", ANSWER_SYSTEM_TEMPLATE],
-  new MessagesPlaceholder("chat_history"),
-  ["user", "{input}"],
+  ['system', ANSWER_SYSTEM_TEMPLATE],
+  new MessagesPlaceholder('chat_history'),
+  ['user', '{input}'],
 ]);
 
 /**
@@ -68,11 +67,13 @@ const answerPrompt = ChatPromptTemplate.fromMessages([
  * https://js.langchain.com/docs/guides/expression_language/cookbook#conversational-retrieval-chain
  */
 export async function POST(req: NextRequest) {
+  let mongoDbClient: MongoClient | null = null;
+
   try {
     const body = await req.json();
     const messages = body.messages ?? [];
     if (!messages.length) {
-      throw new Error("No messages provided.");
+      throw new Error('No messages provided.');
     }
     const formattedPreviousMessages = messages
       .slice(0, -1)
@@ -85,26 +86,38 @@ export async function POST(req: NextRequest) {
       temperature: 0,
     });
 
-    const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
-    const index = pinecone.index(PINECONE_INDEX_NAME);
+    const embeddings = loadEmbeddingsModel();
 
-    const vectorstore = await PineconeStore.fromExistingIndex(
-      new TogetherAIEmbeddings({
-        apiKey: process.env.TOGETHER_AI_API_KEY,
-        modelName: 'togethercomputer/m2-bert-80M-8k-retrieval',
-      }),
-      {
-        pineconeIndex: index,
-        namespace: chatId,
-      },
-    );
+    const vectorStoreId = body.vectorStoreId;
+    const store = await loadVectorStore({
+      namespace: chatId,
+      embeddings,
+    });
+    const vectorstore = store.vectorstore;
+    if ('mongoDbClient' in store) {
+      mongoDbClient = store.mongoDbClient;
+    }
 
     let resolveWithDocuments: (value: Document[]) => void;
     const documentPromise = new Promise<Document[]>((resolve) => {
       resolveWithDocuments = resolve;
     });
 
+    // For Mongo, we will use metadata filtering to separate documents.
+    // For Pinecone, we will use namespaces, so no filter is necessary.
+    const filter =
+      process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb'
+        ? {
+            preFilter: {
+              docstore_document_id: {
+                $eq: chatId,
+              },
+            },
+          }
+        : undefined;
+
     const retriever = vectorstore.asRetriever({
+      filter,
       callbacks: [
         {
           handleRetrieverEnd(documents) {
@@ -138,9 +151,8 @@ export async function POST(req: NextRequest) {
 
     // "Pick" the answer from the retrieval chain output object and stream it as bytes.
     const outputChain = RunnableSequence.from([
-      conversationalRetrievalChain,
-      new RunnablePick({ keys: "answer" }),
-      new HttpResponseOutputParser({ contentType: "text/plain" }),
+      conversationalRetrievalChain.pick('answer'),
+      new HttpResponseOutputParser({ contentType: 'text/plain' }),
     ]);
 
     const stream = await outputChain.stream({
@@ -168,5 +180,9 @@ export async function POST(req: NextRequest) {
     });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
+  } finally {
+    if (mongoDbClient) {
+      await mongoDbClient.close();
+    }
   }
 }
