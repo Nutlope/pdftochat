@@ -13,7 +13,10 @@
   "dependencies": {
     "@clerk/nextjs": "^4.29.3",
     "@headlessui/react": "^1.7.18",
-    "@langchain/community": "^0.0.24",
+    "@langchain/anthropic": "^0.1.17",
+    "@langchain/community": "^0.0.55",
+    "@langchain/core": "^0.1.62",
+    "@langchain/openai": "^0.0.28",
     "@langchain/pinecone": "^0.0.1",
     "@pinecone-database/pinecone": "^2.0.1",
     "@prisma/client": "^5.2.0",
@@ -28,6 +31,7 @@
     "date-fns": "^2.30.0",
     "dotenv": "^16.0.3",
     "langchain": "^0.1.11",
+    "langsmith": "^0.1.22",
     "lucide-react": "^0.125.0",
     "next": "^13.5.4",
     "pdf-parse": "1.1.1",
@@ -38,7 +42,8 @@
     "react-uploader": "^3.43.0",
     "tailwind-merge": "^1.10.0",
     "tailwindcss": "^3.3.3",
-    "uploader": "^3.48.3"
+    "uploader": "^3.48.3",
+    "zod": "^3.23.6"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",
