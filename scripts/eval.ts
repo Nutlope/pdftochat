@@ -129,7 +129,7 @@ You should compare generated answers against the baseline answers.`,
       .join('\n'),
   };
 
-  console.log("\n---The jury is running!---\n")
+  console.log('\n---The jury is running!---\n');
   const results = await Promise.all([
     openAIChain.invoke(input).then((result) => ({ result, model: 'openai' })),
     anthropicChain
@@ -157,7 +157,9 @@ You should compare generated answers against the baseline answers.`,
       case 4:
         return 0;
       default:
-        throw new Error(`Invalid score. ${parsed} is not a valid score.\nRaw: ${r.result}`);
+        throw new Error(
+          `Invalid score. ${parsed} is not a valid score.\nRaw: ${r.result}`,
+        );
     }
   });
 
@@ -211,7 +213,7 @@ async function runEval() {
     maxConcurrency: 10,
   });
 
-  console.log("\n---Evaluation Results---\n")
+  console.log('\n---Evaluation Results---\n');
   console.log(`pdftochat-${process.env.TOGETHER_EVAL_MODEL}`);
   console.log(evalResults.results[0].evaluationResults);
 }
