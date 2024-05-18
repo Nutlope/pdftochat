@@ -1,0 +1,17 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_ATLAS_URI")
+}
+
+model Document {
+    id        String  @id @default(auto()) @map("_id") @db.ObjectId
+    userId    String
+    fileUrl   String
+    fileName  String
+    createdAt DateTime @default(now()) @map(name: "created_at")
+}
