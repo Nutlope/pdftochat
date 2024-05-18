@@ -2,14 +2,14 @@ generator client {
     provider = "prisma-client-js"
 }
 
+
 datasource db {
-    provider  = "postgresql"
-    url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "mongodb"
+  url      = env("MONGODB_ATLAS_URI")
 }
 
 model Document {
-    id        String   @id @default(cuid())
+    id        String  @id @default(auto()) @map("_id") @db.ObjectId
     userId    String
     fileUrl   String
     fileName  String
