@@ -2,7 +2,7 @@ import '../styles/globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 import { Anek_Bangla } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/react';
+import PlausibleProvider from 'next-plausible';
 
 const anek = Anek_Bangla({
   subsets: ['latin'],
@@ -47,10 +47,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className={anek.className}>
-        <body>
-          <Analytics />
-          {children}
-        </body>
+        <head>
+          <PlausibleProvider domain="pdftochat.com" />
+        </head>
+        <body>{children}</body>
       </html>
     </ClerkProvider>
   );
