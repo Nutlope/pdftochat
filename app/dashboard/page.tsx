@@ -17,7 +17,7 @@ export default async function Page() {
 
   return (
     <div>
-      <DashboardClient docsList={docsList} />
+      <DashboardClient initialDocsList={docsList} />
     </div>
   );
 }
