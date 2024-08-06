@@ -24,7 +24,7 @@
 - Mixtral through [Together AI](https://dub.sh/together-ai) inference for the LLM
 - M2 Bert 80M through [Together AI](https://dub.sh/together-ai) for embeddings
 - [LangChain.js](https://js.langchain.com/docs/get_started/introduction/) for the RAG code
-- [Pinecone](https://www.pinecone.io/) or [MongoDB Atlas](https://www.mongodb.com/atlas/database) for the vector database
+- [MongoDB Atlas](https://www.mongodb.com/atlas/database) for the vector database
 - [Bytescale](https://www.bytescale.com/) for the PDF storage
 - [Vercel](https://vercel.com/) for hosting and for the postgres DB
 - [Clerk](https://clerk.dev/) for user authentication
@@ -35,7 +35,7 @@
 You can deploy this template to Vercel or any other host. Note that you'll need to:
 
 - Set up [Together.ai](https://dub.sh/together-ai/)
-- Set up a [Pinecone](https://www.pinecone.io/) or [MongoDB Atlas](https://www.mongodb.com/atlas/database) Atlas database with 768 dimensions
+- Set up a [MongoDB Atlas](https://www.mongodb.com/atlas/database) Atlas database with 768 dimensions
   - See instructions below for MongoDB
 - Set up [Bytescale](https://www.bytescale.com/)
 - Set up [Clerk](https://clerk.dev/)
