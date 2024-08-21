@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 
 const ragchat = new RAGChat({
   vector: new Index(),
+  // This model is not even being used for embedding conversion Upstash does that automatically.
   model: togetherai('togethercomputer/m2-bert-80M-8k-retrieval', {
     apiKey: process.env.TOGETHER_AI_API_KEY,
   }),
