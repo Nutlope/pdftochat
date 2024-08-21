@@ -16,7 +16,7 @@ const ragchat = new RAGChat({
 export async function POST(request: Request) {
   const { fileUrl, fileName } = await request.json();
   const { userId } = getAuth(request as any);
-  console.log({ fileUrl, fileName });
+
   if (!userId) {
     return NextResponse.json({ error: 'You must be logged in to ingest data' });
   }
