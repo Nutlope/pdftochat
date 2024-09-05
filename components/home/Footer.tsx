@@ -23,6 +23,7 @@ const Footer = () => {
           >
             Mixtral
           </a>
+          ,{' '}
           <a
             href="https://www.mongodb.com/"
             target="_blank"
