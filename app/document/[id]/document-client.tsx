@@ -98,7 +98,7 @@ export default function DocumentClient({
         {/* Left hand side */}
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.js">
           <div
-            className={`w-full h-[90vh] flex-col text-white !important ${
+            className={`w-full h-[90vh] flex-col text-white !important  ${
               chatOnlyView ? 'hidden' : 'flex'
             }`}
           >

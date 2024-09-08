@@ -41,6 +41,8 @@ export async function POST(req: NextRequest) {
     if (!messages.length) {
       throw new Error('No messages provided.');
     }
+    console.log("\n\n\n Here are the message \n\n")
+    console.log(messages)
     const formattedPreviousMessages = messages
       .slice(0, -1)
       .map(formatVercelMessages);
