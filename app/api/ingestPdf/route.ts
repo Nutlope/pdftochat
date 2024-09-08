@@ -93,8 +93,6 @@ export async function DELETE(request: Request) {
   let mongoDbClient: MongoClient | null = null;
 
   const { id } = await request.json();
-  console.log(id)
-  console.log("\n\n\n")
   const { userId } = getAuth(request as any);
 
   if (!userId) {
@@ -107,8 +105,6 @@ export async function DELETE(request: Request) {
       id,
     },
   });
-  console.log(doc)
-  console.log("\n\n\n")
 
   if (!doc) {
     return NextResponse.json({ error: 'Document not found' });
@@ -122,22 +118,12 @@ export async function DELETE(request: Request) {
     // Load the vector store
 
     const embeddings = loadEmbeddingsModel();
-    console.log(embeddings)
-    console.log("\n\n\n")
     const store = await loadVectorStore({ namespace: id, embeddings });
 
-    console.log(store)
-    console.log("\n\n\n")
-
-
-
     const vectorstore = store.vectorstore;
-    console.log(vectorstore)
-    console.log("\n\n\n")
     //@ts-ignore
     const collection = store.collection;
     console.log(collection)
-    console.log("\n\n\n")
     if ('mongoDbClient' in store) {
       mongoDbClient = store.mongoDbClient;
     }
