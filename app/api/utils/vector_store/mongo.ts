@@ -22,6 +22,7 @@ export async function loadMongoDBStore({
 
   return {
     vectorstore,
+    collection,
     mongoDbClient,
   };
 }

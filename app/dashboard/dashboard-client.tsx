@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import DocIcon from '@/components/ui/DocIcon';
 import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
-
+import { Trash2Icon } from 'lucide-react'
+import { Bars } from 'react-loader-spinner'
 // Configuration for the uploader
 const uploader = Uploader({
   apiKey: !!process.env.NEXT_PUBLIC_BYTESCALE_API_KEY
@@ -18,7 +19,7 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const options = {
     maxFileCount: 1,
     mimeTypes: ['application/pdf'],
@@ -70,6 +71,39 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
     router.push(`/document/${data.id}`);
   }
 
+  const handleDeleteDocs = async (_id: string) => {
+    console.log(_id)
+    setDeleteLoading(true);
+    try {
+      let res = await fetch('/api/ingestPdf', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: _id
+        }),
+      });
+      console.log(res)
+      if (res.statusText == "OK") {
+        let data = await res.json();
+        console.log(data)
+        setDeleteLoading(false)
+        router.refresh()
+      } else {
+        setDeleteLoading(false)
+      }
+
+    } catch (error) {
+      console.log(error)
+      setDeleteLoading(false)
+    }
+    finally {
+      setDeleteLoading(false)
+
+    }
+  }
+
   return (
     <div className="mx-auto flex flex-col gap-4 container mt-10">
       <h1 className="text-4xl leading-[1.1] tracking-tighter font-medium text-center">
@@ -90,7 +124,27 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
                   <DocIcon />
                   <span>{doc.fileName}</span>
                 </button>
-                <span>{formatDistanceToNow(doc.createdAt)} ago</span>
+                <div className='flex gap-4'>
+                  <span>
+
+                    {formatDistanceToNow(doc.createdAt)} ago
+                  </span>
+                  <span className='cursor-pointer' onClick={() => handleDeleteDocs(doc.id)}>
+                    {
+                      deleteLoading ?
+                        <Bars
+                          height="20"
+                          width="20"
+                          // radius="9"
+                          color="black"
+                          ariaLabel="loading"
+                        />
+                        :
+                        <Trash2Icon />
+                    }
+                  </span>
+                </div>
+
               </div>
             ))}
           </div>
