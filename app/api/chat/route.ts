@@ -1,13 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
 import type { Message as VercelChatMessage } from 'ai';
-import { createRAGChain } from '@/utils/ragChain';
+import { NextRequest, NextResponse } from 'next/server';
 
-import type { Document } from '@langchain/core/documents';
-import { HumanMessage, AIMessage, ChatMessage } from '@langchain/core/messages';
-import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai';
-import { type MongoClient } from 'mongodb';
-import { loadRetriever } from '../utils/vector_store';
-import { loadEmbeddingsModel } from '../utils/embeddings';
+import { AIMessage, ChatMessage, HumanMessage } from '@langchain/core/messages';
+import {
+  openai,
+  PrepareChatResult,
+  RAGChat,
+  togetherai,
+} from '@upstash/rag-chat';
+import { aiUseChatAdapter } from '@upstash/rag-chat/nextjs';
+import { Index } from '@upstash/vector';
 
 export const runtime =
   process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb' ? 'nodejs' : 'edge';
@@ -33,8 +35,6 @@ const formatVercelMessages = (message: VercelChatMessage) => {
  * https://js.langchain.com/docs/guides/expression_language/cookbook#conversational-retrieval-chain
  */
 export async function POST(req: NextRequest) {
-  let mongoDbClient: MongoClient | undefined;
-
   try {
     const body = await req.json();
     const messages = body.messages ?? [];
@@ -47,58 +47,50 @@ export async function POST(req: NextRequest) {
     const currentMessageContent = messages[messages.length - 1].content;
     const chatId = body.chatId;
 
-    const model = new ChatTogetherAI({
-      modelName: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
-      temperature: 0,
+    const ragchat = new RAGChat({
+      vector: new Index(),
+      model: togetherai('mistralai/Mixtral-8x7B-Instruct-v0.1', {
+        temperature: 0,
+        apiKey: process.env.TOGETHER_AI_API_KEY,
+      }),
+      debug: process.env.NODE_ENV == 'development',
     });
 
-    const embeddings = loadEmbeddingsModel();
+    let serializedSources: string = '';
+    const stream = await ragchat.chat(currentMessageContent, {
+      onContextFetched(context) {
+        serializedSources = Buffer.from(
+          JSON.stringify(
+            context.map((doc) => {
+              return {
+                pageContent: doc.data.slice(0, 50) + '...',
+                metadata: doc.metadata,
+              };
+            }),
+          ),
+        ).toString('base64');
+        return context;
+      },
+      promptFn({ context, chatHistory }) {
+        return `
+          You are a helpful AI assistant. Use the following pieces of context and chat history to answer the question at the end.
+          If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
+          If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.
 
-    let resolveWithDocuments: (value: Document[]) => void;
-    const documentPromise = new Promise<Document[]>((resolve) => {
-      resolveWithDocuments = resolve;
+          <context>
+          ${context}
+          </context>
+          <chat_history>
+          ${chatHistory}
+          </chat_history>
+          Please return your answer in markdown with clear headings and lists.
+              `;
+      },
+      namespace: chatId,
+      streaming: true,
     });
 
-    const retrieverInfo = await loadRetriever({
-      chatId,
-      embeddings,
-      callbacks: [
-        {
-          handleRetrieverEnd(documents) {
-            // Extract retrieved source documents so that they can be displayed as sources
-            // on the frontend.
-            resolveWithDocuments(documents);
-          },
-        },
-      ],
-    });
-
-    const retriever = retrieverInfo.retriever;
-    mongoDbClient = retrieverInfo.mongoDbClient;
-
-    const ragChain = await createRAGChain(model, retriever);
-
-    const stream = await ragChain.stream({
-      input: currentMessageContent,
-      chat_history: formattedPreviousMessages,
-    });
-
-    const documents = await documentPromise;
-    const serializedSources = Buffer.from(
-      JSON.stringify(
-        documents.map((doc) => {
-          return {
-            pageContent: doc.pageContent.slice(0, 50) + '...',
-            metadata: doc.metadata,
-          };
-        }),
-      ),
-    ).toString('base64');
-
-    // Convert to bytes so that we can pass into the HTTP response
-    const byteStream = stream.pipeThrough(new TextEncoderStream());
-
-    return new Response(byteStream, {
+    return new Response(stream.output, {
       headers: {
         'x-message-index': (formattedPreviousMessages.length + 1).toString(),
         'x-sources': serializedSources,
@@ -106,9 +98,5 @@ export async function POST(req: NextRequest) {
     });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
-  } finally {
-    if (mongoDbClient) {
-      await mongoDbClient.close();
-    }
   }
 }
