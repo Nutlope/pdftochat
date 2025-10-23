@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { Message as VercelChatMessage } from 'ai';
 import { createRAGChain } from '@/utils/ragChain';
+
 import type { Document } from '@langchain/core/documents';
 import { HumanMessage, AIMessage, ChatMessage } from '@langchain/core/messages';
-import { ChatOpenAI } from '@langchain/openai';
-import { sessionManager } from '@/lib/session-manager';
+import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai';
+import { type MongoClient } from 'mongodb';
+import { loadRetriever } from '../utils/vector_store';
+import { loadEmbeddingsModel } from '../utils/embeddings';
 
-export const runtime = 'nodejs';
+export const runtime =
+  process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb' ? 'nodejs' : 'edge';
 
 const formatVercelMessages = (message: VercelChatMessage) => {
   if (message.role === 'user') {
@@ -22,90 +26,76 @@ const formatVercelMessages = (message: VercelChatMessage) => {
 };
 
 /**
- * Simplified chat handler that works with session-based in-memory vector stores
+ * This handler initializes and calls a retrieval chain. It composes the chain using
+ * LangChain Expression Language. See the docs for more information:
+ *
+ * https://js.langchain.com/docs/get_started/quickstart
+ * https://js.langchain.com/docs/guides/expression_language/cookbook#conversational-retrieval-chain
  */
 export async function POST(req: NextRequest) {
+  let mongoDbClient: MongoClient | undefined;
+
   try {
     const body = await req.json();
     const messages = body.messages ?? [];
-    const sessionId = body.sessionId;
-
-    if (!sessionId) {
-      return NextResponse.json(
-        { error: 'Session ID is required' },
-        { status: 400 }
-      );
-    }
-
     if (!messages.length) {
-      return NextResponse.json(
-        { error: 'No messages provided' },
-        { status: 400 }
-      );
+      throw new Error('No messages provided.');
     }
-
-    // Get session data
-    const session = sessionManager.getSession(sessionId);
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session not found or expired. Please select documents again.' },
-        { status: 404 }
-      );
-    }
-
     const formattedPreviousMessages = messages
       .slice(0, -1)
       .map(formatVercelMessages);
     const currentMessageContent = messages[messages.length - 1].content;
+    const chatId = body.chatId;
 
-    // Use OpenAI
-    const model = new ChatOpenAI({
-      modelName: 'gpt-4-turbo-preview',
+    const model = new ChatTogetherAI({
+      modelName: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
       temperature: 0,
-      openAIApiKey: process.env.OPENAI_API_KEY,
     });
 
-    // Get retriever from session's vector store
-    let retrievedDocuments: Document[] = [];
-    const retriever = session.vectorStore.asRetriever({
+    const embeddings = loadEmbeddingsModel();
+
+    let resolveWithDocuments: (value: Document[]) => void;
+    const documentPromise = new Promise<Document[]>((resolve) => {
+      resolveWithDocuments = resolve;
+    });
+
+    const retrieverInfo = await loadRetriever({
+      chatId,
+      embeddings,
       callbacks: [
         {
           handleRetrieverEnd(documents) {
-            retrievedDocuments = documents;
+            // Extract retrieved source documents so that they can be displayed as sources
+            // on the frontend.
+            resolveWithDocuments(documents);
           },
         },
       ],
     });
 
-    // Create RAG chain
+    const retriever = retrieverInfo.retriever;
+    mongoDbClient = retrieverInfo.mongoDbClient;
+
     const ragChain = await createRAGChain(model, retriever);
 
-    // Stream response
     const stream = await ragChain.stream({
       input: currentMessageContent,
       chat_history: formattedPreviousMessages,
     });
 
-    // Wait a bit for retriever callback to complete
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    // Serialize sources with page numbers
+    const documents = await documentPromise;
     const serializedSources = Buffer.from(
       JSON.stringify(
-        retrievedDocuments.map((doc) => {
+        documents.map((doc) => {
           return {
-            pageContent: doc.pageContent.slice(0, 100) + '...',
-            metadata: {
-              ...doc.metadata,
-              page: doc.metadata.loc?.pageNumber || doc.metadata.page || 1,
-              documentName: doc.metadata.documentName || 'Unknown'
-            },
+            pageContent: doc.pageContent.slice(0, 50) + '...',
+            metadata: doc.metadata,
           };
         }),
       ),
     ).toString('base64');
 
-    // Convert to bytes for HTTP response
+    // Convert to bytes so that we can pass into the HTTP response
     const byteStream = stream.pipeThrough(new TextEncoderStream());
 
     return new Response(byteStream, {
@@ -115,7 +105,10 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (e: any) {
-    console.error('Chat error:', e);
     return NextResponse.json({ error: e.message }, { status: 500 });
+  } finally {
+    if (mongoDbClient) {
+      await mongoDbClient.close();
+    }
   }
 }
