@@ -1,128 +1,223 @@
 <a href="https://www.pdftochat.com/">
-  <img alt="PDFToChat – Chat with your PDFs in seconds." src="./public/og-image.png">
+  <img alt="PDFToChat – Chat with your PDFs in seconds." src="./public/og-image.png">
   <h1 align="center">PDFToChat</h1>
 </a>
 
 <p align="center">
-  Chat with your PDFs in seconds. Powered by Together AI and Pinecone.
+  Chat with your PDFs in seconds. Simplified, lightweight, and runs completely in Next.js.
 </p>
 
 <p align="center">
+  <a href="#features"><strong>Features</strong></a> ·
   <a href="#tech-stack"><strong>Tech Stack</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#common-errors"><strong>Common Errors</strong></a>
-  ·
-  <a href="#credits"><strong>Credits</strong></a>
-  ·
-  <a href="#future-tasks"><strong>Future Tasks</strong></a>
+  <a href="#getting-started"><strong>Getting Started</strong></a> ·
+  <a href="#how-it-works"><strong>How It Works</strong></a>
 </p>
 <br/>
 
+## Features
+
+- ✅ **No Database Required** - All processing happens in-memory
+- ✅ **No Authentication** - Simple, public Q&A interface
+- ✅ **Document Selection** - Choose which PDFs to include in your session
+- ✅ **Page-Level Citations** - Get exact page numbers for sources
+- ✅ **Session-Based** - Each user gets an isolated session (1 hour timeout)
+- ✅ **Minimal Resources** - Lightweight and efficient
+- ✅ **Easy Setup** - Just add PDFs and an OpenAI API key
+
 ## Tech Stack
 
-- Next.js [App Router](https://nextjs.org/docs/app) for the framework
-- Mixtral through [Together AI](https://togetherai.link) inference for the LLM
-- M2 Bert 80M through [Together AI](https://togetherai.link) for embeddings
-- [LangChain.js](https://js.langchain.com/docs/get_started/introduction/) for the RAG code
-- [MongoDB Atlas](https://www.mongodb.com/atlas/database) for the vector database
-- [Bytescale](https://www.bytescale.com/) for the PDF storage
-- [Vercel](https://vercel.com/) for hosting and for the postgres DB
-- [Clerk](https://clerk.dev/) for user authentication
-- [Tailwind CSS](https://tailwindcss.com/) for styling
+- **Framework**: Next.js 13 (App Router)
+- **LLM**: OpenAI GPT-4 Turbo
+- **Embeddings**: OpenAI Embeddings
+- **RAG Framework**: [LangChain.js](https://js.langchain.com/)
+- **Vector Store**: In-Memory (no external database)
+- **PDF Viewer**: [@react-pdf-viewer](https://react-pdf-viewer.dev/)
+- **Styling**: Tailwind CSS
 
-## Deploy Your Own
+## Getting Started
 
-You can deploy this template to Vercel or any other host. Note that you'll need to:
+### 1. Clone the repository
 
-- Set up [Together.ai](https://togetherai.link)
-- Set up a [MongoDB Atlas](https://www.mongodb.com/atlas/database) Atlas database with 768 dimensions
-  - See instructions below for MongoDB
-- Set up [Bytescale](https://www.bytescale.com/)
-- Set up [Clerk](https://clerk.dev/)
-- Set up [Vercel](https://vercel.com/)
-- (Optional) Set up [LangSmith](https://smith.langchain.com/) for tracing.
-
-See the .example.env for a list of all the required environment variables.
-
-You will also need to prepare your database schema by running `npx prisma db push`.
-
-### MongoDB Atlas
-
-To set up a [MongoDB Atlas](https://www.mongodb.com/atlas/database) database as the backing vectorstore, you will need to perform the following steps:
-
-1. Sign up on their website, then create a database cluster. Find it under the `Database` sidebar tab.
-2. Create a **collection** by switching to `Collections` the tab and creating a blank collection.
-3. Create an **index** by switching to the `Atlas Search` tab and clicking `Create Search Index`.
-4. Make sure you select `Atlas Vector Search - JSON Editor`, select the appropriate database and collection, and paste the following into the textbox:
-
-```json
-{
-  "fields": [
-    {
-      "numDimensions": 768,
-      "path": "embedding",
-      "similarity": "euclidean",
-      "type": "vector"
-    },
-    {
-      "path": "docstore_document_id",
-      "type": "filter"
-    }
-  ]
-}
+```bash
+git clone https://github.com/yourusername/pdftochat.git
+cd pdftochat
 ```
 
-Note that the `numDimensions` is 768 dimensions to match the embeddings model we're using, and that we have another index on `docstore_document_id`. This allows us to filter later.
+### 2. Install dependencies
 
-You may call the index whatever you wish, just make a note of it!
-
-5. Finally, retrieve and set the following environment variables:
-
-```ini
-NEXT_PUBLIC_VECTORSTORE=mongodb # Set MongoDB Atlas as your vectorstore
-
-MONGODB_ATLAS_URI= # Connection string for your database.
-MONGODB_ATLAS_DB_NAME= # The name of your database.
-MONGODB_ATLAS_COLLECTION_NAME= # The name of your collection.
-MONGODB_ATLAS_INDEX_NAME= # The name of the index you just created.
+```bash
+npm install
 ```
 
-## Common errors
+### 3. Set up environment variables
 
-- Check that you've created an `.env` file that contains your valid (and working) API keys, environment and index name.
-- Check that you've set the vector dimensions to `768` and that `index` matched your specified field in the `.env variable`.
-- Check that you've added a credit card on Together AI if you're hitting rate limiting issues due to the free tier
+Create a `.env.local` file in the root directory:
+
+```bash
+cp .env.example .env.local
+```
+
+Add your OpenAI API key:
+
+```
+OPENAI_API_KEY=sk-...
+```
+
+Get your API key from: https://platform.openai.com/api-keys
+
+### 4. Add your PDF documents
+
+Place your PDF files in the `/public/documents/` directory:
+
+```bash
+# Example
+cp /path/to/your/document.pdf public/documents/
+```
+
+The app will automatically detect and list all PDFs in this directory.
+
+### 5. Run the development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 6. Use the application
+
+1. **Select Documents**: Choose one or more PDFs from the list
+2. **Start Session**: Click "Start Q&A Session" to process the documents
+3. **Ask Questions**: Chat with your documents and get page-specific citations
+4. **Jump to Sources**: Click on page citations to view the exact location in the PDF
+
+## How It Works
+
+### Architecture
+
+```
+User selects PDFs → Process & embed → In-memory vector store → RAG chat → Page citations
+```
+
+### Simplified Flow
+
+1. **Document Selection**: User selects PDFs from `/public/documents/`
+2. **Processing**: PDFs are loaded, split into chunks, and embedded using OpenAI
+3. **Session Creation**: Vector store is created in-memory with a unique session ID
+4. **Chat**: User asks questions, relevant chunks are retrieved, and GPT-4 generates answers
+5. **Citations**: Sources include document name and page number for verification
+
+### Session Management
+
+- Sessions are stored in-memory (no database)
+- Each session expires after 1 hour of inactivity
+- Automatic cleanup runs every 10 minutes
+- Multiple concurrent sessions are supported
+
+## File Structure
+
+```
+pdftochat/
+├── app/
+│   ├── page.tsx                    # Document selection page
+│   ├── chat/page.tsx              # Chat interface with PDF viewer
+│   └── api/
+│       ├── documents/route.ts     # List available PDFs
+│       ├── process/route.ts       # Process selected PDFs
+│       └── chat/route.ts          # RAG chat endpoint
+├── lib/
+│   ├── document-scanner.ts        # Scan /public/documents/
+│   ├── pdf-processor.ts           # Load & embed PDFs
+│   └── session-manager.ts         # In-memory session storage
+├── public/
+│   └── documents/                 # Place your PDFs here
+└── utils/
+    └── ragChain.ts               # LangChain RAG configuration
+```
+
+## Configuration
+
+### Customizing the LLM
+
+Edit `/app/api/chat/route.ts` to change the model:
+
+```typescript
+const model = new ChatOpenAI({
+  modelName: 'gpt-4-turbo-preview', // Change to gpt-3.5-turbo for faster/cheaper responses
+  temperature: 0,
+});
+```
+
+### Customizing Chunk Size
+
+Edit `/lib/pdf-processor.ts`:
+
+```typescript
+const textSplitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 1000,      // Adjust chunk size
+  chunkOverlap: 200,    // Adjust overlap
+});
+```
+
+### Session Timeout
+
+Edit `/lib/session-manager.ts`:
+
+```typescript
+// Clean up sessions older than 1 hour
+const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000); // Change duration here
+```
+
+## Deployment
+
+### Deploy to Vercel
+
+1. Push your code to GitHub
+2. Import the repository in Vercel
+3. Add environment variable: `OPENAI_API_KEY`
+4. Deploy!
+
+**Note**: Make sure to add your PDFs to `/public/documents/` before deploying, or update them after deployment.
+
+### Other Platforms
+
+This is a standard Next.js app and can be deployed to any platform that supports Next.js:
+- Netlify
+- Railway
+- Digital Ocean
+- AWS Amplify
+- Self-hosted
+
+## Common Questions
+
+### Q: Can I use other LLMs?
+A: Yes! Replace `ChatOpenAI` with any LangChain-supported LLM (Anthropic, Cohere, etc.)
+
+### Q: How many documents can I process?
+A: Limited only by available RAM. Start with 3-5 documents and monitor memory usage.
+
+### Q: Can I add authentication?
+A: Yes, but this template intentionally omits auth for simplicity. Add NextAuth.js or similar if needed.
+
+### Q: Is this suitable for production?
+A: For small-scale use, yes. For high-traffic production, consider:
+- Adding a persistent vector database (Pinecone, Weaviate)
+- Implementing authentication
+- Using Redis for session storage
+- Adding rate limiting
 
 ## Credits
 
-- [Youssef](https://twitter.com/YoussefUiUx) for the design of the app
-- [Mayo](https://twitter.com/mayowaoshin) for the original RAG repo and inspiration
-- [Jacob](https://twitter.com/Hacubu) for the LangChain help
-- Together AI, Bytescale, Pinecone, and Clerk for sponsoring
+Original template by [samselikoff](https://github.com/samselikoff/pdftochat)
 
-## Future tasks
+Radically simplified by removing:
+- Clerk authentication
+- PostgreSQL database
+- Pinecone/MongoDB vector stores
+- Bytescale file uploads
+- Together AI
 
-These are some future tasks that I have planned. Contributions are welcome!
+## License
 
-- [ ] Add a trash icon for folks to delete PDFs from the dashboard and implement delete functionality
-- [ ] Try different embedding models like UAE-large-v1 to see if it improves accuracy
-- [ ] Explore best practices for auto scrolling based on other chat apps like chatGPT
-- [ ] Do some prompt engineering for Mixtral to make replies as good as possible
-- [ ] Protect API routes by making sure users are signed in before executing chats
-- [ ] Run an initial benchmark on how accurate chunking / retrieval are
-- [ ] Research best practices for chunking and retrieval and play around with them – ideally run benchmarks
-- [ ] Try out Langsmith for more observability into how the RAG app runs
-- [ ] Add demo video to the homepage to demonstrate functionality more easily
-- [ ] Upgrade to Next.js 14 and fix any issues with that
-- [ ] Implement sources like perplexity to be clickable with more info
-- [ ] Add analytics to track the number of chats & errors
-- [ ] Make some changes to the default tailwind `prose` to decrease padding
-- [ ] Add an initial message with sample questions or just add them as bubbles on the page
-- [ ] Add an option to get answers as markdown or in regular paragraphs
-- [ ] Implement something like SWR to automatically revalidate data
-- [ ] Save chats for each user to get back to later in the postgres DB
-- [ ] Bring up a message to direct folks to compress PDFs if they're beyond 10MB
-- [ ] Use a self-designed custom uploader
-- [ ] Use a session tracking tool to better understand how folks are using the site
-- [ ] Add better error handling overall with appropriate toasts when actions fail
-- [ ] Add support for images in PDFs with something like [Nougat](https://replicate.com/meta/nougat)
+MIT
