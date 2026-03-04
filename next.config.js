@@ -15,7 +15,11 @@ const nextConfig = {
     esmExternals: 'loose',
   },
   webpack: (config) => {
-    config.externals = [...config.externals, { canvas: 'canvas' }];
+    config.externals = [
+      ...config.externals,
+      { canvas: 'canvas' },
+      '@chroma-core/default-embed',
+    ];
     return config;
   },
 };

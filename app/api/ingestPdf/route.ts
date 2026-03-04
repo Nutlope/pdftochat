@@ -5,11 +5,8 @@ import prisma from '@/utils/prisma';
 import { getAuth } from '@clerk/nextjs/server';
 import { loadEmbeddingsModel } from '../utils/embeddings';
 import { loadVectorStore } from '../utils/vector_store';
-import { type MongoClient } from 'mongodb';
 
 export async function POST(request: Request) {
-  let mongoDbClient: MongoClient | null = null;
-
   const { fileUrl, fileName, vectorStoreId } = await request.json();
 
   const { userId } = getAuth(request as any);
@@ -24,7 +21,7 @@ export async function POST(request: Request) {
     },
   });
 
-  if (docAmount > 3) {
+  if (process.env.NODE_ENV === 'production' && docAmount > 3) {
     return NextResponse.json({
       error: 'You have reached the maximum number of documents',
     });
@@ -68,19 +65,11 @@ export async function POST(request: Request) {
       embeddings,
     });
     const vectorstore = store.vectorstore;
-    if ('mongoDbClient' in store) {
-      mongoDbClient = store.mongoDbClient;
-    }
 
-    // embed the PDF documents
     await vectorstore.addDocuments(splitDocs);
   } catch (error) {
     console.log('error', error);
     return NextResponse.json({ error: 'Failed to ingest your data' });
-  } finally {
-    if (mongoDbClient) {
-      await mongoDbClient.close();
-    }
   }
 
   return NextResponse.json({

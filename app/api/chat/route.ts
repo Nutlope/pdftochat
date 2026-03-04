@@ -5,12 +5,14 @@ import { createRAGChain } from '@/utils/ragChain';
 import type { Document } from '@langchain/core/documents';
 import { HumanMessage, AIMessage, ChatMessage } from '@langchain/core/messages';
 import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai';
-import { type MongoClient } from 'mongodb';
 import { loadRetriever } from '../utils/vector_store';
 import { loadEmbeddingsModel } from '../utils/embeddings';
 
-export const runtime =
-  process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb' ? 'nodejs' : 'edge';
+// Chroma Cloud client and MongoDB both require Node.js runtime (not edge).
+const chromaOrMongo =
+  process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb' ||
+  process.env.NEXT_PUBLIC_VECTORSTORE === 'chroma';
+export const runtime = chromaOrMongo ? 'nodejs' : 'edge';
 
 const formatVercelMessages = (message: VercelChatMessage) => {
   if (message.role === 'user') {
@@ -33,7 +35,7 @@ const formatVercelMessages = (message: VercelChatMessage) => {
  * https://js.langchain.com/docs/guides/expression_language/cookbook#conversational-retrieval-chain
  */
 export async function POST(req: NextRequest) {
-  let mongoDbClient: MongoClient | undefined;
+  let mongoDbClient: Awaited<ReturnType<typeof loadRetriever>>['mongoDbClient'];
 
   try {
     const body = await req.json();
