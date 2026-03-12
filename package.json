@@ -13,9 +13,9 @@
     "evals": "tsx ./scripts/runEvaluation.ts"
   },
   "dependencies": {
+    "@chroma-core/default-embed": "^0.1.9",
     "@chroma-core/chroma-cloud-qwen": "^0.1.10",
     "@chroma-core/chroma-cloud-splade": "^0.1.10",
-    "@chroma-core/default-embed": "^0.1.9",
     "@clerk/nextjs": "^4.29.3",
     "@headlessui/react": "^1.7.18",
     "@langchain/community": "^0.0.50",

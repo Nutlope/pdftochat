@@ -19,6 +19,8 @@ const nextConfig = {
       ...config.externals,
       { canvas: 'canvas' },
       '@chroma-core/default-embed',
+      'onnxruntime-node',
+      '@huggingface/transformers',
     ];
     return config;
   },
