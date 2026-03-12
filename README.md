@@ -4,7 +4,7 @@
 </a>
 
 <p align="center">
-  Chat with your PDFs in seconds. Powered by Together AI and Pinecone.
+  Chat with your PDFs in seconds. Powered by Together AI and Chroma.
 </p>
 
 <p align="center">
@@ -22,9 +22,8 @@
 
 - Next.js [App Router](https://nextjs.org/docs/app) for the framework
 - Mixtral through [Together AI](https://togetherai.link) inference for the LLM
-- M2 Bert 80M through [Together AI](https://togetherai.link) for embeddings
+- [Chroma Cloud](https://www.trychroma.com/) for vector search (hybrid dense + sparse via Qwen & SPLADE)
 - [LangChain.js](https://js.langchain.com/docs/get_started/introduction/) for the RAG code
-- [MongoDB Atlas](https://www.mongodb.com/atlas/database) for the vector database
 - [Bytescale](https://www.bytescale.com/) for the PDF storage
 - [Vercel](https://vercel.com/) for hosting and for the postgres DB
 - [Clerk](https://clerk.dev/) for user authentication
@@ -34,71 +33,47 @@
 
 You can deploy this template to Vercel or any other host. Note that you'll need to:
 
-- Set up [Together.ai](https://togetherai.link)
-- Set up a [MongoDB Atlas](https://www.mongodb.com/atlas/database) Atlas database with 768 dimensions
-  - See instructions below for MongoDB
-- Set up [Bytescale](https://www.bytescale.com/)
-- Set up [Clerk](https://clerk.dev/)
-- Set up [Vercel](https://vercel.com/)
-- (Optional) Set up [LangSmith](https://smith.langchain.com/) for tracing.
+- Set up [Together.ai](https://togetherai.link) for the LLM
+- Set up [Chroma Cloud](https://www.trychroma.com/) for vector search
+- Set up [Bytescale](https://www.bytescale.com/) for PDF storage
+- Set up [Clerk](https://clerk.dev/) for auth
+- Set up [Vercel](https://vercel.com/) for hosting + Postgres (or use [Neon](https://neon.tech/))
+- (Optional) Set up [LangSmith](https://smith.langchain.com/) for tracing
 
-See the .example.env for a list of all the required environment variables.
+See `.env.example` for a list of all the required environment variables.
 
 You will also need to prepare your database schema by running `npx prisma db push`.
 
-### MongoDB Atlas
+### Chroma Cloud
 
-To set up a [MongoDB Atlas](https://www.mongodb.com/atlas/database) database as the backing vectorstore, you will need to perform the following steps:
+This project uses [Chroma Cloud](https://www.trychroma.com/) for hybrid vector search. Embeddings are generated automatically by Chroma Cloud using **Qwen** (dense) and **SPLADE** (sparse), combined via Reciprocal Rank Fusion (RRF) at query time. No local embedding model is needed.
 
-1. Sign up on their website, then create a database cluster. Find it under the `Database` sidebar tab.
-2. Create a **collection** by switching to `Collections` the tab and creating a blank collection.
-3. Create an **index** by switching to the `Atlas Search` tab and clicking `Create Search Index`.
-4. Make sure you select `Atlas Vector Search - JSON Editor`, select the appropriate database and collection, and paste the following into the textbox:
-
-```json
-{
-  "fields": [
-    {
-      "numDimensions": 768,
-      "path": "embedding",
-      "similarity": "euclidean",
-      "type": "vector"
-    },
-    {
-      "path": "docstore_document_id",
-      "type": "filter"
-    }
-  ]
-}
-```
-
-Note that the `numDimensions` is 768 dimensions to match the embeddings model we're using, and that we have another index on `docstore_document_id`. This allows us to filter later.
-
-You may call the index whatever you wish, just make a note of it!
-
-5. Finally, retrieve and set the following environment variables:
+1. Sign up at [trychroma.com](https://www.trychroma.com/) and create a database.
+2. Copy your credentials and set the following environment variables:
 
 ```ini
-NEXT_PUBLIC_VECTORSTORE=mongodb # Set MongoDB Atlas as your vectorstore
+NEXT_PUBLIC_VECTORSTORE=chroma
 
-MONGODB_ATLAS_URI= # Connection string for your database.
-MONGODB_ATLAS_DB_NAME= # The name of your database.
-MONGODB_ATLAS_COLLECTION_NAME= # The name of your collection.
-MONGODB_ATLAS_INDEX_NAME= # The name of the index you just created.
+CHROMA_API_KEY=       # Your Chroma Cloud API key
+CHROMA_TENANT=        # Your tenant ID
+CHROMA_DATABASE=      # Your database name
 ```
+
+Collections are created automatically per document — no manual index setup is required.
 
 ## Common errors
 
-- Check that you've created an `.env` file that contains your valid (and working) API keys, environment and index name.
-- Check that you've set the vector dimensions to `768` and that `index` matched your specified field in the `.env variable`.
-- Check that you've added a credit card on Together AI if you're hitting rate limiting issues due to the free tier
+- Check that you've created an `.env` file that contains your valid (and working) API keys.
+- Check that `NEXT_PUBLIC_VECTORSTORE` is set to `chroma` and your Chroma credentials are correct.
+- Check that you've run `npx prisma db push` to create the `Document` table in Postgres.
+- Check that you've added a credit card on Together AI if you're hitting rate limiting issues due to the free tier.
 
 ## Credits
 
 - [Youssef](https://twitter.com/YoussefUiUx) for the design of the app
 - [Mayo](https://twitter.com/mayowaoshin) for the original RAG repo and inspiration
 - [Jacob](https://twitter.com/Hacubu) for the LangChain help
-- Together AI, Bytescale, Pinecone, and Clerk for sponsoring
+- Together AI, Bytescale, Chroma, and Clerk for sponsoring
 
 ## Future tasks
 

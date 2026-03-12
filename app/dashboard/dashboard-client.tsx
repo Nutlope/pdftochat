@@ -30,9 +30,7 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
       },
     },
     onValidate: async (file: File): Promise<undefined | string> => {
-      return docsList.length > 3
-        ? `You've reached your limit for PDFs.`
-        : undefined;
+      return undefined;
     },
   };
 
