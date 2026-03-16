@@ -29,7 +29,7 @@ export async function loadRetriever({
   chatId,
   callbacks,
 }: {
-  embeddings: Embeddings;
+  embeddings?: Embeddings;
   chatId: string;
   callbacks?: Callbacks;
 }) {
