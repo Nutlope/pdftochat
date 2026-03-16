@@ -53,6 +53,8 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
   );
 
   async function ingestPdf(fileUrl: string, fileName: string) {
+    console.log('[ingestPdf client] Starting upload:', { fileUrl: fileUrl.slice(0, 80), fileName });
+
     let res = await fetch('/api/ingestPdf', {
       method: 'POST',
       headers: {
@@ -64,7 +66,17 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
       }),
     });
 
+    console.log('[ingestPdf client] Response status:', res.status);
     let data = await res.json();
+    console.log('[ingestPdf client] Response data:', JSON.stringify(data));
+
+    if (!data.id) {
+      console.error('[ingestPdf client] No id in response, not redirecting. Full response:', data);
+      setLoading(false);
+      return;
+    }
+
+    console.log('[ingestPdf client] Redirecting to /document/' + data.id);
     router.push(`/document/${data.id}`);
   }
 
