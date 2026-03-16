@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import DocIcon from '@/components/ui/DocIcon';
 import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 
 // Configuration for the uploader
 const uploader = Uploader({
@@ -16,8 +17,14 @@ const uploader = Uploader({
 
 export default function DashboardClient({ docsList }: { docsList: any }) {
   const router = useRouter();
+  const { getToken } = useAuth();
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+
+  const visibleDocs = docsList.filter((doc: any) => !deletedIds.has(doc.id));
 
   const options = {
     maxFileCount: 1,
@@ -53,31 +60,46 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
   );
 
   async function ingestPdf(fileUrl: string, fileName: string) {
-    console.log('[ingestPdf client] Starting upload:', { fileUrl: fileUrl.slice(0, 80), fileName });
+    setError(null);
+    try {
+      const res = await fetch('/api/ingestPdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileUrl, fileName }),
+      });
 
-    let res = await fetch('/api/ingestPdf', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fileUrl,
-        fileName,
-      }),
-    });
+      const data = await res.json().catch(() => null);
 
-    console.log('[ingestPdf client] Response status:', res.status);
-    let data = await res.json();
-    console.log('[ingestPdf client] Response data:', JSON.stringify(data));
+      if (!data || data.error || !data.id) {
+        setError(data?.error || 'Something went wrong. Please try again.');
+        setLoading(false);
+        return;
+      }
 
-    if (!data.id) {
-      console.error('[ingestPdf client] No id in response, not redirecting. Full response:', data);
+      // Refresh Clerk session token (can go stale during long ingest fetch)
+      await getToken({ skipCache: true });
+      router.push(`/document/${data.id}`);
+    } catch {
+      setError('Something went wrong. Please try again.');
       setLoading(false);
-      return;
     }
+  }
 
-    console.log('[ingestPdf client] Redirecting to /document/' + data.id);
-    router.push(`/document/${data.id}`);
+  async function deleteDoc(docId: string) {
+    setDeletingId(docId);
+    try {
+      const res = await fetch(`/api/document/${docId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setDeletedIds((prev) => new Set(prev).add(docId));
+      }
+    } catch {
+      setError('Failed to delete document');
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
@@ -85,10 +107,10 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
       <h1 className="text-4xl leading-[1.1] tracking-tighter font-medium text-center">
         Chat With Your PDFs
       </h1>
-      {docsList.length > 0 && (
+      {visibleDocs.length > 0 && (
         <div className="flex flex-col gap-4 mx-10 my-5">
           <div className="flex flex-col shadow-sm border divide-y-2 sm:min-w-[650px] mx-auto">
-            {docsList.map((doc: any) => (
+            {visibleDocs.map((doc: any) => (
               <div
                 key={doc.id}
                 className="flex justify-between p-3 hover:bg-gray-100 transition sm:flex-row flex-col sm:gap-0 gap-3"
@@ -100,13 +122,25 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
                   <DocIcon />
                   <span>{doc.fileName}</span>
                 </button>
-                <span>{formatDistanceToNow(doc.createdAt)} ago</span>
+                <div className="flex items-center gap-3">
+                  <span>{formatDistanceToNow(doc.createdAt)} ago</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteDoc(doc.id);
+                    }}
+                    disabled={deletingId !== null}
+                    className="text-red-500 hover:text-red-700 text-sm disabled:opacity-50"
+                  >
+                    {deletingId === doc.id ? 'Deleting...' : 'Delete'}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
-      {docsList.length > 0 ? (
+      {visibleDocs.length > 0 ? (
         <h2 className="text-3xl leading-[1.1] tracking-tighter font-medium text-center">
           Or upload a new PDF
         </h2>
@@ -114,6 +148,9 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
         <h2 className="text-3xl leading-[1.1] tracking-tighter font-medium text-center mt-5">
           No PDFs found. Upload a new PDF below!
         </h2>
+      )}
+      {error && (
+        <p className="text-center text-red-600 text-sm">{error}</p>
       )}
       <div className="mx-auto min-w-[450px] flex justify-center">
         {loading ? (
