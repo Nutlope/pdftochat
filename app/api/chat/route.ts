@@ -40,6 +40,9 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const messages = body.messages ?? [];
+    const chatId = body.chatId;
+    console.log('[chat] POST handler started:', { chatId, messageCount: messages.length, vectorStore: process.env.NEXT_PUBLIC_VECTORSTORE });
+
     if (!messages.length) {
       throw new Error('No messages provided.');
     }
@@ -47,7 +50,7 @@ export async function POST(req: NextRequest) {
       .slice(0, -1)
       .map(formatVercelMessages);
     const currentMessageContent = messages[messages.length - 1].content;
-    const chatId = body.chatId;
+    console.log('[chat] Current message:', currentMessageContent.slice(0, 100));
 
     const model = new ChatTogetherAI({
       modelName: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
@@ -61,14 +64,14 @@ export async function POST(req: NextRequest) {
       resolveWithDocuments = resolve;
     });
 
+    console.log('[chat] Loading retriever...');
     const retrieverInfo = await loadRetriever({
       chatId,
       embeddings,
       callbacks: [
         {
           handleRetrieverEnd(documents) {
-            // Extract retrieved source documents so that they can be displayed as sources
-            // on the frontend.
+            console.log('[chat] Retriever returned docs:', documents.length);
             resolveWithDocuments(documents);
           },
         },
@@ -77,8 +80,10 @@ export async function POST(req: NextRequest) {
 
     const retriever = retrieverInfo.retriever;
     mongoDbClient = retrieverInfo.mongoDbClient;
+    console.log('[chat] Retriever loaded, creating RAG chain...');
 
     const ragChain = await createRAGChain(model, retriever);
+    console.log('[chat] RAG chain created, streaming...');
 
     const stream = await ragChain.stream({
       input: currentMessageContent,
@@ -86,6 +91,7 @@ export async function POST(req: NextRequest) {
     });
 
     const documents = await documentPromise;
+    console.log('[chat] Documents resolved:', documents.length);
     const serializedSources = Buffer.from(
       JSON.stringify(
         documents.map((doc) => {
@@ -107,6 +113,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (e: any) {
+    console.error('[chat] Error:', e);
     return NextResponse.json({ error: e.message }, { status: 500 });
   } finally {
     if (mongoDbClient) {
