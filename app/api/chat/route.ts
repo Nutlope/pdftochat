@@ -6,7 +6,6 @@ import type { Document } from '@langchain/core/documents';
 import { HumanMessage, AIMessage, ChatMessage } from '@langchain/core/messages';
 import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai';
 import { loadRetriever } from '../utils/vector_store';
-import { loadEmbeddingsModel } from '../utils/embeddings';
 
 // Chroma Cloud client and MongoDB both require Node.js runtime (not edge).
 const chromaOrMongo =
@@ -50,11 +49,12 @@ export async function POST(req: NextRequest) {
     const chatId = body.chatId;
 
     const model = new ChatTogetherAI({
-      modelName: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
+      modelName: 'Qwen/Qwen3.5-9B',
       temperature: 0,
+      modelKwargs: {
+        chat_template_kwargs: { enable_thinking: false },
+      },
     });
-
-    const embeddings = loadEmbeddingsModel();
 
     let resolveWithDocuments: (value: Document[]) => void;
     const documentPromise = new Promise<Document[]>((resolve) => {
@@ -63,7 +63,6 @@ export async function POST(req: NextRequest) {
 
     const retrieverInfo = await loadRetriever({
       chatId,
-      embeddings,
       callbacks: [
         {
           handleRetrieverEnd(documents) {
