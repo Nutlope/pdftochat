@@ -183,3 +183,8 @@ export class ChromaVectorStore {
 export function loadChromaStore(docId: string): { vectorstore: ChromaVectorStore } {
   return { vectorstore: new ChromaVectorStore(docId) };
 }
+
+export async function deleteChromaCollection(docId: string): Promise<void> {
+  const client = createChromaClient();
+  await client.deleteCollection({ name: collectionName(docId) });
+}
