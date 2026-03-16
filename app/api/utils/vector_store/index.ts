@@ -43,7 +43,7 @@ export async function loadRetriever({
   }
 
   let mongoDbClient;
-  const store = await loadVectorStore({ namespace: chatId, embeddings });
+  const store = await loadVectorStore({ namespace: chatId, embeddings: embeddings! });
   const vectorstore = store.vectorstore;
   if ('mongoDbClient' in store) {
     mongoDbClient = store.mongoDbClient;
