@@ -2,27 +2,42 @@ import Link from 'next/link';
 
 const Hero = () => {
   return (
-    <div className="container pt-[188px] md:pt-[300px] pb-[215px] sm:pb-[290px] px-[22px] sm:px-0 mx-auto text-center">
+    <div className="max-w-4xl mx-auto px-6 py-32 md:py-40 text-center">
       <a
         href="https://togetherai.link"
         target="_blank"
         rel="noreferrer"
-        className="border rounded-2xl py-1 px-4 text-slate-600 transition duration-300 ease-in-out sm:text-base text-sm cursor-pointer hover:text-slate-700"
+        className="inline-flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-full shadow-sm hover:text-slate-900 hover:border-slate-300 transition-all duration-200"
       >
-        Powered by <span className="font-bold">Together.ai </span>and{' '}
-        <span className="font-bold">Mixtral</span>
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        Powered by <span className="font-semibold">Together.ai</span> &{' '}
+        <span className="font-semibold">Mixtral</span>
       </a>
-      <h2 className="text-center max-w-[867px] pb-5 sm:pb-7 text-[52px] sm:text-[100px] leading-[39.5px] tracking-[-1.04px] sm:leading-[75px] sm:tracking-[-2.74px] mx-auto sm:mt-12 mt-10">
-        Chat with your PDFs in seconds
-      </h2>
-      <p className="text-xl sm:text-2xl pb-10 sm:pb-8 leading-[19px] sm:leading-[34.5px] w-[232px] sm:w-full tracking-[-0.4px] sm:tracking-[-0.6px] text-center mx-auto">
-        Have a conversation with your papers, textbooks, and contracts for free
+      <h1 className="mt-10 text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-tight">
+        Chat with your PDFs{' '}
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-slate-900">
+          in seconds
+        </span>
+      </h1>
+      <p className="mt-6 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        Have a conversation with your papers, textbooks, and contracts. Free,
+        fast, and powered by AI.
       </p>
-      <Link href={'/dashboard'}>
-        <button className="bg_linear rounded-full sm:px-14 px-12 py-[2.5px] sm:py-4 text-white text-center text-xl sm:text-[30px] font-medium leading-[37px] tracking-[-0.3px]">
-          Get Started
-        </button>
-      </Link>
+      <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <Link href={'/dashboard'}>
+          <button className="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white bg-slate-900 rounded-full hover:bg-slate-800 transition-all duration-200 shadow-xl shadow-slate-900/20 hover:shadow-slate-900/30 hover:-translate-y-0.5">
+            Get Started
+          </button>
+        </Link>
+        <Link href={'#how-it-works'}>
+          <button className="w-full sm:w-auto px-8 py-3.5 text-base font-medium text-slate-700 bg-white border border-slate-200 rounded-full hover:bg-slate-50 hover:border-slate-300 transition-all duration-200">
+            See how it works
+          </button>
+        </Link>
+      </div>
     </div>
   );
 };

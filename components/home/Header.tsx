@@ -8,25 +8,25 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <div className="container hidden bg-white w-full px-5  h-[78px] sm:flex justify-between items-center border shadow-[0px_1px_4px_0px_rgba(0,0,0,0.25)] rounded-[30px] border-solid border-[rgba(0,0,0,0.17)] mx-auto">
+      <div className="hidden md:flex justify-between items-center py-4 px-6 bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-2xl shadow-sm">
         <Logo />
-        <div className="sm:flex gap-4 items-center">
+        <div className="flex gap-3 items-center">
           <Link
             href="/dashboard"
-            className="text-primary py-1.5 px-[22px] text-center text-xl font-normal border rounded-[18px] border-solid border-primary "
+            className="text-slate-700 py-2 px-5 text-sm font-medium rounded-full border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all duration-200"
           >
             Log in
           </Link>
           <Link
             href="/dashboard"
-            className="text-white bg_linear py-1.5 px-[22px] text-center text-xl font-normal  border rounded-[18px] border-solid border-primary "
+            className="text-white bg-slate-900 py-2 px-5 text-sm font-medium rounded-full hover:bg-slate-800 transition-all duration-200 shadow-lg shadow-slate-900/20"
           >
             Sign up
           </Link>
         </div>
       </div>
 
-      <div className="sm:hidden bg-white shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] border-b-[0.5px] h-[54px] flex justify-between items-center px-6 border-b-white border-solid">
+      <div className="md:hidden bg-white/80 backdrop-blur-md border-b border-slate-200/60 h-14 flex justify-between items-center px-5">
         <Logo isMobile={true} />
         <div className="flex justify-center items-baseline">
           <Image
@@ -35,18 +35,24 @@ const Header = () => {
             alt="Menu"
             width={20}
             height={20}
-            className="cursor-pointer"
+            className="cursor-pointer text-slate-600"
           />
         </div>
       </div>
       {open ? (
-        <div className="flex sm:hidden gap-4 items-center py-3 bg-white shadow px-5">
-          <button className="text-primary py-1 px-[22px] text-center text-lg font-normal  border rounded-[18px] border-solid border-primary ">
+        <div className="md:hidden flex gap-3 items-center py-3 bg-white/90 backdrop-blur-md border-b border-slate-200/60 px-5">
+          <Link
+            href="/dashboard"
+            className="text-slate-700 py-1.5 px-4 text-sm font-medium rounded-full border border-slate-200"
+          >
             Log in
-          </button>
-          <button className="text-white bg_linear py-1 px-[22px] text-center text-lg font-normal  border rounded-[18px] border-solid border-primary ">
+          </Link>
+          <Link
+            href="/dashboard"
+            className="text-white bg-slate-900 py-1.5 px-4 text-sm font-medium rounded-full"
+          >
             Sign up
-          </button>
+          </Link>
         </div>
       ) : null}
     </>

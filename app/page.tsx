@@ -15,8 +15,10 @@ export default async function Home() {
   }
 
   return (
-    <main className="sm:p-7 sm:pb-0">
-      <Header />
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+      <div className="max-w-6xl mx-auto px-6 pt-6">
+        <Header />
+      </div>
       <Hero />
       <HowItWorks />
       <ProudlyOpenSource />
