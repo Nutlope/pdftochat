@@ -44,11 +44,8 @@ export async function POST(req: NextRequest) {
     const currentMessageContent = messages[messages.length - 1].content;
 
     const model = new ChatTogetherAI({
-      model: 'Qwen/Qwen3.5-9B',
+      model: 'minimax/MiniMax-Text-01',
       temperature: 0,
-      modelKwargs: {
-        chat_template_kwargs: { enable_thinking: false },
-      },
     });
 
     let resolveWithDocuments: (value: Document[]) => void;
