@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const currentMessageContent = messages[messages.length - 1].content;
 
     const model = new ChatTogetherAI({
-      model: 'minimax/MiniMax-Text-01',
+      model: 'MiniMaxAI/MiniMax-M2.5',
       temperature: 0,
     });
 
