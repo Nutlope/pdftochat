@@ -1,0 +1,104 @@
+/* Hallmark · genre: modern-minimal · design-system: design.md · designed-as-app
+ *
+ * Tokens for PDFtoChat. Single source of truth — components must reference
+ * these by name (var(--space-md), not 16px). Importing this file once from
+ * styles/globals.css is enough; the cascade carries the values everywhere.
+ */
+
+:root {
+  /* — Colour ————————————————————————————————————— */
+  --color-paper: oklch(98.5% 0.004 80);
+  --color-paper-2: oklch(96.5% 0.006 80);
+  --color-paper-3: oklch(94% 0.008 80);
+
+  --color-ink: oklch(18% 0.012 60);
+  --color-ink-2: oklch(38% 0.008 60);
+  --color-ink-3: oklch(58% 0.006 60);
+
+  --color-rule: oklch(90% 0.006 60);
+  --color-rule-2: oklch(82% 0.006 60);
+
+  --color-accent: oklch(18% 0.012 60);
+  --color-accent-ink: oklch(98.5% 0.004 80);
+
+  --color-focus: oklch(55% 0.13 250);
+  --color-danger: oklch(50% 0.18 28);
+  --color-danger-soft: oklch(96% 0.02 28);
+
+  /* — Typography ———————————————————————————————— */
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
+
+  --text-display: clamp(2.5rem, 4.5vw + 0.5rem, 4.75rem);
+  --text-3xl: 2.25rem;
+  --text-2xl: 1.75rem;
+  --text-xl: 1.375rem;
+  --text-lg: 1.125rem;
+  --text-md: 1rem;
+  --text-sm: 0.875rem;
+  --text-xs: 0.75rem;
+
+  --tracking-display: -0.025em;
+  --tracking-tight: -0.012em;
+  --tracking-normal: -0.005em;
+  --tracking-mono: -0.01em;
+
+  --leading-display: 1.02;
+  --leading-tight: 1.15;
+  --leading-body: 1.55;
+
+  --measure: 65ch;
+
+  /* — Spacing (4-pt) ——————————————————————————— */
+  --space-3xs: 0.125rem; /*   2px */
+  --space-2xs: 0.25rem; /*    4px */
+  --space-xs: 0.5rem; /*      8px */
+  --space-sm: 0.75rem; /*    12px */
+  --space-md: 1rem; /*       16px */
+  --space-lg: 1.5rem; /*     24px */
+  --space-xl: 2.5rem; /*     40px */
+  --space-2xl: 4rem; /*      64px */
+  --space-3xl: 6rem; /*      96px */
+  --space-4xl: 9rem; /*     144px */
+
+  --page-gutter: clamp(1rem, 4vw, 2.5rem);
+  --page-max: 78rem;
+
+  /* — Radii ————————————————————————————————————— */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  /* — Rules ———————————————————————————————————— */
+  --rule-hair: 1px;
+  --rule-thick: 2px;
+
+  /* — Motion ——————————————————————————————————— */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --dur-instant: 100ms;
+  --dur-short: 200ms;
+  --dur-mid: 320ms;
+
+  /* — Z scale ——————————————————————————————————— */
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 0.01ms;
+    --dur-short: 0.01ms;
+    --dur-mid: 0.01ms;
+  }
+}

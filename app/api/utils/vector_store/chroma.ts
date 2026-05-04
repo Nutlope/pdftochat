@@ -15,7 +15,10 @@ import {
   ChromaCloudQwenEmbeddingFunction,
   ChromaCloudQwenEmbeddingModel,
 } from '@chroma-core/chroma-cloud-qwen';
-import { BaseRetriever, type BaseRetrieverInput } from '@langchain/core/retrievers';
+import {
+  BaseRetriever,
+  type BaseRetrieverInput,
+} from '@langchain/core/retrievers';
 import type { Callbacks } from '@langchain/core/callbacks/manager';
 import { Document } from '@langchain/core/documents';
 import type { CallbackManagerForRetrieverRun } from '@langchain/core/callbacks/manager';
@@ -36,7 +39,11 @@ function sanitizeMetadata(meta: Record<string, unknown>): Metadata {
       clean[key] = value;
     } else if (value === null || value === undefined) {
       // skip nulls
-    } else if (Array.isArray(value) && value.length > 0 && value.every((v) => typeof v === typeof value[0])) {
+    } else if (
+      Array.isArray(value) &&
+      value.length > 0 &&
+      value.every((v) => typeof v === typeof value[0])
+    ) {
       if (typeof value[0] === 'string') clean[key] = value as string[];
       else if (typeof value[0] === 'number') clean[key] = value as number[];
       else if (typeof value[0] === 'boolean') clean[key] = value as boolean[];
@@ -105,16 +112,24 @@ async function getOrCreateDocCollection(docId: string): Promise<Collection> {
 /**
  * A LangChain-compatible retriever backed by Chroma Cloud hybrid search.
  * Uses RRF to combine dense (Qwen) and sparse (SPLADE) rankings.
+ *
+ * Accepts one or more docIds; when multiple are passed, runs the hybrid
+ * search across each collection in parallel and merges results by
+ * reciprocal-rank fusion.
  */
 export class ChromaRetriever extends BaseRetriever {
   lc_namespace = ['chroma', 'retrievers', 'ChromaRetriever'];
 
-  private docId: string;
+  private docIds: string[];
   private topK: number;
 
-  constructor(docId: string, topK = 4, fields?: BaseRetrieverInput) {
+  constructor(
+    docIds: string | string[],
+    topK = 4,
+    fields?: BaseRetrieverInput,
+  ) {
     super(fields);
-    this.docId = docId;
+    this.docIds = Array.isArray(docIds) ? docIds : [docIds];
     this.topK = topK;
   }
 
@@ -122,14 +137,40 @@ export class ChromaRetriever extends BaseRetriever {
     query: string,
     _runManager?: CallbackManagerForRetrieverRun,
   ): Promise<Document[]> {
-    const collection = await getOrCreateDocCollection(this.docId);
+    if (this.docIds.length === 1) {
+      return this.searchOne(this.docIds[0], query, this.topK);
+    }
+
+    // Pull more from each collection so the merged top-K has good coverage.
+    const perDoc = Math.max(
+      this.topK,
+      Math.ceil((this.topK * 2) / this.docIds.length),
+    );
+    const perDocResults = await Promise.all(
+      this.docIds.map((id) => this.searchOne(id, query, perDoc)),
+    );
+    return rrfMerge(perDocResults, this.topK);
+  }
+
+  private async searchOne(
+    docId: string,
+    query: string,
+    limit: number,
+  ): Promise<Document[]> {
+    const collection = await getOrCreateDocCollection(docId);
 
     const hybridRank = Rrf({
       ranks: [
         // Dense semantic search via Chroma Cloud Qwen
         Knn({ query, returnRank: true, limit: 50, default: 1000 }),
         // Sparse keyword search via Chroma Cloud SPLADE
-        Knn({ query, key: 'sparse_embedding', returnRank: true, limit: 50, default: 1000 }),
+        Knn({
+          query,
+          key: 'sparse_embedding',
+          returnRank: true,
+          limit: 50,
+          default: 1000,
+        }),
       ],
       weights: [0.7, 0.3],
       k: 60,
@@ -137,19 +178,53 @@ export class ChromaRetriever extends BaseRetriever {
 
     const search = new Search()
       .rank(hybridRank)
-      .limit(this.topK)
+      .limit(limit)
       .select(K.DOCUMENT, K.METADATA);
 
     const results = await collection.search(search);
     const rows = results.rows()[0] ?? [];
 
-    return rows.map((row) =>
-      new Document({
-        pageContent: row.document ?? '',
-        metadata: (row.metadata as Record<string, unknown>) ?? {},
-      }),
+    return rows.map(
+      (row) =>
+        new Document({
+          pageContent: row.document ?? '',
+          metadata: (row.metadata as Record<string, unknown>) ?? {},
+        }),
     );
   }
+}
+
+/**
+ * Reciprocal-rank fusion across N pre-ranked result lists. Each input list
+ * is already sorted (best first) by its own retriever; we score each unique
+ * document by sum-of-reciprocal-ranks and return the top K.
+ */
+function rrfMerge(
+  perDocResults: Document[][],
+  topK: number,
+  k = 60,
+): Document[] {
+  const scored = new Map<string, { doc: Document; score: number }>();
+  for (const list of perDocResults) {
+    list.forEach((doc, rank) => {
+      // Build a stable key per chunk; pageContent + first metadata key is unique enough.
+      const key =
+        (doc.metadata as any)?.docstore_document_id +
+        '::' +
+        doc.pageContent.slice(0, 80);
+      const score = 1 / (k + rank + 1);
+      const prior = scored.get(key);
+      if (prior) {
+        prior.score += score;
+      } else {
+        scored.set(key, { doc, score });
+      }
+    });
+  }
+  return Array.from(scored.values())
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topK)
+    .map((s) => s.doc);
 }
 
 /**
@@ -176,11 +251,15 @@ export class ChromaVectorStore {
   }
 
   asRetriever(options?: { callbacks?: Callbacks }): ChromaRetriever {
-    return new ChromaRetriever(this.docId, 4, { callbacks: options?.callbacks });
+    return new ChromaRetriever([this.docId], 4, {
+      callbacks: options?.callbacks,
+    });
   }
 }
 
-export function loadChromaStore(docId: string): { vectorstore: ChromaVectorStore } {
+export function loadChromaStore(docId: string): {
+  vectorstore: ChromaVectorStore;
+} {
   return { vectorstore: new ChromaVectorStore(docId) };
 }
 

@@ -1,12 +1,12 @@
 import Header from '@/components/ui/Header';
 
-export default function RootLayout({
+export default function DocumentLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="page">
       <Header />
       {children}
     </div>

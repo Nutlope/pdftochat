@@ -1,42 +1,38 @@
 import '../styles/globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
-import type { Metadata } from 'next';
-import { Anek_Bangla } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import PlausibleProvider from 'next-plausible';
 
-const anek = Anek_Bangla({
-  subsets: ['latin'],
-  display: 'swap',
-});
-
-let title = 'PDF to Chat';
-let description = 'Chat with your PDFs in seconds.';
-let ogimage = 'https://www.pdftochat.com/og-image.png';
-let url = 'https://www.pdftochat.com';
-let sitename = 'pdftochat.com';
+const title = 'PDFtoChat — chat with your PDFs';
+const description =
+  'Upload a paper, contract, or textbook. Ask it anything. Open source, powered by Together AI.';
+const url = 'https://www.pdftochat.com';
+const sitename = 'pdftochat.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(url),
   title,
   description,
-  icons: {
-    icon: '/favicon.ico',
-  },
+  manifest: '/manifest.webmanifest',
   openGraph: {
-    images: [ogimage],
     title,
     description,
-    url: url,
+    url,
     siteName: sitename,
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    images: [ogimage],
     title,
     description,
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#fdfbf8',
 };
 
 export default function RootLayout({
@@ -46,7 +42,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={anek.className}>
+      <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
         <head>
           <PlausibleProvider domain="pdftochat.com" />
         </head>

@@ -1,0 +1,23 @@
+{
+  "name": "PDFtoChat",
+  "short_name": "PDFtoChat",
+  "description": "Chat with your PDFs in seconds.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdfbf8",
+  "theme_color": "#fdfbf8",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-icon",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -9,9 +9,29 @@ datasource db {
 }
 
 model Document {
-  id        String   @id @default(cuid())
+  id                 String      @id @default(cuid())
+  userId             String
+  fileUrl            String
+  fileName           String
+  createdAt          DateTime    @default(now()) @map(name: "created_at")
+  shareToken         String?     @unique
+  suggestedQuestions String[]
+  chats              ChatScope[]
+}
+
+model Chat {
+  id        String      @id @default(cuid())
   userId    String
-  fileUrl   String
-  fileName  String
-  createdAt DateTime @default(now()) @map(name: "created_at")
+  title     String?
+  createdAt DateTime    @default(now()) @map(name: "created_at")
+  scope     ChatScope[]
+}
+
+model ChatScope {
+  chatId     String
+  documentId String
+  chat       Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@id([chatId, documentId])
 }

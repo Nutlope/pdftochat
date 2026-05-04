@@ -1,73 +1,51 @@
-import Image from 'next/image';
-import Link from 'next/link';
-
-const data = [
+const STEPS = [
   {
+    num: '01',
     title: 'Sign up',
-    description: 'Start by signing up for a free PDFtoChat account',
-    image: '/pen.png',
+    body: 'Create a free PDFtoChat account. Takes a few seconds.',
   },
   {
+    num: '02',
     title: 'Upload a PDF',
-    description: 'After login, upload your PDF and let the AI tool analyze it',
-    image: '/upload.png',
+    body: 'Drag in a paper, contract, or textbook. We index it page by page.',
   },
   {
-    title: 'Begin Chatting',
-    description: 'Simply start asking the AI any question about the PDF!',
-    image: '/chat.png',
+    num: '03',
+    title: 'Ask anything',
+    body: 'Talk to the document. Every reply cites the source pages it came from.',
   },
 ];
 
-const HowItWorks = () => {
+export default function HowItWorks() {
   return (
-    <div
+    <section
       id="how-it-works"
-      className="xl:max-w-[1700px] xl:mx-auto container pt-9 sm:pt-[77px] pb-[100px] sm:pb-[264px] px-[30px] sm:px-0"
+      className="shell"
+      style={{ paddingBlock: 'var(--space-2xl)' }}
     >
-      <h3 className="pb-[66px] sm:pb-[174px] text-center text-3xl sm:text-[60px] text_bg leading-[72px] tracking-[-0.6px] sm:tracking-[-1.2px]">
-        How it Works
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-[64px] sm:gap-[112px] md:mx-20">
-        {data.map((item, index) => (
-          <div key={index} className="">
-            <div className="flex justify-center items-center pb-2 sm:pb-[50px]">
-              <Image
-                src={item.image}
-                alt="Step 1"
-                width={62}
-                height={62}
-                className="w-6 sm:w-[62px] h-6 sm:h-[62px]"
-              />
-            </div>
-            <div className="flex flex-col items-center gap-2 sm:gap-9">
-              <h3 className="text-center text-primary text-2xl sm:text-5xl leading-[34.5px] tracking-[-1.2px]">
-                {item.title}
-              </h3>
-              <p className="text-primary text-center text-[17px] sm:text-2xl leading-[20px] sm:leading-[34.5px] tracking-[-0.34px] sm:tracking-[-0.6px] pb-5 sm:pb-0 max-w-sm">
-                {item.description}
-              </p>
-              <Link
-                href="/dashboard"
-                className="flex gap-3 sm:gap-[33px] px-6 sm:px-[37px] py-[1px] sm:py-[14px] items-center border rounded-[29px] border-solid border-primary"
-              >
-                <span className="text-[17px] sm:text-[30px] leading-[34.5px] tracking-[-0.34px] sm:tracking-[-0.6px]">
-                  Get started
-                </span>
-                <Image
-                  src="/right-arrow.svg"
-                  alt="Arrow"
-                  width={31}
-                  height={24}
-                  className="w-4 sm:w-[31px] h-auto"
-                />
-              </Link>
-            </div>
-          </div>
+      <header
+        style={{
+          display: 'grid',
+          gap: 'var(--space-sm)',
+          marginBottom: 'var(--space-2xl)',
+        }}
+      >
+        <p className="eyebrow">How it works</p>
+        <h2
+          style={{ fontSize: 'var(--text-3xl)', maxWidth: '24ch', margin: 0 }}
+        >
+          From PDF to conversation in three steps.
+        </h2>
+      </header>
+      <ol className="steps">
+        {STEPS.map((s) => (
+          <li key={s.num} className="step">
+            <span className="step__num">{s.num}</span>
+            <h3 className="step__title">{s.title}</h3>
+            <p className="step__body">{s.body}</p>
+          </li>
         ))}
-      </div>
-    </div>
+      </ol>
+    </section>
   );
-};
-
-export default HowItWorks;
+}

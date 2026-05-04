@@ -1,30 +1,95 @@
 import Link from 'next/link';
 
-const Hero = () => {
+export default function Hero() {
   return (
-    <div className="container pt-[188px] md:pt-[300px] pb-[215px] sm:pb-[290px] px-[22px] sm:px-0 mx-auto text-center">
-      <a
-        href="https://togetherai.link"
-        target="_blank"
-        rel="noreferrer"
-        className="border rounded-2xl py-1 px-4 text-slate-600 transition duration-300 ease-in-out sm:text-base text-sm cursor-pointer hover:text-slate-700"
-      >
-        Powered by <span className="font-bold">Together.ai </span>and{' '}
-        <span className="font-bold">Mixtral</span>
-      </a>
-      <h2 className="text-center max-w-[867px] pb-5 sm:pb-7 text-[52px] sm:text-[100px] leading-[39.5px] tracking-[-1.04px] sm:leading-[75px] sm:tracking-[-2.74px] mx-auto sm:mt-12 mt-10">
-        Chat with your PDFs in seconds
-      </h2>
-      <p className="text-xl sm:text-2xl pb-10 sm:pb-8 leading-[19px] sm:leading-[34.5px] w-[232px] sm:w-full tracking-[-0.4px] sm:tracking-[-0.6px] text-center mx-auto">
-        Have a conversation with your papers, textbooks, and contracts for free
-      </p>
-      <Link href={'/dashboard'}>
-        <button className="bg_linear rounded-full sm:px-14 px-12 py-[2.5px] sm:py-4 text-white text-center text-xl sm:text-[30px] font-medium leading-[37px] tracking-[-0.3px]">
-          Get Started
-        </button>
-      </Link>
+    <section className="shell hero">
+      <div className="hero__copy">
+        <a
+          href="https://togetherai.link"
+          target="_blank"
+          rel="noreferrer"
+          className="hero__credit"
+        >
+          <span className="hero__credit-dot" aria-hidden="true" />
+          Powered by Together AI &nbsp;·&nbsp; Mixtral
+        </a>
+
+        <h1 className="hero__title">
+          Chat with your PDFs<span className="hero__period">.</span>
+        </h1>
+
+        <p className="hero__lede">
+          Upload a paper, contract, or textbook. PDFtoChat reads it page by
+          page, then answers in your words — with the exact source pages
+          alongside every reply.
+        </p>
+
+        <div className="hero__actions">
+          <Link href="/sign-up" className="btn btn--primary">
+            Get started
+          </Link>
+          <Link href="#how-it-works" className="btn btn--secondary">
+            See how it works
+          </Link>
+        </div>
+      </div>
+
+      <figure className="hero__preview" aria-hidden="true">
+        <PreviewMock />
+      </figure>
+    </section>
+  );
+}
+
+function PreviewMock() {
+  return (
+    <div className="mock">
+      <div className="mock__chrome">
+        <span />
+        <span />
+        <span />
+        <p className="mock__url">pdftochat.com / document</p>
+      </div>
+      <div className="mock__body">
+        <div className="mock__pdf" aria-label="PDF preview">
+          <div className="mock__pdf-tab">stevens-2024.pdf</div>
+          <div className="mock__pdf-page">
+            <div className="mock__pdf-h" />
+            <div className="mock__pdf-line" />
+            <div className="mock__pdf-line" />
+            <div className="mock__pdf-line short" />
+            <div className="mock__pdf-line" />
+            <div className="mock__pdf-line" />
+            <div className="mock__pdf-line short" />
+            <div className="mock__pdf-block" />
+            <div className="mock__pdf-line" />
+            <div className="mock__pdf-line" />
+            <div className="mock__pdf-line short" />
+          </div>
+        </div>
+        <div className="mock__chat">
+          <div className="mock__msg mock__msg--user">
+            <p>What does the author conclude in section 3?</p>
+          </div>
+          <div className="mock__msg mock__msg--bot">
+            <p>
+              The author argues that prior estimates underweight long-tail
+              latency. They propose a re-weighted error metric — defined on
+              p.&nbsp;7 — that recovers the gap.
+            </p>
+            <div className="mock__sources">
+              <span>p. 7</span>
+              <span>p. 12</span>
+            </div>
+          </div>
+          <div className="mock__composer">
+            <span>Ask me anything…</span>
+            <span className="mock__send" aria-hidden="true">
+              ↑
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default Hero;
+}

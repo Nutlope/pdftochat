@@ -3,12 +3,13 @@
 import { UploadDropzone } from 'react-uploader';
 import { Uploader } from 'uploader';
 import { useRouter } from 'next/navigation';
-import DocIcon from '@/components/ui/DocIcon';
 import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
+import { FileText } from 'lucide-react';
+import CommandPalette from '@/components/ui/CommandPalette';
+import CrossDocDialog from '@/components/ui/CrossDocDialog';
 
-// Configuration for the uploader
 const uploader = Uploader({
   apiKey: !!process.env.NEXT_PUBLIC_BYTESCALE_API_KEY
     ? process.env.NEXT_PUBLIC_BYTESCALE_API_KEY
@@ -23,41 +24,23 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+  const [crossOpen, setCrossOpen] = useState(false);
 
   const visibleDocs = docsList.filter((doc: any) => !deletedIds.has(doc.id));
+  const docsForPalette = visibleDocs.map((d: any) => ({
+    id: d.id,
+    fileName: d.fileName,
+  }));
 
   const options = {
     maxFileCount: 1,
     mimeTypes: ['application/pdf'],
     editor: { images: { crop: false } },
     styles: {
-      colors: {
-        primary: '#000', // Primary buttons & links
-        error: '#d23f4d', // Error messages
-      },
+      colors: { primary: '#1a1a1a', error: '#c0392b' },
     },
-    onValidate: async (file: File): Promise<undefined | string> => {
-      return undefined;
-    },
+    onValidate: async (_file: File): Promise<undefined | string> => undefined,
   };
-
-  const UploadDropZone = () => (
-    <UploadDropzone
-      uploader={uploader}
-      options={options}
-      onUpdate={(file) => {
-        if (file.length !== 0) {
-          setLoading(true);
-          ingestPdf(
-            file[0].fileUrl,
-            file[0].originalFile.originalFileName || file[0].filePath,
-          );
-        }
-      }}
-      width="470px"
-      height="250px"
-    />
-  );
 
   async function ingestPdf(fileUrl: string, fileName: string) {
     setError(null);
@@ -67,16 +50,12 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fileUrl, fileName }),
       });
-
       const data = await res.json().catch(() => null);
-
       if (!data || data.error || !data.id) {
         setError(data?.error || 'Something went wrong. Please try again.');
         setLoading(false);
         return;
       }
-
-      // Refresh Clerk session token (can go stale during long ingest fetch)
       await getToken({ skipCache: true });
       router.push(`/document/${data.id}`);
     } catch {
@@ -87,15 +66,24 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
 
   async function deleteDoc(docId: string) {
     setDeletingId(docId);
+    setDeletedIds((prev) => new Set(prev).add(docId));
     try {
       const res = await fetch(`/api/document/${docId}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.error) {
+        setDeletedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(docId);
+          return next;
+        });
         setError(data.error);
-      } else {
-        setDeletedIds((prev) => new Set(prev).add(docId));
       }
     } catch {
+      setDeletedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(docId);
+        return next;
+      });
       setError('Failed to delete document');
     } finally {
       setDeletingId(null);
@@ -103,87 +91,141 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
   }
 
   return (
-    <div className="mx-auto flex flex-col gap-4 container mt-10">
-      <h1 className="text-4xl leading-[1.1] tracking-tighter font-medium text-center">
-        Chat With Your PDFs
-      </h1>
+    <section className="shell" style={{ paddingBlock: 'var(--space-2xl)' }}>
+      <header className="dash-head">
+        <div>
+          <p className="eyebrow">Your library</p>
+          <h1 className="dash-head__title">
+            {visibleDocs.length > 0
+              ? 'Pick up where you left off, or upload another.'
+              : 'Upload a PDF to start chatting.'}
+          </h1>
+        </div>
+        <div className="dash-head__actions">
+          {visibleDocs.length >= 2 && (
+            <button
+              type="button"
+              className="btn btn--secondary"
+              onClick={() => setCrossOpen(true)}
+            >
+              New cross-doc chat
+            </button>
+          )}
+          <kbd className="kbd-hint" title="Open command palette">
+            ⌘K
+          </kbd>
+        </div>
+      </header>
+
       {visibleDocs.length > 0 && (
-        <div className="flex flex-col gap-4 mx-10 my-5">
-          <div className="flex flex-col shadow-sm border divide-y-2 sm:min-w-[650px] mx-auto">
-            {visibleDocs.map((doc: any) => (
-              <div
-                key={doc.id}
-                className="flex justify-between p-3 hover:bg-gray-100 transition sm:flex-row flex-col sm:gap-0 gap-3"
-              >
-                <button
-                  onClick={() => router.push(`/document/${doc.id}`)}
-                  className="flex gap-4"
-                >
-                  <DocIcon />
-                  <span>{doc.fileName}</span>
-                </button>
-                <div className="flex items-center gap-3">
-                  <span>{formatDistanceToNow(doc.createdAt)} ago</span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteDoc(doc.id);
-                    }}
-                    disabled={deletingId !== null}
-                    className="text-red-500 hover:text-red-700 text-sm disabled:opacity-50"
-                  >
-                    {deletingId === doc.id ? 'Deleting...' : 'Delete'}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="surface" style={{ marginBottom: 'var(--space-xl)' }}>
+          <table className="doc-table">
+            <thead>
+              <tr>
+                <th scope="col">Document</th>
+                <th scope="col" className="doc-table__age">
+                  Added
+                </th>
+                <th scope="col" className="doc-table__act">
+                  &nbsp;
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {visibleDocs.map((doc: any) => (
+                <tr key={doc.id}>
+                  <td>
+                    <button
+                      type="button"
+                      className="doc-table__name"
+                      onClick={() => router.push(`/document/${doc.id}`)}
+                    >
+                      <FileText size={14} aria-hidden="true" />
+                      <span>{doc.fileName}</span>
+                    </button>
+                  </td>
+                  <td className="doc-table__age tnum">
+                    {formatDistanceToNow(doc.createdAt)} ago
+                  </td>
+                  <td className="doc-table__act">
+                    <button
+                      type="button"
+                      className="btn btn--danger"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteDoc(doc.id);
+                      }}
+                      disabled={deletingId !== null}
+                    >
+                      {deletingId === doc.id ? 'Removing…' : 'Delete'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
-      {visibleDocs.length > 0 ? (
-        <h2 className="text-3xl leading-[1.1] tracking-tighter font-medium text-center">
-          Or upload a new PDF
-        </h2>
-      ) : (
-        <h2 className="text-3xl leading-[1.1] tracking-tighter font-medium text-center mt-5">
-          No PDFs found. Upload a new PDF below!
-        </h2>
-      )}
+
       {error && (
-        <p className="text-center text-red-600 text-sm">{error}</p>
+        <p
+          role="alert"
+          style={{
+            color: 'var(--color-danger)',
+            fontSize: 'var(--text-sm)',
+            marginBottom: 'var(--space-md)',
+          }}
+        >
+          {error}
+        </p>
       )}
-      <div className="mx-auto min-w-[450px] flex justify-center">
-        {loading ? (
-          <button
-            type="button"
-            className="inline-flex items-center mt-4 px-4 py-2 font-semibold leading-6 text-lg shadow rounded-md text-black transition ease-in-out duration-150 cursor-not-allowed"
-          >
-            <svg
-              className="animate-spin -ml-1 mr-3 h-5 w-5 text-black"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            Ingesting your PDF...
-          </button>
-        ) : (
-          <UploadDropZone />
-        )}
+
+      <CommandPalette
+        documents={docsForPalette}
+        onCrossDocChat={() => setCrossOpen(true)}
+      />
+      <CrossDocDialog
+        open={crossOpen}
+        onClose={() => setCrossOpen(false)}
+        documents={docsForPalette}
+      />
+
+      <div className="upload">
+        <div className="upload__head">
+          <p className="eyebrow">
+            {visibleDocs.length > 0 ? 'Upload another' : 'Upload a PDF'}
+          </p>
+          <p className="upload__hint">PDF only · up to ~50&nbsp;MB</p>
+        </div>
+        <div className="upload__zone">
+          {loading ? (
+            <div className="upload__loading">
+              <span className="dots" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+              <span>Reading your PDF…</span>
+            </div>
+          ) : (
+            <UploadDropzone
+              uploader={uploader}
+              options={options}
+              onUpdate={(file) => {
+                if (file.length !== 0) {
+                  setLoading(true);
+                  ingestPdf(
+                    file[0].fileUrl,
+                    file[0].originalFile.originalFileName || file[0].filePath,
+                  );
+                }
+              }}
+              width="100%"
+              height="220px"
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

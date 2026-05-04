@@ -5,6 +5,7 @@ import prisma from '@/utils/prisma';
 import { getAuth } from '@clerk/nextjs/server';
 import { loadEmbeddingsModel } from '../utils/embeddings';
 import { loadVectorStore } from '../utils/vector_store';
+import { generateSuggestedQuestions } from '../utils/suggestedQuestions';
 
 export async function POST(request: Request) {
   const { fileUrl, fileName } = await request.json();
@@ -52,6 +53,16 @@ export async function POST(request: Request) {
       embeddings,
     });
     await store.vectorstore.addDocuments(splitDocs);
+
+    // Generate empty-state question suggestions in the background. The
+    // helper never throws; an empty array is fine on failure.
+    const suggestedQuestions = await generateSuggestedQuestions(splitDocs);
+    if (suggestedQuestions.length > 0) {
+      await prisma.document.update({
+        where: { id: doc.id },
+        data: { suggestedQuestions },
+      });
+    }
   } catch (error) {
     console.error('[ingestPdf] Error during ingestion:', error);
     return NextResponse.json({ error: 'Failed to ingest your data' });

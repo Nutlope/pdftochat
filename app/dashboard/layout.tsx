@@ -1,18 +1,16 @@
 import Footer from '@/components/home/Footer';
 import Header from '@/components/ui/Header';
 
-export default function RootLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col ">
+    <div className="page">
       <Header />
-      <div className="flex-grow">{children}</div>
-      <div className="sm:p-7 sm:pb-0">
-        <Footer />
-      </div>
+      <main className="app-shell">{children}</main>
+      <Footer />
     </div>
   );
 }
