@@ -1,0 +1,28 @@
+packages:
+  - "."
+overrides:
+  "@langchain/openai": 0.0.28
+onlyBuiltDependencies:
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "bufferutil"
+  - "canvas"
+  - "esbuild"
+  - "onnxruntime-node"
+  - "prisma"
+  - "protobufjs"
+  - "sharp"
+  - "unrs-resolver"
+  - "utf-8-validate"
+allowBuilds:
+  "@prisma/client": true
+  "@prisma/engines": true
+  "bufferutil": true
+  "canvas": true
+  "esbuild": true
+  "onnxruntime-node": true
+  "prisma": true
+  "protobufjs": true
+  "sharp": true
+  "unrs-resolver": true
+  "utf-8-validate": true
