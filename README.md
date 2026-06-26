@@ -21,7 +21,7 @@
 ## Tech Stack
 
 - Next.js [App Router](https://nextjs.org/docs/app) for the framework
-- Mixtral through [Together AI](https://togetherai.link) inference for the LLM
+- Mixtral through [Together AI](https://togetherai.link/?utm_source=pdftochat&utm_medium=referral&utm_campaign=example-app) inference for the LLM
 - [Chroma Cloud](https://www.trychroma.com/) for vector search (hybrid dense + sparse via Qwen & SPLADE)
 - [LangChain.js](https://js.langchain.com/docs/get_started/introduction/) for the RAG code
 - [Bytescale](https://www.bytescale.com/) for the PDF storage
@@ -33,7 +33,7 @@
 
 You can deploy this template to Vercel or any other host. Note that you'll need to:
 
-- Set up [Together.ai](https://togetherai.link) for the LLM
+- Set up [Together.ai](https://togetherai.link/?utm_source=pdftochat&utm_medium=referral&utm_campaign=example-app) for the LLM
 - Set up [Chroma Cloud](https://www.trychroma.com/) for vector search
 - Set up [Bytescale](https://www.bytescale.com/) for PDF storage
 - Set up [Clerk](https://clerk.dev/) for auth
