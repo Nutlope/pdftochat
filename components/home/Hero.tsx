@@ -4,7 +4,7 @@ const Hero = () => {
   return (
     <div className="container pt-[188px] md:pt-[300px] pb-[215px] sm:pb-[290px] px-[22px] sm:px-0 mx-auto text-center">
       <a
-        href="https://togetherai.link"
+        href="https://togetherai.link/?utm_source=pdftochat&utm_medium=referral&utm_campaign=example-app"
         target="_blank"
         rel="noreferrer"
         className="border rounded-2xl py-1 px-4 text-slate-600 transition duration-300 ease-in-out sm:text-base text-sm cursor-pointer hover:text-slate-700"

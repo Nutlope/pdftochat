@@ -9,7 +9,7 @@ const Footer = () => {
         <span className="sm:text-xl text-lg sm:text-left text-center">
           Powered by{' '}
           <a
-            href="https://togetherai.link"
+            href="https://togetherai.link/?utm_source=pdftochat&utm_medium=referral&utm_campaign=example-app"
             target="_blank"
             className="font-semibold transition hover:text-black/50"
           >
