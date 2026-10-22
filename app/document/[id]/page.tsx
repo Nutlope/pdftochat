@@ -1,9 +1,9 @@
 import prisma from '@/utils/prisma';
-import { currentUser } from '@clerk/nextjs';
-import type { User } from '@clerk/nextjs/api';
+import { currentUser, type User } from '@clerk/nextjs/server';
 import DocumentClient from './document-client';
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user: User | null = await currentUser();
 
   const currentDoc = await prisma.document.findFirst({
