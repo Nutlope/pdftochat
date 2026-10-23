@@ -8,11 +8,7 @@ import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai';
 import { loadRetriever } from '../utils/vector_store';
 
 // Chroma Cloud client and MongoDB both require Node.js runtime (not edge).
-export const runtime =
-  process.env.NEXT_PUBLIC_VECTORSTORE === 'mongodb' ||
-  process.env.NEXT_PUBLIC_VECTORSTORE === 'chroma'
-    ? 'nodejs'
-    : 'edge';
+export const runtime = 'nodejs';
 
 const formatVercelMessages = (message: VercelChatMessage) => {
   if (message.role === 'user') {

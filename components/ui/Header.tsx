@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { UserButton, currentUser } from '@clerk/nextjs';
-import { User } from '@clerk/nextjs/server';
+import { UserButton } from '@clerk/nextjs';
+import { currentUser, type User } from '@clerk/nextjs/server';
 
 export default async function Header() {
   const user: User | null = await currentUser();

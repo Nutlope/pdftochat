@@ -2,6 +2,12 @@ packages:
   - "."
 overrides:
   "@langchain/openai": 0.0.28
+  "expr-eval": "npm:expr-eval-fork@^3.0.3"
+  "canvas>@mapbox/node-pre-gyp": "^2.0.3"
+  "tar@<7.5.19": "^7.5.19"
+  "protobufjs@<7.5.5": "^7.5.5"
+  "seroval@<1.6.2": "^1.6.2"
+  "seroval-plugins@<1.6.2": "^1.6.2"
 onlyBuiltDependencies:
   - "@prisma/client"
   - "@prisma/engines"
@@ -15,6 +21,7 @@ onlyBuiltDependencies:
   - "unrs-resolver"
   - "utf-8-validate"
 allowBuilds:
+  "@clerk/shared": false
   "@prisma/client": true
   "@prisma/engines": true
   "bufferutil": true

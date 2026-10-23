@@ -5,8 +5,9 @@ import { deleteChromaCollection } from '../../utils/vector_store/chroma';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  props: { params: Promise<{ id: string }> },
 ) {
+  const params = await props.params;
   const { userId } = getAuth(request as any);
 
   if (!userId) {
@@ -29,7 +30,10 @@ export async function DELETE(
     if (process.env.NEXT_PUBLIC_VECTORSTORE === 'chroma') {
       await deleteChromaCollection(docId).catch((e) => {
         // Collection may not exist if ingest failed or was never completed
-        console.warn('[document/delete] Chroma collection not found, skipping:', e.message);
+        console.warn(
+          '[document/delete] Chroma collection not found, skipping:',
+          e.message,
+        );
       });
     }
     await prisma.document.delete({ where: { id: docId } });
